@@ -10,7 +10,8 @@ rozpocznij naukę. Odpowiedzi wymagają poprawnych umlautów i `ß`; przyciski p
 polem odpowiedzi pozwalają wstawić `ä`, `ö`, `ü` i `ß`. Baza obejmuje
 rzeczowniki, przymiotniki, czasowniki i
 przysłówki z kategorii takich jak jedzenie, meble, pory dnia, dni tygodnia,
-zawody i dom. Niemieckie rzeczowniki są zapisane z rodzajnikiem.
+zawody, dom oraz kościół i religię. Niemieckie rzeczowniki pospolite są
+zapisane z rodzajnikiem.
 
 Trening Kanji zawiera również niepełny **Zestaw 5 — Kościół**, z podstawowym
 słownictwem chrześcijańskim. Lista obejmuje m.in. Eucharystię, Komunię,

@@ -139,5 +139,48 @@ window.germanVocabularyCategories = [
             { de: "wohnen", pl: ["mieszkać"], pos: "czasownik" },
             { de: "öffnen", pl: ["otwierać", "otworzyć"], pos: "czasownik" }
         ]
+    },
+    {
+        key: "kosciol",
+        label: "Kościół i religia",
+        items: [
+            { de: "Gott", pl: ["Bóg", "Pan Bóg"], pos: "rzeczownik" },
+            { de: "der Herr", pl: ["Pan", "Bóg"], pos: "rzeczownik" },
+            { de: "Jesus Christus", pl: ["Jezus Chrystus"], pos: "rzeczownik" },
+            { de: "der Heilige Geist", pl: ["Duch Święty"], pos: "rzeczownik" },
+            { de: "die Kirche", pl: ["kościół"], pos: "rzeczownik" },
+            { de: "der Gottesdienst", pl: ["nabożeństwo"], pos: "rzeczownik" },
+            { de: "die Messe", pl: ["Msza", "Msza święta"], pos: "rzeczownik" },
+            { de: "die Eucharistie", pl: ["Eucharystia"], pos: "rzeczownik" },
+            { de: "die Kommunion", pl: ["Komunia", "Komunia święta"], pos: "rzeczownik" },
+            { de: "das Sakrament", pl: ["sakrament"], pos: "rzeczownik" },
+            { de: "die Taufe", pl: ["chrzest"], pos: "rzeczownik" },
+            { de: "die Firmung", pl: ["bierzmowanie"], pos: "rzeczownik" },
+            { de: "die Beichte", pl: ["spowiedź"], pos: "rzeczownik" },
+            { de: "die Priesterweihe", pl: ["święcenia kapłańskie"], pos: "rzeczownik" },
+            { de: "die Krankensalbung", pl: ["namaszczenie chorych"], pos: "rzeczownik" },
+            { de: "der Altar", pl: ["ołtarz"], pos: "rzeczownik" },
+            { de: "der Kelch", pl: ["kielich"], pos: "rzeczownik" },
+            { de: "der Weihrauch", pl: ["kadzidło"], pos: "rzeczownik" },
+            { de: "das Weihrauchfass", pl: ["kadzielnica"], pos: "rzeczownik" },
+            { de: "das Weihwasser", pl: ["woda święcona"], pos: "rzeczownik" },
+            { de: "die Hostie", pl: ["hostia"], pos: "rzeczownik" },
+            { de: "das Kreuz", pl: ["krzyż"], pos: "rzeczownik" },
+            { de: "die Bibel", pl: ["Biblia"], pos: "rzeczownik" },
+            { de: "das Gebet", pl: ["modlitwa"], pos: "rzeczownik" },
+            { de: "der Priester", pl: ["kapłan", "ksiądz"], pos: "rzeczownik" },
+            { de: "der Papst", pl: ["papież"], pos: "rzeczownik" },
+            { de: "der Apostel", pl: ["apostoł"], pos: "rzeczownik" },
+            { de: "der Mönch", pl: ["mnich", "zakonnik"], pos: "rzeczownik" },
+            { de: "die Nonne", pl: ["zakonnica"], pos: "rzeczownik" },
+            { de: "der Glaube", pl: ["wiara"], pos: "rzeczownik" },
+            { de: "das Evangelium", pl: ["Ewangelia", "dobra nowina"], pos: "rzeczownik" },
+            { de: "die Auferstehung", pl: ["zmartwychwstanie"], pos: "rzeczownik" },
+            { de: "das Opfer", pl: ["ofiara"], pos: "rzeczownik" },
+            { de: "beten", pl: ["modlić się"], pos: "czasownik" },
+            { de: "glauben", pl: ["wierzyć"], pos: "czasownik" },
+            { de: "segnen", pl: ["błogosławić"], pos: "czasownik" },
+            { de: "heilig", pl: ["święty", "święta", "święte"], pos: "przymiotnik" }
+        ]
     }
 ];
