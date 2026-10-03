@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Kanji</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="font-style-default">
+    <div class="page-shell">
+        <h1>漢字 <span>(Kanji)</span></h1>
+
+        <div id="selection-panel">
+            <div class="study-mode-panel">
+                <div class="study-mode-pair">
+                    <label for="kanji-deck">Zestaw:</label>
+                    <select id="kanji-deck"></select>
+                </div>
+
+                <div class="study-mode-pair">
+                    <label for="display-mode">Wyświetlaj:</label>
+                    <select id="display-mode">
+                        <option value="kanji">kanji</option>
+                        <option value="polski">tłumaczenie</option>
+                        <option value="hiragana">hiragana</option>
+                        <option value="romaji" selected>rōmaji</option>
+                    </select>
+                </div>
+
+                <div class="study-mode-pair">
+                    <label for="question-mode">Pytaj o:</label>
+                    <select id="question-mode">
+                        <option value="kanji">kanji</option>
+                        <option value="polski" selected>tłumaczenie</option>
+                        <option value="hiragana">hiragana</option>
+                        <option value="romaji">rōmaji</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="kanji-table" aria-label="Kanji table"></div>
+
+            <div class="table-actions">
+                <button id="select-all" type="button">Zaznacz wszystko</button>
+                <button id="clear-all" type="button">Wyczyść wszystko</button>
+            </div>
+
+            <button id="start">Rozpocznij naukę</button>
+        </div>
+
+        <hr>
+
+        <div id="app" style="display:none;">
+            <div id="char-box"></div>
+
+            <div class="study-inputs">
+                <input id="romaji-answer" placeholder="Podaj rōmaji" autocomplete="off" spellcheck="false" style="display:none;">
+                <input id="hiragana-answer" placeholder="Podaj hiraganę" autocomplete="off" spellcheck="false" style="display:none;">
+                <input id="meaning-answer" placeholder="Podaj znaczenie" autocomplete="off" spellcheck="false" style="display:none;">
+            </div>
+
+            <button id="submit" type="button">Sprawdź</button>
+            <button id="end-study" type="button">Zakończ naukę</button>
+
+            <div id="feedback"></div>
+
+            <button id="continue" style="display:none;">Dalej</button>
+        </div>
+
+        <div class="font-picker">
+            <label for="font-style">Styl czcionki</label>
+            <select id="font-style">
+                <option value="default" selected>Domyślny</option>
+                <option value="brush">Pędzel</option>
+                <option value="elegant">Elegancki</option>
+                <option value="modern">Nowoczesny</option>
+            </select>
+        </div>
+
+        <div class="font-picker">
+            <a href="index.html" class="nav-link">Powrót do hiragany</a>
+        </div>
+    </div>
+
+    <script src="kanji-data.js"></script>
+    <script src="kanji.js"></script>
+</body>
+</html>

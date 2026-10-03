@@ -1,0 +1,377 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Yuji+Syuku&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+:root {
+    --page-font: "Segoe UI", "Hiragino Sans", "Yu Gothic", "Yu Mincho", Arial, sans-serif;
+    --heading-font: "Hiragino Mincho Pro", "Yu Mincho", "MS Mincho", serif;
+    --title-font: "Hiragino Mincho Pro", "Yu Mincho", "MS Mincho", serif;
+    --hiragana-font: "Hiragino Mincho Pro", "Yu Mincho", "MS Mincho", serif;
+    --label-font: "Segoe UI", "Hiragino Sans", Arial, sans-serif;
+    --translit-font: "Segoe UI", "Hiragino Sans", Arial, sans-serif;
+    --input-font: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+    font-family: var(--page-font);
+    text-align: center;
+    margin: 0;
+    background: linear-gradient(180deg, #fffdf8 0%, #f8f9ff 100%);
+    color: #1b1b1b;
+}
+
+body.font-style-default {
+    --page-font: "Segoe UI", "Hiragino Sans", "Yu Gothic", "Yu Mincho", Arial, sans-serif;
+    --heading-font: "Hiragino Mincho Pro", "Yu Mincho", "MS Mincho", serif;
+    --title-font: "Hiragino Mincho Pro", "Yu Mincho", "MS Mincho", serif;
+    --hiragana-font: "Hiragino Mincho Pro", "Yu Mincho", "MS Mincho", serif;
+    --label-font: "Segoe UI", "Hiragino Sans", Arial, sans-serif;
+    --translit-font: "Segoe UI", "Hiragino Sans", Arial, sans-serif;
+    --input-font: "Segoe UI", Arial, sans-serif;
+}
+
+body.font-style-brush {
+    --page-font: "Caveat", "Segoe UI", sans-serif;
+    --heading-font: "Yuji Syuku", serif;
+    --title-font: "Yuji Syuku", serif;
+    --hiragana-font: "Yuji Syuku", serif;
+    --label-font: "Caveat", "Segoe UI", sans-serif;
+    --translit-font: "Caveat", "Segoe UI", sans-serif;
+    --input-font: "Caveat", "Segoe UI", sans-serif;
+}
+
+body.font-style-elegant {
+    --page-font: "Cormorant Garamond", Georgia, serif;
+    --heading-font: "Yuji Syuku", serif;
+    --title-font: "Yuji Syuku", serif;
+    --hiragana-font: "Yuji Syuku", serif;
+    --label-font: "Cormorant Garamond", Georgia, serif;
+    --translit-font: "Cormorant Garamond", Georgia, serif;
+    --input-font: "Cormorant Garamond", Georgia, serif;
+}
+
+body.font-style-modern {
+    --page-font: "Noto Sans JP", "Segoe UI", Arial, sans-serif;
+    --heading-font: "Noto Sans JP", "Segoe UI", sans-serif;
+    --title-font: "Noto Sans JP", "Segoe UI", sans-serif;
+    --hiragana-font: "Noto Sans JP", "Segoe UI", sans-serif;
+    --label-font: "Noto Sans JP", "Segoe UI", sans-serif;
+    --translit-font: "Noto Sans JP", "Segoe UI", sans-serif;
+    --input-font: "Noto Sans JP", "Segoe UI", sans-serif;
+}
+
+.font-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px auto 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.45);
+    border: 1px solid #d6e0ef;
+    font-size: 16px;
+}
+
+.font-picker label {
+    font-weight: 600;
+}
+
+.alphabet-picker {
+    margin-top: 8px;
+}
+
+.font-picker select {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #c8d6ea;
+    background: #fff;
+    font-family: var(--input-font);
+    font-size: 16px;
+}
+
+.nav-link {
+    color: #1e3a5f;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+
+.page-shell {
+    display: inline-block;
+    margin-top: 28px;
+    padding: 12px 18px 24px;
+}
+
+h1 {
+    margin: 0 0 18px;
+    font-size: 40px;
+    font-weight: 700;
+    color: #202020;
+    letter-spacing: 0.04em;
+    font-family: var(--title-font);
+}
+
+h1 span {
+    font-size: 26px;
+    font-weight: 500;
+    font-family: var(--page-font);
+}
+
+#table,
+#kanji-table {
+    margin: 0 auto 18px;
+    display: inline-block;
+    border: 3px solid #2b2b2b;
+    background: #f8f9ea;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.hiragana-table {
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.hiragana-table th,
+.hiragana-table td {
+    border: 1px solid #2f2f2f;
+    width: 62px;
+    height: 62px;
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+    background: #f8f8f2;
+}
+
+.corner-cell {
+    width: 82px;
+    background: #f2f1e8;
+}
+
+.column-header,
+.row-header {
+    background: #f2f1e8;
+    font-weight: 600;
+    font-family: var(--label-font);
+}
+
+.toggle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    height: 100%;
+    font-size: 13px;
+    line-height: 1;
+    padding: 4px;
+    box-sizing: border-box;
+}
+
+.toggle span {
+    display: block;
+    min-height: 1em;
+}
+
+.toggle .placeholder-label {
+    visibility: hidden;
+    pointer-events: none;
+    user-select: none;
+    min-height: 1em;
+}
+
+.toggle input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    display: block;
+}
+
+.column-header .toggle,
+.row-header .toggle {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+}
+
+.hiragana-cell {
+    font-size: 40px;
+    font-family: var(--hiragana-font);
+    color: #1a1a1a;
+    transition: background-color 0.2s ease;
+}
+
+.row-selected,
+.column-header.col-selected,
+.row-header.row-selected,
+.hiragana-cell.row-selected,
+.hiragana-cell.col-selected,
+.hiragana-cell.cell-selected {
+    background-color: #dff6ff !important;
+}
+
+.hiragana-cell {
+    cursor: pointer;
+}
+
+.kana-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 2px;
+}
+
+.kana-symbol {
+    line-height: 1.1;
+}
+
+.kanji-symbol {
+    font-size: 32px;
+    line-height: 1.1;
+    font-weight: 700;
+    font-family: var(--hiragana-font);
+}
+
+.kana-translit {
+    font-size: 11px;
+    font-family: var(--translit-font);
+    color: #3b3b3b;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    font-weight: 600;
+}
+
+#romaji-answer,
+#meaning-answer,
+#answer {
+    width: min(250px, 70vw);
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d5ddeb;
+    font-size: 18px;
+    margin: 8px auto;
+    display: block;
+    font-family: var(--input-font);
+}
+
+.study-mode-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+    width: fit-content;
+    margin: 0 auto 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.45);
+    border: 1px solid #d6e0ef;
+    font-size: 16px;
+}
+
+.study-mode-pair {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#selection-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.study-mode-panel select {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #c8d6ea;
+    background: #fff;
+    font-family: var(--input-font);
+    font-size: 16px;
+}
+
+.study-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: 12px 0;
+}
+
+.kanji-meaning {
+    font-size: 9px;
+    color: #575757;
+    line-height: 1.2;
+    margin-top: 4px;
+    font-family: var(--translit-font);
+    font-weight: 600;
+}
+
+button {
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #cfe8ff;
+    color: #1a2740;
+    cursor: pointer;
+    box-shadow: none;
+    transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+button:hover {
+    background: #b9ddff;
+}
+
+button:active {
+    background: #a8d1ff;
+    transform: translateY(1px);
+}
+
+.table-actions {
+    margin-bottom: 8px;
+}
+
+#char-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 140px;
+    font-size: 120px;
+    margin: 20px;
+}
+
+.prompt-main {
+    font-size: 1em;
+    line-height: 1;
+}
+
+.prompt-kanji {
+    font-size: 30px;
+    color: #4b4b4b;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+#feedback {
+    margin: 20px;
+    font-size: 20px;
+}
+
+input {
+    font-size: 20px;
+    padding: 10px;
+    border: 1px solid #c8d6ea;
+    border-radius: 6px;
+    background: #fff;
+    font-family: var(--input-font);
+}

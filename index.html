@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Hiragana</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="font-style-default">
+    <div class="page-shell">
+        <h1>ひらがな <span>(Hiragana)</span></h1>
+
+        <div id="selection-panel">
+            <div id="table" aria-label="Hiragana table"></div>
+
+            <div class="table-actions">
+                <button id="select-all" type="button">Zaznacz wszystko</button>
+                <button id="clear-all" type="button">Wyczyść wszystko</button>
+            </div>
+
+            <button id="start">Rozpocznij naukę</button>
+        </div>
+
+        <hr>
+
+        <div id="app" style="display:none;">
+            <div id="char-box"></div>
+
+            <input id="answer" placeholder="Podaj rōmaji" autocomplete="off" spellcheck="false">
+            <button id="submit" type="button">Sprawdź</button>
+            <button id="end-study" type="button">Zakończ naukę</button>
+
+            <div id="feedback"></div>
+
+            <button id="continue" style="display:none;">Dalej</button>
+
+            <hr>
+
+            <button id="save">Zapisz postęp</button>
+            <button id="load">Wczytaj postęp</button>
+            <input type="file" id="fileInput" style="display:none;">
+        </div>
+
+        <div class="font-picker">
+            <label for="font-style">Styl czcionki</label>
+            <select id="font-style">
+                <option value="default" selected>Domyślny</option>
+                <option value="brush">Pędzel</option>
+                <option value="elegant">Elegancki</option>
+                <option value="modern">Nowoczesny</option>
+            </select>
+        </div>
+
+        <div class="font-picker alphabet-picker">
+            <label for="alphabet-type">Alfabet</label>
+            <select id="alphabet-type">
+                <option value="hiragana" selected>Hiragana</option>
+                <option value="katakana">Katakana</option>
+            </select>
+        </div>
+
+        <div class="font-picker">
+            <a href="kanji.html" class="nav-link">Otwórz trening Kanji</a>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
