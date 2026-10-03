@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Niemieckie słownictwo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="font-style-default">
+    <div class="page-shell">
+        <h1>Deutsch <span>(niemieckie słownictwo)</span></h1>
+
+        <div id="selection-panel">
+            <div class="study-mode-panel">
+                <div class="study-mode-pair">
+                    <label for="translation-direction">Kierunek:</label>
+                    <select id="translation-direction">
+                        <option value="de-pl">niemiecki → polski</option>
+                        <option value="pl-de">polski → niemiecki</option>
+                        <option value="mixed">oba kierunki — wymieszane</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="vocabulary-categories" class="deck-grid" aria-label="Kategorie słownictwa"></div>
+
+            <div class="table-actions">
+                <button id="select-all-categories" type="button">Zaznacz wszystkie kategorie</button>
+                <button id="clear-all-categories" type="button">Wyczyść wybór</button>
+            </div>
+
+            <button id="start" type="button">Rozpocznij naukę</button>
+        </div>
+
+        <hr>
+
+        <div id="app" style="display:none;">
+            <div id="char-box"></div>
+            <input id="vocabulary-answer" placeholder="Podaj tłumaczenie" autocomplete="off" spellcheck="false">
+            <div class="character-buttons" aria-label="Znaki niemieckie">
+                <button type="button" data-character="ä">ä</button>
+                <button type="button" data-character="ö">ö</button>
+                <button type="button" data-character="ü">ü</button>
+                <button type="button" data-character="ß">ß</button>
+            </div>
+            <button id="submit" type="button">Sprawdź</button>
+            <button id="end-study" type="button">Zakończ naukę</button>
+            <div id="feedback" role="status" aria-live="polite"></div>
+            <button id="continue" type="button" style="display:none;">Dalej</button>
+        </div>
+
+        <div class="font-picker">
+            <a href="index.html" class="nav-link">Powrót do hiragany</a>
+            <a href="kanji.html" class="nav-link">Trening Kanji</a>
+            <a href="kurrent.html" class="nav-link">Trening Kurrent</a>
+        </div>
+    </div>
+
+    <script src="german-vocabulary-data.js"></script>
+    <script src="common.js"></script>
+    <script src="german-vocabulary.js"></script>
+</body>
+</html>

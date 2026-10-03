@@ -638,5 +638,61 @@
             { kanji: "編集", romaji: "henshū", meaning: "edycja" },
             { kanji: "復元", romaji: "fukugen", meaning: "przywrócenie" }
         ]
+    },
+    {
+        key: "church-sacraments",
+        label: "Sakramenty",
+        items: [
+            { kanji: "聖餐", romaji: "seisan", meaning: "Eucharystia / Msza święta" },
+            { kanji: "聖体", romaji: "seitai", hiragana: "せいたい", meaning: "Eucharystia / Najświętszy Sakrament" },
+            { kanji: "聖体拝領", romaji: "seitai hairyō", hiragana: "せいたいはいりょう", meaning: "Komunia święta" },
+            { kanji: "洗礼", romaji: "senrei", hiragana: "せんれい", meaning: "chrzest" },
+            { kanji: "告解", romaji: "kokkai", hiragana: "こっかい", meaning: "spowiedź" },
+            { kanji: "秘跡", romaji: "hiseki", hiragana: "ひせき", meaning: "sakrament" },
+            { kanji: "堅信", romaji: "kenshin", hiragana: "けんしん", meaning: "bierzmowanie" },
+            { kanji: "叙階", romaji: "jokai", hiragana: "じょかい", meaning: "święcenia kapłańskie" },
+            { kanji: "病者の塗油", romaji: "byōsha no toyu", hiragana: "びょうしゃのとゆ", meaning: "namaszczenie chorych" }
+        ]
+    },
+    {
+        key: "church-objects",
+        label: "Przedmioty",
+        items: [
+            { kanji: "聖杯", romaji: "seihai", meaning: "kielich liturgiczny" },
+            { kanji: "祭壇", romaji: "saidan", meaning: "ołtarz" },
+            { kanji: "香", romaji: "kō", meaning: "kadzidło" },
+            { kanji: "香炉", romaji: "kōro", meaning: "kadzielnica" },
+            { kanji: "聖書", romaji: "seisho", hiragana: "せいしょ", meaning: "Biblia" },
+            { kanji: "十字架", romaji: "jūjika", meaning: "krzyż" },
+            { kanji: "聖水", romaji: "seisui", hiragana: "せいすい", meaning: "woda święcona" },
+            { kanji: "燭台", romaji: "shokudai", hiragana: "しょくだい", meaning: "świecznik" },
+            { kanji: "聖餅", romaji: "seihei", hiragana: "せいへい", meaning: "hostia" }
+        ]
+    },
+    {
+        key: "church-people",
+        label: "Osoby",
+        items: [
+            { kanji: "神様", romaji: "kamisama", meaning: "Pan Bóg" },
+            { kanji: "司祭", romaji: "shisai", hiragana: "しさい", meaning: "kapłan" },
+            { kanji: "神父", romaji: "shinpu", hiragana: "しんぷ", meaning: "ksiądz katolicki" },
+            { kanji: "修道女", romaji: "shūdōjo", hiragana: "しゅうどうじょ", meaning: "zakonnica" },
+            { kanji: "教皇", romaji: "kyōkō", hiragana: "きょうこう", meaning: "papież" },
+            { kanji: "修道士", romaji: "shūdōshi", hiragana: "しゅうどうし", meaning: "zakonnik" },
+            { kanji: "使徒", romaji: "shito", hiragana: "しと", meaning: "apostoł" }
+        ]
+    },
+    {
+        key: "church-other",
+        label: "Inne",
+        items: [
+            { kanji: "神学", romaji: "shingaku", meaning: "teologia" },
+            { kanji: "教会", romaji: "kyōkai", meaning: "kościół" },
+            { kanji: "犠牲", romaji: "gisei", meaning: "ofiara / poświęcenie" },
+            { kanji: "祈り", romaji: "inori", hiragana: "いのり", meaning: "modlitwa" },
+            { kanji: "信仰", romaji: "shinkō", hiragana: "しんこう", meaning: "wiara" },
+            { kanji: "福音", romaji: "fukuin", hiragana: "ふくいん", meaning: "Ewangelia / dobra nowina" },
+            { kanji: "復活", romaji: "fukkatsu", hiragana: "ふっかつ", meaning: "zmartwychwstanie" }
+        ]
     }
 ];

@@ -260,7 +260,8 @@ h1 span {
 #romaji-answer,
 #meaning-answer,
 #answer,
-#kurrent-answer {
+#kurrent-answer,
+#vocabulary-answer {
     width: min(250px, 70vw);
     padding: 10px 12px;
     border-radius: 8px;
@@ -409,6 +410,25 @@ button:active {
 .deck-count {
     color: #575757;
     font-size: 13px;
+}
+
+.vocabulary-detail {
+    margin-top: 8px;
+    color: #575757;
+    font-family: var(--translit-font);
+    font-size: 14px;
+}
+
+.character-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.character-buttons button {
+    min-width: 42px;
+    margin: 2px;
+    padding: 6px 10px;
 }
 
 .font-note {

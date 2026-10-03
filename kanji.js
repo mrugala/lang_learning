@@ -22,7 +22,7 @@ const {
 
 const categories = window.kanjiCategories || [];
 
-const MAX_ROWS = 10;
+const MIN_ROWS = 10;
 const selectedCells = new Set();
 const kanjiDecks = [
     {
@@ -44,6 +44,11 @@ const kanjiDecks = [
         key: "deck-4",
         label: "Zestaw 4",
         categoryKeys: categories.slice(30, 40).map(category => category.key)
+    },
+    {
+        key: "deck-5",
+        label: "Zestaw 5 — Kościół (w budowie)",
+        categoryKeys: categories.slice(40, 50).map(category => category.key)
     }
 ];
 let activeKanjiDeck = kanjiDecks[0].key;
@@ -403,7 +408,11 @@ function renderTable() {
 
     const tbody = document.createElement("tbody");
 
-    for (let rowIndex = 0; rowIndex < MAX_ROWS; rowIndex++) {
+    const rowCount = Math.max(
+        MIN_ROWS,
+        ...visibleCategories.map(category => category.items.length)
+    );
+    for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
         const rowEl = document.createElement("tr");
         rowEl.dataset.rowKey = String(rowIndex);
 
