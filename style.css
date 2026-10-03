@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Yuji+Syuku&family=Noto+Sans+JP:wght@400;500;700&display=swap');
 
+/* Wiegel Kurrent by Peter Wiegel; licensed under SIL OFL 1.1.
+   See fonts/OFL-Wiegel-Kurrent.txt. */
+@font-face {
+    font-family: "WiegelKurrent";
+    src: url("fonts/WiegelKurrent.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --page-font: "Segoe UI", "Hiragino Sans", "Yu Gothic", "Yu Mincho", Arial, sans-serif;
     --heading-font: "Hiragino Mincho Pro", "Yu Mincho", "MS Mincho", serif;
@@ -249,7 +259,8 @@ h1 span {
 
 #romaji-answer,
 #meaning-answer,
-#answer {
+#answer,
+#kurrent-answer {
     width: min(250px, 70vw);
     padding: 10px 12px;
     border-radius: 8px;
@@ -348,6 +359,151 @@ button:active {
     min-height: 140px;
     font-size: 120px;
     margin: 20px;
+}
+
+/* Kurrent script: the glyphs sit on the baseline and need generous line
+   height, otherwise the descenders/long connecting strokes get clipped. */
+.kurrent-text {
+    font-family: "WiegelKurrent", var(--page-font);
+    line-height: 1.5;
+}
+
+.kurrent-word {
+    font-size: 0.55em;
+    line-height: 1.5;
+}
+
+.deck-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 10px;
+    margin: 0 auto 14px;
+    max-width: 640px;
+}
+
+.deck-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid #c8d6ea;
+    border-radius: 8px;
+    background: #f8f8f2;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.deck-label.deck-selected {
+    background: #dff6ff;
+    border-color: #7bb7d6;
+}
+
+.deck-label input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    flex: 0 0 auto;
+}
+
+.deck-count {
+    color: #575757;
+    font-size: 13px;
+}
+
+.font-note {
+    font-size: 12px;
+    color: #6a6a6a;
+    margin: 14px 0 0;
+}
+
+.kurrent-translit {
+    font-family: var(--translit-font);
+    font-size: 11px;
+    color: #3b3b3b;
+    letter-spacing: 0.02em;
+    font-weight: 600;
+}
+
+/* Siatka liter: kafelka para mała + wielka, bez podpisów. */
+#kurrent-table {
+    display: block;
+    width: 760px;
+    max-width: 96vw;
+    margin: 0 auto 18px;
+    border: 3px solid #2b2b2b;
+    border-radius: 8px;
+    background: #f2f1e8;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.letter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    gap: 5px;
+    padding: 8px;
+}
+
+.letter-pair {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 3px 4px;
+    border: 1px solid #2f2f2f;
+    border-radius: 5px;
+    background: #f8f8f2;
+    transition: background-color 0.2s ease;
+}
+
+.letter-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+}
+
+/* Podpis pod glifem: która litera to jest, a nie jak się czyta. */
+.letter-name {
+    font-family: var(--translit-font);
+    font-size: 11px;
+    font-weight: 600;
+    color: #4b4b4b;
+    letter-spacing: 0.02em;
+    line-height: 1;
+}
+
+.letter-glyph {
+    font-size: 30px;
+    cursor: pointer;
+    padding: 0 2px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+}
+
+.letter-upper {
+    color: #1a1a1a;
+}
+
+.letter-glyph.cell-selected {
+    background: #dff6ff;
+    border-color: #7bb7d6;
+}
+
+.letter-case-bar {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    padding: 10px;
+    border-top: 1px solid #2f2f2f;
+    background: #f2f1e8;
+}
+
+.letter-case-bar .toggle {
+    flex-direction: row;
+    gap: 8px;
+    font-size: 14px;
 }
 
 .prompt-main {

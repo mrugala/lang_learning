@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Kurrent</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="font-style-default">
+    <div class="page-shell">
+        <h1>Deutsche Kurrent <span>(Kurrentschrift)</span></h1>
+
+        <div id="selection-panel">
+            <div class="study-mode-panel">
+                <div class="study-mode-pair">
+                    <label for="kurrent-mode">Tryb:</label>
+                    <select id="kurrent-mode">
+                        <option value="letters" selected>Litery (małe i wielkie)</option>
+                        <option value="words">Losowe słowa</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="letters-panel">
+                <div id="kurrent-table" aria-label="Tabela liter Kurrent"></div>
+
+                <div class="table-actions">
+                    <button id="select-all" type="button">Zaznacz wszystko</button>
+                    <button id="clear-all" type="button">Wyczyść wszystko</button>
+                </div>
+            </div>
+
+            <div id="words-panel" style="display:none;">
+                <div id="kurrent-decks" class="deck-grid" aria-label="Zestawy słów"></div>
+
+                <div class="table-actions">
+                    <button id="select-all-decks" type="button">Zaznacz wszystkie zestawy</button>
+                    <button id="clear-all-decks" type="button">Wyczyść wszystkie zestawy</button>
+                </div>
+            </div>
+
+            <button id="start">Rozpocznij naukę</button>
+        </div>
+
+        <hr>
+
+        <div id="app" style="display:none;">
+            <div id="char-box"></div>
+
+            <input id="kurrent-answer" placeholder="Podaj wyraz" autocomplete="off" spellcheck="false">
+            <button id="submit" type="button">Sprawdź</button>
+            <button id="end-study" type="button">Zakończ naukę</button>
+
+            <div id="feedback"></div>
+
+            <button id="continue" style="display:none;">Dalej</button>
+        </div>
+
+        <div class="font-picker">
+            <a href="index.html" class="nav-link">Powrót do hiragany</a>
+            <a href="kanji.html" class="nav-link">Trening Kanji</a>
+        </div>
+
+        <p class="font-note">
+            Czcionka: <em>Wiegel Kurrent</em> (Peter Wiegel) —
+            <a href="fonts/OFL-Wiegel-Kurrent.txt">SIL Open Font License 1.1</a>.
+        </p>
+    </div>
+
+    <script src="kurrent-data.js"></script>
+    <script src="common.js"></script>
+    <script src="kurrent.js"></script>
+</body>
+</html>
