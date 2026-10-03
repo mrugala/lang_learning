@@ -121,11 +121,16 @@ function populateQuestionOptions() {
 
 let currentStudyMode = "romaji-polski";
 
-categories.forEach(category => {
-    category.items.forEach((item, rowIndex) => {
-        if (item) selectedCells.add(getCellKey(category.key, rowIndex));
+function selectVisibleDeckItems() {
+    selectedCells.clear();
+    getVisibleCategories().forEach(category => {
+        category.items.forEach((item, rowIndex) => {
+            if (item) selectedCells.add(getCellKey(category.key, rowIndex));
+        });
     });
-});
+}
+
+selectVisibleDeckItems();
 let currentKey = null;
 let queue = {};
 
@@ -705,8 +710,8 @@ questionModeSelect.addEventListener("change", updateStudyModeFromControls);
 const kanjiDeckSelect = document.getElementById("kanji-deck");
 kanjiDeckSelect.addEventListener("change", () => {
     activeKanjiDeck = kanjiDeckSelect.value;
+    selectVisibleDeckItems();
     renderTable();
-    syncSelectionHighlights();
 });
 
 const fontStyleSelect = document.getElementById("font-style");
