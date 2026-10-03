@@ -1,4 +1,4 @@
-window.kanjiCategories = [
+﻿﻿window.kanjiCategories = [
     {
         key: "animals",
         label: "Zwierzęta",
@@ -477,6 +477,166 @@ window.kanjiCategories = [
             { kanji: "箋", romaji: "sen", meaning: "kartka / papier" },
             { kanji: "辞", romaji: "ji", meaning: "słowo / wyraz" },
             { kanji: "句", romaji: "ku", meaning: "zdanie / fraza" }
+        ]
+    },
+    {
+        key: "shapes",
+        label: "Kształty i pozycje",
+        items: [
+            { kanji: "角", romaji: "kaku", meaning: "kąt / narożnik" },
+            { kanji: "丸", romaji: "maru", meaning: "koło / okrągły" },
+            { kanji: "円", romaji: "en", meaning: "okrąg / yen" },
+            { kanji: "点", romaji: "ten", meaning: "punkt / kropka" },
+            { kanji: "面", romaji: "men", meaning: "twarz / powierzchnia" },
+            { kanji: "立", romaji: "tatsu", meaning: "stać / wstać" },
+            { kanji: "正", romaji: "sei", meaning: "dokładny / sprawiedliwy" },
+            { kanji: "反", romaji: "hen", meaning: "przeciwny" },
+            { kanji: "対", romaji: "tai", meaning: "para / przeciwieństwo" },
+            { kanji: "方", romaji: "hō", meaning: "strona / kierunek" }
+        ]
+    },
+    {
+        key: "shapes-2",
+        label: "Kształty i wymiary",
+        items: [
+            { kanji: "向", romaji: "muku", meaning: "zwrócić się" },
+            { kanji: "斜", romaji: "sha", meaning: "skośny" },
+            { kanji: "縦", romaji: "tate", meaning: "pionowy" },
+            { kanji: "横", romaji: "yoko", meaning: "poziomy" },
+            { kanji: "幅", romaji: "haba", meaning: "szerokość" },
+            { kanji: "広", romaji: "hiro", meaning: "szeroki" },
+            { kanji: "狭", romaji: "sema", meaning: "wąski" },
+            { kanji: "深", romaji: "fukai", meaning: "głęboki" },
+            { kanji: "浅", romaji: "asai", meaning: "płytki" },
+            { kanji: "楕", romaji: "dai", meaning: "owal / elipsa" }
+        ]
+    },
+    {
+        key: "shapes-3",
+        label: "Wagi i twardość",
+        items: [
+            { kanji: "長", romaji: "nagai", meaning: "długi" },
+            { kanji: "短", romaji: "tanji", meaning: "krótki" },
+            { kanji: "厚", romaji: "atsui", meaning: "gruby" },
+            { kanji: "薄", romaji: "usui", meaning: "cienki" },
+            { kanji: "重", romaji: "omosa", meaning: "ciężki" },
+            { kanji: "軽", romaji: "karui", meaning: "lekki" },
+            { kanji: "固", romaji: "katai", meaning: "twardy" },
+            { kanji: "柔", romaji: "jū", meaning: "miękki" },
+            { kanji: "強", romaji: "tsuyo", meaning: "mocny" },
+            { kanji: "弱", romaji: "jaku", meaning: "słaby" }
+        ]
+    },
+    {
+        key: "shapes-4",
+        label: "Tekstury i temperatura",
+        items: [
+            { kanji: "硬", romaji: "kō", meaning: "sztywny" },
+            { kanji: "軟", romaji: "nan", meaning: "miękki / elastyczny" },
+            { kanji: "滑", romaji: "kawara", meaning: "gładki / dachówka" },
+            { kanji: "粗", romaji: "sogo", meaning: "szorstki" },
+            { kanji: "温", romaji: "atatakai", meaning: "ciepły" },
+            { kanji: "涼", romaji: "suzushii", meaning: "chłodny" },
+            { kanji: "暖", romaji: "dandan", meaning: "łagodny" },
+            { kanji: "寒", romaji: "kan", meaning: "zimno" },
+            { kanji: "乾", romaji: "kan", meaning: "suchy" },
+            { kanji: "湿", romaji: "shitsuki", meaning: "wilgotny" }
+        ]
+    },
+    {
+        key: "shapes-5",
+        label: "Pogoda dodatkowa",
+        items: [
+            { kanji: "暑", romaji: "sho", meaning: "upał" },
+            { kanji: "曇", romaji: "kumoru", meaning: "pochmurny" },
+            { kanji: "風", romaji: "kaze", meaning: "wiatr" },
+            { kanji: "台", romaji: "dai", meaning: "stół / platforma" },
+            { kanji: "吹", romaji: "fuku", meaning: "dmuchać" },
+            { kanji: "波", romaji: "nami", meaning: "fala" },
+            { kanji: "注", romaji: "chū", meaning: "wlewać / uwaga" },
+            { kanji: "弧", romaji: "ko", meaning: "łuk" },
+            { kanji: "霞", romaji: "kasumi", meaning: "mgła / zamglenie" },
+            { kanji: "露", romaji: "tsuyu", meaning: "rosa / odsłonić" }
+        ]
+    },
+    {
+        key: "shapes-6",
+        label: "Krajobraz",
+        items: [
+            { kanji: "畑", romaji: "hata", meaning: "pole / ogród" },
+            { kanji: "谷", romaji: "tani", meaning: "dolina" },
+            { kanji: "原", romaji: "hara", meaning: "pole / równina" },
+            { kanji: "坂", romaji: "saka", meaning: "zbocze" },
+            { kanji: "林", romaji: "hayashi", meaning: "lasek" },
+            { kanji: "池", romaji: "ike", meaning: "staw" },
+            { kanji: "丘", romaji: "oka", meaning: "wzgórze" },
+            { kanji: "岸", romaji: "kishi", meaning: "brzeg" },
+            { kanji: "瀬", romaji: "se", meaning: "przypłyś" },
+            { kanji: "滝", romaji: "taki", meaning: "wodospad" }
+        ]
+    },
+    {
+        key: "shapes-7",
+        label: "Góry i wzory",
+        items: [
+            { kanji: "岳", romaji: "dake", meaning: "góra / szczyt" },
+            { kanji: "沼", romaji: "numa", meaning: "bagno" },
+            { kanji: "渓", romaji: "kei", meaning: "dolina strumienia" },
+            { kanji: "嶺", romaji: "mine", meaning: "grzbiet / szczyt" },
+            { kanji: "型", romaji: "kata", meaning: "typ / forma" },
+            { kanji: "像", romaji: "zō", meaning: "wizerunek / obraz" },
+            { kanji: "模", romaji: "mo", meaning: "wzór / model" },
+            { kanji: "式", romaji: "shiki", meaning: "styl / uroczystość" },
+            { kanji: "枠", romaji: "waku", meaning: "rama / obudowa" },
+            { kanji: "例", romaji: "rei", meaning: "przykład" }
+        ]
+    },
+    {
+        key: "shapes-8",
+        label: "Reguły i zapisy",
+        items: [
+            { kanji: "規", romaji: "ki", meaning: "przepis / norma" },
+            { kanji: "格", romaji: "kaku", meaning: "siatka / stopień" },
+            { kanji: "準", romaji: "jun", meaning: "standard / zgodny" },
+            { kanji: "則", romaji: "soku", meaning: "zasada / reguła" },
+            { kanji: "律", romaji: "ritsu", meaning: "prawo / rytm" },
+            { kanji: "班", romaji: "han", meaning: "grupa / klasa" },
+            { kanji: "節", romaji: "setsu", meaning: "węzeł / sekcja" },
+            { kanji: "条", romaji: "jō", meaning: "przepis / pas" },
+            { kanji: "項", romaji: "kō", meaning: "punkt / sekcja" },
+            { kanji: "綴", romaji: "tsuzuri", meaning: "spisy / składać" }
+        ]
+    },
+    {
+        key: "shapes-9",
+        label: "Operacje",
+        items: [
+            { kanji: "省略", romaji: "shōryaku", meaning: "skrót / pominąć" },
+            { kanji: "追加", romaji: "tsuika", meaning: "dodać" },
+            { kanji: "整理", romaji: "seiri", meaning: "porządkowanie" },
+            { kanji: "保存", romaji: "honzon", meaning: "zapisać / zachować" },
+            { kanji: "更新", romaji: "kōshin", meaning: "aktualizacja" },
+            { kanji: "終了", romaji: "shūryō", meaning: "zakończenie" },
+            { kanji: "開始", romaji: "kaishi", meaning: "rozpoczęcie" },
+            { kanji: "交換", romaji: "kōkan", meaning: "wymiana" },
+            { kanji: "変換", romaji: "henkan", meaning: "konwersja / zamiana" },
+            { kanji: "計算", romaji: "keisan", meaning: "obliczenia" }
+        ]
+    },
+    {
+        key: "shapes-10",
+        label: "Operacje 2",
+        items: [
+            { kanji: "作成", romaji: "sakusei", meaning: "utworzyć" },
+            { kanji: "修正", romaji: "shūsei", meaning: "poprawka" },
+            { kanji: "登録", romaji: "tōroku", meaning: "rejestracja" },
+            { kanji: "削除", romaji: "sakuzyo", meaning: "skasować" },
+            { kanji: "表示", romaji: "hyōji", meaning: "wyświetlenie" },
+            { kanji: "選択", romaji: "sentaku", meaning: "wybór" },
+            { kanji: "決定", romaji: "kettei", meaning: "decyzja" },
+            { kanji: "確認", romaji: "kakunin", meaning: "potwierdzenie" },
+            { kanji: "編集", romaji: "henshū", meaning: "edycja" },
+            { kanji: "復元", romaji: "fukugen", meaning: "przywrócenie" }
         ]
     }
 ];

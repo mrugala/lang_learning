@@ -1,3 +1,25 @@
+const {
+    BASE_REPS,
+    WRONG_ANSWER_PENALTY,
+    applyFontStyle: applyCommonFontStyle,
+    createToggleLabel,
+    isGroupFullySelected: areAllSelected,
+    checkedValues,
+    setGroupSelection,
+    pickRandomKey,
+    setText,
+    showQueueFinished,
+    hideContinueButton,
+    showContinueButton,
+    showSelectionPanel,
+    showStudyApp,
+    handleEnterKey,
+    normalizeStudyText,
+    romajiAnswerVariants,
+    normalizeRomaji,
+    getAcceptedAnswers
+} = window.LangCommon;
+
 const categories = window.kanjiCategories || [];
 
 const MAX_ROWS = 10;
@@ -17,6 +39,11 @@ const kanjiDecks = [
         key: "deck-3",
         label: "Zestaw 3",
         categoryKeys: categories.slice(20, 30).map(category => category.key)
+    },
+    {
+        key: "deck-4",
+        label: "Zestaw 4",
+        categoryKeys: categories.slice(30, 40).map(category => category.key)
     }
 ];
 let activeKanjiDeck = kanjiDecks[0].key;
@@ -96,7 +123,6 @@ categories.forEach(category => {
 });
 let currentKey = null;
 let queue = {};
-const BASE_REPS = 5;
 
 function getCellKey(categoryKey, rowIndex) {
     return `${categoryKey}:${rowIndex}`;
@@ -108,107 +134,166 @@ function getCellData(categoryKey, rowIndex) {
     return category.items[rowIndex] || null;
 }
 
-function normalizeStudyText(value) {
-    return String(value || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/\s+/g, "")
-        .replace(/[-_]/g, "");
+function getAcceptedAnswersLocal(value) {
+    return getAcceptedAnswers(value);
 }
 
-function getAcceptedAnswers(value) {
-    const raw = String(value || "");
-    if (!raw.trim()) return [];
+// Consonant + vowel. Longer digraphs (sh, ch, ts) are listed explicitly so
+// they win over the single-consonant readings (s, t).
+const SYLLABLES = {
+    kya: "きゃ", kyu: "きゅ", kyo: "きょ",
+    sha: "しゃ", shu: "しゅ", sho: "しょ",
+    cha: "ちゃ", chu: "ちゅ", cho: "ちょ",
+    tsu: "つ", tsa: "つぁ", tse: "つぇ", tso: "つぉ",
+    nya: "にゃ", nyu: "にゅ", nyo: "にょ",
+    hya: "ひゃ", hyu: "ひゅ", hyo: "ひょ",
+    mya: "みゃ", myu: "みゅ", myo: "みょ",
+    rya: "りゃ", ryu: "りゅ", ryo: "りょ",
+            bya: "びゃ", byu: "びゅ", byo: "びょ",
+    gya: "ぎゃ", gyu: "ぎゅ", gyo: "ぎょ",
+    ja: "じゃ", ju: "じゅ", jo: "じょ",
+    jya: "じゃ", jyu: "じゅ", jyo: "じょ",
+    zya: "じゃ", zyu: "じゅ", zyo: "じょ", zyi: "じぃ", zy: "じ",
+    dzu: "づ", dji: "ぢ", dy: "ぢ",
+    fu: "ふ", ji: "じ",
+    ka: "か", ki: "き", ku: "く", ke: "け", ko: "こ",
+    ga: "が", gi: "ぎ", gu: "ぐ", ge: "げ", go: "ご",
+    sa: "さ", si: "し", shi: "し", su: "す", se: "せ", so: "そ",
+    za: "ざ", zi: "じ", zu: "ず", ze: "ぜ", zo: "ぞ",
+    ta: "た", ti: "ち", chi: "ち", tu: "つ", te: "て", to: "と",
+    da: "だ", di: "ぢ", du: "づ", de: "で", do: "ど",
+    na: "な", ni: "に", nu: "ぬ", ne: "ね", no: "の",
+    ha: "は", hi: "ひ", he: "へ", ho: "ほ",
+    ba: "ば", bi: "び", bu: "ぶ", be: "べ", bo: "ぼ",
+    pa: "ぱ", pi: "ぴ", pu: "ぷ", pe: "ぺ", po: "ぽ",
+    ma: "ま", mi: "み", mu: "む", me: "め", mo: "も",
+    ya: "や", yu: "ゆ", yo: "よ", ye: "いぇ",
+    ra: "ら", ri: "り", ru: "る", re: "れ", ro: "ろ",
+    wa: "わ", wi: "うぃ", we: "うぇ", wo: "を",
+    va: "ゔぁ", vi: "ゔぃ", vu: "ゔ", ve: "ゔぇ", vo: "ゔぉ",
+    a: "あ", i: "い", u: "う", e: "え", o: "お"
+};
 
-    const options = raw
-        .split(/[\/]/)
-        .map(part => part.trim())
-        .filter(Boolean);
+// Consonants that can be doubled to form sokuon (っ): "tte" -> "って".
+const GEMINATE = "kgzsjtdnhbpmrfv";
 
-    return options.length > 0 ? options : [raw.trim()];
-}
+// Long vowel marks are expanded before parsing, so ぞう becomes "zou"
+// and parses as ko + u below.
+const MACRONS = { ā: "aa", ī: "ii", ū: "uu", ē: "ee", ō: "ou" };
+
+const VOWELS = "aiueo";
+
+// Small (digraph) kana. A long vowel after one of these is always う,
+// so "shou" is しょう rather than しょお.
+const SMALL_KANA = "ゃゅょゎぁぃぅぇぉ";
 
 function toHiraganaFromRomaji(value) {
     const text = String(value || "");
     if (!text) return "";
-    if (!/^[a-zA-Zぁ-ゖ 　]+$/.test(text)) return text;
+    // Only the trailing latin run is converted; any leading kana is kept as-is.
+    const romanMatch = text.match(/[a-zA-Zāīūēō]+$/);
+    if (!romanMatch) return text;
 
-    const kanaMatch = text.match(/[ぁ-ゖァ-ヶー]+$/);
-    const romanMatch = text.match(/[a-zA-Z ]+$/);
+    const tail = romanMatch[0];
+    const prefix = text.slice(0, text.length - tail.length);
 
-    if (kanaMatch && !romanMatch) return text;
-
-    const canonicalText = text.toLowerCase();
-    const tail = (romanMatch ? romanMatch[0] : canonicalText).replace(/\s+/g, " ");
-    const hadTrailingSpace = /\s$/.test(tail);
-    const normalized = hadTrailingSpace ? tail.trimEnd() : tail;
-    const prefix = romanMatch ? text.slice(0, text.length - tail.length) : "";
+    let normalized = tail.toLowerCase();
+    Object.keys(MACRONS).forEach(mark => {
+        normalized = normalized.split(mark).join(MACRONS[mark]);
+    });
 
     if (!normalized) return prefix;
 
-    const map = {
-        "shya": "しゃ", "shyu": "しゅ", "shyo": "しょ",
-        "chya": "ちゃ", "chyu": "ちゅ", "chyo": "ちょ",
-        "nya": "にゃ", "nyu": "にゅ", "nyo": "にょ",
-        "hya": "ひゃ", "hyu": "ひゅ", "hyo": "ひょ",
-        "mya": "みゃ", "myu": "みゅ", "myo": "みょ",
-        "rya": "りゃ", "ryu": "りゅ", "ryo": "りょ",
-        "gya": "ぎゃ", "gyu": "ぎゅ", "gyo": "ぎょ",
-        "kya": "きゃ", "kyu": "きゅ", "kyo": "きょ",
-        "sha": "しゃ", "shu": "しゅ", "sho": "しょ",
-        "cha": "ちゃ", "chu": "ちゅ", "cho": "ちょ",
-        "ja": "じゃ", "ju": "じゅ", "jo": "じょ",
-        "shi": "し", "chi": "ち", "tsu": "つ", "fu": "ふ",
-        "sa": "さ", "si": "し", "su": "す", "se": "せ", "so": "そ",
-        "ta": "た", "ti": "ち", "tu": "つ", "te": "て", "to": "と",
-        "ka": "か", "ki": "き", "ku": "く", "ke": "け", "ko": "こ",
-        "na": "な", "ni": "に", "nu": "ぬ", "ne": "ね", "no": "の",
-        "ha": "は", "hi": "ひ", "hu": "ふ", "he": "へ", "ho": "ほ",
-        "ma": "ま", "mi": "み", "mu": "む", "me": "め", "mo": "も",
-        "ya": "や", "yu": "ゆ", "yo": "よ",
-        "ra": "ら", "ri": "り", "ru": "る", "re": "れ", "ro": "ろ",
-        "wa": "わ", "wo": "を",
-        "ga": "が", "gi": "ぎ", "gu": "ぐ", "ge": "げ", "go": "ご",
-        "za": "ざ", "zi": "じ", "zu": "ず", "ze": "ぜ", "zo": "ぞ",
-        "da": "だ", "di": "ぢ", "du": "づ", "de": "で", "do": "ど",
-        "ba": "ば", "bi": "び", "bu": "ぶ", "be": "べ", "bo": "ぼ",
-        "pa": "ぱ", "pi": "ぴ", "pu": "ぷ", "pe": "ぺ", "po": "ぽ",
-        "a": "あ", "i": "い", "u": "う", "e": "え", "o": "お",
-        "n": "ん"
-    };
-
-    const keys = Object.keys(map).sort((a, b) => b.length - a.length);
     let result = "";
     let index = 0;
 
     while (index < normalized.length) {
         const current = normalized.slice(index);
-        const token = keys.find(key => current.startsWith(key));
+        const nextChar = current[1] || "";
 
-        if (!token) {
-            return prefix + result + current;
+        // --- "tch": the geminate is just "t", leaving "chi" (itchi) ---
+        if (current.startsWith("tch")) {
+            const syllable = "ch" + current[3];
+            if (VOWELS.includes(current[3]) && SYLLABLES[syllable]) {
+                result += "っ" + SYLLABLES[syllable];
+                index += 4;
+                continue;
+            }
         }
 
-        const next = normalized.slice(index + token.length, index + token.length + 1);
-        const prev = index > 0 ? normalized[index - 1] : "";
-        const isPendingN = token === 'n' && index === 0 && !hadTrailingSpace && !/[bcdfghjklmnpqrstvwxyz]/.test(next) && !/[aeiou]/.test(prev);
-        const shouldConvertN = token === 'n' && (hadTrailingSpace || /[bcdfghjklmnpqrstvwxyz]/.test(next) || (index > 0 && /[aeiou]/.test(prev)));
+        // --- n: ん, or onset of the next syllable? ---
+        if (current[0] === "n") {
+            // A trailing n always syllabifies. Otherwise it syllabifies only
+            // before a vowel or "y" (na, ni, nya...), never before a consonant.
+            const startsSyllable = nextChar !== "" &&
+                (VOWELS.includes(nextChar) || nextChar === "y");
+            if (!startsSyllable) {
+                result += "ん";
+                index += 1;
+                continue;
+            }
+        }
 
-        if (isPendingN) {
-            result += 'n';
-            index += token.length;
+        // --- geminate consonant (sokuon): "tte" -> "って" ---
+        if (nextChar && nextChar === current[0] && GEMINATE.includes(current[0])) {
+            result += "っ";
+            index += 1;
             continue;
         }
 
-        if (shouldConvertN) {
-            result += map.n;
-            index += token.length;
+        // --- longest matching syllable wins ---
+        let matched = null;
+        for (let length = Math.min(3, current.length); length >= 1; length--) {
+            const candidate = current.slice(0, length);
+            if (SYLLABLES[candidate]) {
+                matched = candidate;
+                break;
+            }
+        }
+
+        if (!matched) {
+            // Unknown character: keep it verbatim so nothing is silently lost.
+            result += current[0];
+            index += 1;
             continue;
         }
 
-        result += map[token];
-        index += token.length;
+        let syllable = SYLLABLES[matched];
+        let consumed = matched.length;
+
+        // Long vowels. The romanized vowel does not match the kana that is
+        // actually written, so every spelling of one long vowel collapses:
+        //   "koo" / "kou" / "kō" -> こう, "shuu" / "shū" -> しゅう.
+        // After an "o" the kana is always う, after a small kana (ょ, ゅ) it is
+        // also う; otherwise the vowel repeats (aa -> ああ, ee -> ええ).
+        const after = current.slice(consumed);
+        const lastKana = syllable.charAt(syllable.length - 1);
+        const lastVowel = matched.charAt(matched.length - 1);
+        const nextVowel = after[0];
+        const afterSmall = SMALL_KANA.includes(lastKana);
+
+        // "you" / "yō" is a long よ, not よ + う written as separate kana.
+        const isLongYo = (matched === "yo" || lastKana === "ょ") && nextVowel === "u";
+        const isLongO = lastVowel === "o" && nextVowel === "u";
+
+        if (nextVowel && (isLongYo || isLongO || (VOWELS.includes(lastVowel) && nextVowel === lastVowel))) {
+            if (isLongYo) {
+                // "you" -> よう, "kyou" -> きょう
+                syllable = syllable.replace(/ょ$/, "ょう");
+                if (matched === "yo") syllable = "よう";
+            } else {
+                // "shou" -> しょう, "koo" -> こう, "suu" -> すう
+                syllable += afterSmall || lastVowel === "o" ? SYLLABLES.u : SYLLABLES[nextVowel];
+            }
+            consumed += 1;
+        } else if (!afterSmall && matched === "yo" && nextVowel === "u") {
+            // "you" -> よう
+            syllable += SYLLABLES.u;
+            consumed += 1;
+        }
+
+        result += syllable;
+        index += consumed;
     }
 
     return prefix + result;
@@ -309,19 +394,7 @@ function renderTable() {
         headerCell.className = "column-header";
         headerCell.dataset.col = category.key;
 
-        const label = document.createElement("label");
-        label.className = "toggle";
-
-        const input = document.createElement("input");
-        input.type = "checkbox";
-        input.value = category.key;
-
-        const span = document.createElement("span");
-        span.textContent = category.label;
-
-        label.appendChild(input);
-        label.appendChild(span);
-        headerCell.appendChild(label);
+        headerCell.appendChild(createToggleLabel(category.key, category.label).label);
         headRow.appendChild(headerCell);
     });
 
@@ -410,14 +483,12 @@ function getGroupCells(groupType, groupKey) {
 }
 
 function isGroupFullySelected(groupType, groupKey) {
-    const cells = getGroupCells(groupType, groupKey);
-    return cells.length > 0 && cells.every(cell => selectedCells.has(cell));
+    return areAllSelected(getGroupCells(groupType, groupKey), selectedCells);
 }
 
 function syncGroupCheckboxes() {
     document.querySelectorAll("#kanji-table .column-header input").forEach(input => {
-        const groupCells = getGroupCells("col", input.value);
-        input.checked = groupCells.length > 0 && groupCells.every(cell => selectedCells.has(cell));
+        input.checked = areAllSelected(getGroupCells("col", input.value), selectedCells);
     });
 }
 
@@ -456,11 +527,7 @@ function getSelectedRows() {
 }
 
 function getSelectedCols() {
-    const values = [];
-    document.querySelectorAll("#kanji-table .column-header input").forEach(input => {
-        if (input.checked) values.push(input.value);
-    });
-    return values;
+    return checkedValues("#kanji-table .column-header input");
 }
 
 function getSelectedCells() {
@@ -475,12 +542,7 @@ document.addEventListener("change", event => {
 
     if (!colHeader) return;
 
-    const colCells = getGroupCells("col", input.value);
-    const isChecked = input.checked;
-    colCells.forEach(cell => {
-        if (isChecked) selectedCells.add(cell);
-        else selectedCells.delete(cell);
-    });
+    setGroupSelection(getGroupCells("col", input.value), selectedCells, input.checked);
     syncSelectionHighlights();
 });
 
@@ -488,13 +550,12 @@ document.getElementById("select-all").addEventListener("click", () => setAllChec
 document.getElementById("clear-all").addEventListener("click", () => setAllCheckboxes(false));
 
 function pickChar() {
-    const remaining = Object.keys(queue);
-    if (remaining.length === 0) {
-        document.getElementById("char-box").innerText = "Koniec! 🎉";
+    const key = pickRandomKey(queue);
+    if (key === null) {
+        showQueueFinished();
         return;
     }
 
-    const key = remaining[Math.floor(Math.random() * remaining.length)];
     currentKey = key;
     const item = queue[key];
     const mode = studyModes[normalizeModeKey(currentStudyMode)] || studyModes["romaji-polski"];
@@ -508,28 +569,32 @@ function pickChar() {
         charBox.innerHTML = `<div class="prompt-main">${promptValue}</div>`;
     }
 
+    // The feedback ("Dobrze!" / "Źle! ...") is deliberately kept, so the result of
+    // the previous answer stays visible while the next question is shown. It is
+    // cleared by endStudySession and by the continue button instead.
+    clearAnswerInputs();
+}
+
+function clearAnswerInputs() {
     document.getElementById("romaji-answer").value = "";
     document.getElementById("hiragana-answer").value = "";
     document.getElementById("meaning-answer").value = "";
-    document.getElementById("feedback").innerText = "";
 }
 
 function endStudySession() {
     queue = {};
     currentKey = null;
-    document.getElementById("feedback").innerText = "";
-    document.getElementById("romaji-answer").value = "";
-    document.getElementById("hiragana-answer").value = "";
-    document.getElementById("meaning-answer").value = "";
-    document.getElementById("continue").style.display = "none";
-    document.getElementById("app").style.display = "none";
-    document.getElementById("selection-panel").style.display = "block";
+    clearAnswerInputs();
+    setText("feedback", "");
+    hideContinueButton();
+    showSelectionPanel();
 }
 
 document.getElementById("start").onclick = () => {
     queue = {};
     currentStudyMode = getSelectedStudyModeKey();
     syncStudyInputs();
+    setText("feedback", "");
 
     const selectedCols = getSelectedCols();
     const chars = new Set();
@@ -555,8 +620,7 @@ document.getElementById("start").onclick = () => {
         if (item) queue[key] = { ...item, reps: BASE_REPS };
     });
 
-    document.getElementById("selection-panel").style.display = "none";
-    document.getElementById("app").style.display = "block";
+    showStudyApp();
     pickChar();
 };
 
@@ -573,26 +637,34 @@ function submitAnswer() {
             : document.getElementById("meaning-answer").value;
 
     const acceptedAnswers = mode.answer === "polski"
-        ? getAcceptedAnswers(expected)
+        ? getAcceptedAnswersLocal(expected)
         : [expected];
-    const isCorrect = acceptedAnswers.some(option => normalizeStudyText(entered) === normalizeStudyText(option));
+
+    // A romaji answer is checked against every spelling of the expected value:
+    // "kō", "kou" and "koo" are the same syllable, but "ko" is not. The
+    // comparison must therefore keep the long-vowel marks, which
+    // normalizeStudyText would strip.
+    const enteredNormalized = mode.answer === "romaji"
+        ? normalizeRomaji(entered)
+        : normalizeStudyText(entered);
+    const isCorrect = mode.answer === "romaji"
+        ? romajiAnswerVariants(expected).some(option => option === enteredNormalized)
+        : acceptedAnswers.some(option => normalizeStudyText(option) === enteredNormalized);
 
     if (isCorrect) {
         queue[currentKey].reps--;
-        document.getElementById("feedback").innerText = "Dobrze!";
+        setText("feedback", "Dobrze!");
 
         if (queue[currentKey].reps <= 0) {
             delete queue[currentKey];
         }
 
-        document.getElementById("romaji-answer").value = "";
-        document.getElementById("hiragana-answer").value = "";
-        document.getElementById("meaning-answer").value = "";
+        clearAnswerInputs();
         pickChar();
     } else {
-        queue[currentKey].reps += 2;
-        document.getElementById("feedback").innerText = `Źle! Poprawne: ${expected}`;
-        document.getElementById("continue").style.display = "inline-block";
+        queue[currentKey].reps += WRONG_ANSWER_PENALTY;
+        setText("feedback", `Źle! Poprawne: ${expected}`);
+        showContinueButton();
     }
 }
 
@@ -600,11 +672,9 @@ document.getElementById("submit").onclick = submitAnswer;
 document.getElementById("end-study").onclick = endStudySession;
 
 document.getElementById("continue").onclick = () => {
-    document.getElementById("continue").style.display = "none";
-    document.getElementById("feedback").innerText = "";
-    document.getElementById("romaji-answer").value = "";
-    document.getElementById("hiragana-answer").value = "";
-    document.getElementById("meaning-answer").value = "";
+    hideContinueButton();
+    setText("feedback", "");
+    clearAnswerInputs();
     pickChar();
 };
 
@@ -632,10 +702,7 @@ kanjiDeckSelect.addEventListener("change", () => {
 
 const fontStyleSelect = document.getElementById("font-style");
 function applyFontStyle(styleName) {
-    const normalized = ["default", "brush", "elegant", "modern"].includes(styleName) ? styleName : "default";
-    document.body.classList.remove("font-style-default", "font-style-brush", "font-style-elegant", "font-style-modern");
-    document.body.classList.add(`font-style-${normalized}`);
-    if (fontStyleSelect) fontStyleSelect.value = normalized;
+    applyCommonFontStyle(styleName, fontStyleSelect);
 }
 
 fontStyleSelect.addEventListener("change", event => applyFontStyle(event.target.value));
@@ -666,35 +733,8 @@ answerHiragana.addEventListener("input", event => {
     }
 });
 
-answerRomaji.addEventListener("keydown", event => {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        if (document.getElementById("continue").style.display !== "none") {
-            document.getElementById("continue").click();
-        } else {
-            submitAnswer();
-        }
-    }
-});
+answerRomaji.addEventListener("keydown", event => handleEnterKey(event, submitAnswer));
 
-answerHiragana.addEventListener("keydown", event => {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        if (document.getElementById("continue").style.display !== "none") {
-            document.getElementById("continue").click();
-        } else {
-            submitAnswer();
-        }
-    }
-});
+answerHiragana.addEventListener("keydown", event => handleEnterKey(event, submitAnswer));
 
-answerMeaning.addEventListener("keydown", event => {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        if (document.getElementById("continue").style.display !== "none") {
-            document.getElementById("continue").click();
-        } else {
-            submitAnswer();
-        }
-    }
-});
+answerMeaning.addEventListener("keydown", event => handleEnterKey(event, submitAnswer));

@@ -1,3 +1,24 @@
+const {
+    BASE_REPS,
+    STREAK_BONUS_THRESHOLD,
+    WRONG_ANSWER_PENALTY,
+    applyFontStyle: applyCommonFontStyle,
+    readStoredFontStyle,
+    storeFontStyle,
+    createToggleLabel,
+    isGroupFullySelected: areAllSelected,
+    checkedValues,
+    setGroupSelection,
+    pickRandomKey,
+    setText,
+    showQueueFinished,
+    hideContinueButton,
+    showContinueButton,
+    showSelectionPanel,
+    showStudyApp,
+    handleEnterKey
+} = window.LangCommon;
+
 const hiragana = {
     "あ": "a", "い": "i", "う": "u", "え": "e", "お": "o",
     "か": "ka", "き": "ki", "く": "ku", "け": "ke", "こ": "ko",
@@ -103,29 +124,9 @@ function renderTable() {
         th.className = "column-header";
         th.dataset.col = row.key;
 
-        const label = document.createElement("label");
-        label.className = "toggle";
-
-        const input = document.createElement("input");
-        input.type = "checkbox";
-        input.checked = true;
-        input.value = row.key;
-
-        const span = document.createElement("span");
         const hasLabel = Boolean(row.label && row.label.trim());
+        const { label } = createToggleLabel(row.key, row.label, { placeholder: !hasLabel });
 
-        if (hasLabel) {
-            span.textContent = row.label;
-            span.removeAttribute("aria-hidden");
-            span.classList.remove("placeholder-label");
-        } else {
-            span.textContent = " ";
-            span.setAttribute("aria-hidden", "true");
-            span.classList.add("placeholder-label");
-        }
-
-        label.appendChild(input);
-        label.appendChild(span);
         th.appendChild(label);
         headRow.appendChild(th);
     });
@@ -143,19 +144,7 @@ function renderTable() {
         rowHeader.className = "row-header";
         rowHeader.dataset.row = vowel;
 
-        const label = document.createElement("label");
-        label.className = "toggle";
-
-        const input = document.createElement("input");
-        input.type = "checkbox";
-        input.checked = true;
-        input.value = vowel;
-
-        const span = document.createElement("span");
-        span.textContent = vowel;
-
-        label.appendChild(input);
-        label.appendChild(span);
+        const { label } = createToggleLabel(vowel, vowel);
         rowHeader.appendChild(label);
         rowEl.appendChild(rowHeader);
 
@@ -216,31 +205,11 @@ renderTable();
 const fontStyleSelect = document.getElementById("font-style");
 
 function applyFontStyle(styleName) {
-    const normalized = ["default", "brush", "elegant", "modern"].includes(styleName)
-        ? styleName
-        : "default";
-
-    document.body.classList.remove("font-style-default", "font-style-brush", "font-style-elegant", "font-style-modern");
-    document.body.classList.add(`font-style-${normalized}`);
-
-    if (fontStyleSelect) {
-        fontStyleSelect.value = normalized;
-    }
-
-    try {
-        localStorage.setItem("hiraganaFontStyle", normalized);
-    } catch (error) {
-        // localStorage may be unavailable in some contexts.
-    }
+    const normalized = applyCommonFontStyle(styleName, fontStyleSelect);
+    storeFontStyle(normalized);
 }
 
-const savedFontStyle = (() => {
-    try {
-        return localStorage.getItem("hiraganaFontStyle");
-    } catch (error) {
-        return null;
-    }
-})();
+const savedFontStyle = readStoredFontStyle();
 
 if (fontStyleSelect) {
     fontStyleSelect.addEventListener("change", (event) => {
@@ -283,19 +252,16 @@ function getGroupCells(groupType, groupKey) {
 }
 
 function isGroupFullySelected(groupType, groupKey) {
-    const cells = getGroupCells(groupType, groupKey);
-    return cells.length > 0 && cells.every(cell => selectedCells.has(cell));
+    return areAllSelected(getGroupCells(groupType, groupKey), selectedCells);
 }
 
 function syncGroupCheckboxes() {
     document.querySelectorAll("#table .row-header input").forEach(input => {
-        const groupCells = getGroupCells("row", input.value);
-        input.checked = groupCells.length > 0 && groupCells.every(cell => selectedCells.has(cell));
+        input.checked = areAllSelected(getGroupCells("row", input.value), selectedCells);
     });
 
     document.querySelectorAll("#table .column-header input").forEach(input => {
-        const groupCells = getGroupCells("col", input.value);
-        input.checked = groupCells.length > 0 && groupCells.every(cell => selectedCells.has(cell));
+        input.checked = areAllSelected(getGroupCells("col", input.value), selectedCells);
     });
 }
 
@@ -336,19 +302,11 @@ function setAllCheckboxes(checked) {
 }
 
 function getSelectedRows() {
-    const values = [];
-    document.querySelectorAll(".row-header input").forEach(input => {
-        if (input.checked) values.push(input.value);
-    });
-    return values;
+    return checkedValues(".row-header input");
 }
 
 function getSelectedCols() {
-    const values = [];
-    document.querySelectorAll(".column-header input").forEach(input => {
-        if (input.checked) values.push(input.value);
-    });
-    return values;
+    return checkedValues(".column-header input");
 }
 
 function getSelectedCells() {
@@ -365,33 +323,13 @@ document.addEventListener("change", event => {
     const colHeader = input.closest(".column-header");
 
     if (rowHeader) {
-        const rowCells = getGroupCells("row", input.value);
-        const isChecked = input.checked;
-
-        rowCells.forEach(cell => {
-            if (isChecked) {
-                selectedCells.add(cell);
-            } else {
-                selectedCells.delete(cell);
-            }
-        });
-
+        setGroupSelection(getGroupCells("row", input.value), selectedCells, input.checked);
         syncSelectionHighlights();
         return;
     }
 
     if (colHeader) {
-        const colCells = getGroupCells("col", input.value);
-        const isChecked = input.checked;
-
-        colCells.forEach(cell => {
-            if (isChecked) {
-                selectedCells.add(cell);
-            } else {
-                selectedCells.delete(cell);
-            }
-        });
-
+        setGroupSelection(getGroupCells("col", input.value), selectedCells, input.checked);
         syncSelectionHighlights();
     }
 });
@@ -402,7 +340,6 @@ document.getElementById("clear-all").addEventListener("click", () => setAllCheck
 syncSelectionHighlights();
 
 let queue = {};
-const BASE_REPS = 5;
 let currentChar = null;
 let consecutiveCorrectChar = null;
 let consecutiveCorrectCount = 0;
@@ -438,31 +375,29 @@ document.getElementById("start").onclick = () => {
 
     chars.forEach(ch => queue[ch] = BASE_REPS);
 
-    document.getElementById("selection-panel").style.display = "none";
-    document.getElementById("app").style.display = "block";
+    showStudyApp();
     pickChar();
 };
 
 function endStudySession() {
     queue = {};
     currentChar = null;
-    document.getElementById("feedback").innerText = "";
+    setText("feedback", "");
     document.getElementById("answer").value = "";
-    document.getElementById("continue").style.display = "none";
-    document.getElementById("app").style.display = "none";
-    document.getElementById("selection-panel").style.display = "block";
+    hideContinueButton();
+    showSelectionPanel();
 }
 
 document.getElementById("end-study").onclick = endStudySession;
 
 function pickChar() {
-    const remaining = Object.keys(queue);
-    if (remaining.length === 0) {
-        document.getElementById("char-box").innerText = "Koniec! 🎉";
+    const key = pickRandomKey(queue);
+    if (key === null) {
+        showQueueFinished();
         return;
     }
-    currentChar = remaining[Math.floor(Math.random() * remaining.length)];
-    document.getElementById("char-box").innerText = currentChar;
+    currentChar = key;
+    setText("char-box", currentChar);
 }
 
 function submitAnswer() {
@@ -478,13 +413,13 @@ function submitAnswer() {
         }
 
         queue[currentChar]--;
-        document.getElementById("feedback").innerText = "Dobrze!";
+        setText("feedback", "Dobrze!");
 
         if (queue[currentChar] <= 0) {
             delete queue[currentChar];
         }
 
-        if (consecutiveCorrectCount >= 3) {
+        if (consecutiveCorrectCount >= STREAK_BONUS_THRESHOLD) {
             delete queue[currentChar];
             consecutiveCorrectChar = null;
             consecutiveCorrectCount = 0;
@@ -495,18 +430,17 @@ function submitAnswer() {
     } else {
         consecutiveCorrectChar = null;
         consecutiveCorrectCount = 0;
-        queue[currentChar] += 2;
-        document.getElementById("feedback").innerText =
-            `Źle! Poprawna odpowiedź: ${correct}`;
-        document.getElementById("continue").style.display = "inline-block";
+        queue[currentChar] += WRONG_ANSWER_PENALTY;
+        setText("feedback", `Źle! Poprawna odpowiedź: ${correct}`);
+        showContinueButton();
     }
 }
 
 document.getElementById("submit").onclick = submitAnswer;
 
 document.getElementById("continue").onclick = () => {
-    document.getElementById("continue").style.display = "none";
-    document.getElementById("feedback").innerText = "";
+    hideContinueButton();
+    setText("feedback", "");
     document.getElementById("answer").value = "";
     pickChar();
 };
@@ -518,15 +452,7 @@ answerInput.addEventListener("keydown", (event) => {
         return;
     }
 
-    if (event.key === "Enter") {
-        event.preventDefault();
-        const continueButton = document.getElementById("continue");
-        if (continueButton.style.display !== "none") {
-            continueButton.click();
-        } else {
-            submitAnswer();
-        }
-    }
+    handleEnterKey(event, submitAnswer);
 });
 
 answerInput.addEventListener("input", () => {
