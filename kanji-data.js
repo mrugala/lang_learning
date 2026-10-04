@@ -651,7 +651,8 @@
             { kanji: "秘跡", romaji: "hiseki", hiragana: "ひせき", meaning: "sakrament" },
             { kanji: "堅信", romaji: "kenshin", hiragana: "けんしん", meaning: "bierzmowanie" },
             { kanji: "叙階", romaji: "jokai", hiragana: "じょかい", meaning: "święcenia kapłańskie" },
-            { kanji: "病者の塗油", romaji: "byōsha no toyu", hiragana: "びょうしゃのとゆ", meaning: "namaszczenie chorych" }
+            { kanji: "病者の塗油", romaji: "byōsha no toyu", hiragana: "びょうしゃのとゆ", meaning: "namaszczenie chorych" },
+            { kanji: "初領", romaji: "shoryō", hiragana: "しょりょう", meaning: "pierwsza Komunia" }
         ]
     },
     {
@@ -661,17 +662,13 @@
             { kanji: "聖杯", romaji: "seihai", meaning: "kielich liturgiczny" },
             { kanji: "祭壇", romaji: "saidan", meaning: "ołtarz" },
             { kanji: "香", romaji: "kō", meaning: "kadzidło" },
-            { kanji: "香炉", romaji: "kōro", hiragana: "こうろ", meaning: "kadzielnica" }
+            { kanji: "香炉", romaji: "kōro", hiragana: "こうろ", meaning: "kadzielnica" },
             { kanji: "聖書", romaji: "seisho", hiragana: "せいしょ", meaning: "Biblia" },
             { kanji: "聖水", romaji: "seisui", hiragana: "せいすい", meaning: "woda święcona" },
             { kanji: "燭台", romaji: "shokudai", hiragana: "しょくだい", meaning: "świecznik" },
             { kanji: "聖餅", romaji: "seihei", hiragana: "せいへい", meaning: "hostia" },
             { kanji: "十字架", romaji: "jūjika", hiragana: "じゅうじか", meaning: "krzyż" },
-            { kanji: "唄", romaji: "uta", hiragana: "うた", meaning: "pieśń liturgiczna" },
-            { kanji: "鐘", romaji: "kane", hiragana: "かね", meaning: "dzwon" },
-            { kanji: "献納", romaji: "kennō", hiragana: "けんのう", meaning: "ofiarowanie / składka" },
-            { kanji: "礼拝", romaji: "reihai", hiragana: "れいはい", meaning: "nabożenstwo" },
-            { kanji: "聖歌", romaji: "seika", hiragana: "せいか", meaning: "pieśń kościelna" },
+            { kanji: "鐘", romaji: "kane", hiragana: "かね", meaning: "dzwon" }
         ]
     },
     {
@@ -692,20 +689,35 @@
         ]
     },
     {
+        key: "church-places",
+        label: "Miejsca",
+        items: [
+            { kanji: "教会", romaji: "kyōkai", meaning: "kościół" },
+            { kanji: "聖堂", romaji: "seidō", hiragana: "せいどう", meaning: "katedra / kościół katedralny" }
+        ]
+    },
+    {
+        key: "church-devotions",
+        label: "Nabożeństwa",
+        items: [
+            { kanji: "礼拝", romaji: "reihai", hiragana: "れいはい", meaning: "nabożenstwo" },
+            { kanji: "聖歌", romaji: "seika", hiragana: "せいか", meaning: "pieśń kościelna" },
+            { kanji: "唄", romaji: "uta", hiragana: "うた", meaning: "pieśń liturgiczna" },
+            { kanji: "祈り", romaji: "inori", hiragana: "いのり", meaning: "modlitwa" }
+        ]
+    },
+    {
         key: "church-other",
         label: "Inne",
         items: [
             { kanji: "神学", romaji: "shingaku", meaning: "teologia" },
-            { kanji: "教会", romaji: "kyōkai", meaning: "kościół" },
-            { kanji: "聖堂", romaji: "seidō", hiragana: "せいどう", meaning: "katedra / kościół katedralny" },
             { kanji: "犠牲", romaji: "gisei", meaning: "ofiara / poświęcenie" },
-            { kanji: "祈り", romaji: "inori", hiragana: "いのり", meaning: "modlitwa" },
             { kanji: "信仰", romaji: "shinkō", hiragana: "しんこう", meaning: "wiara" },
             { kanji: "福音", romaji: "fukuin", hiragana: "ふくいん", meaning: "Ewangelia / dobra nowina" },
             { kanji: "復活", romaji: "fukkatsu", hiragana: "ふっかつ", meaning: "zmartwychwstanie" },
             { kanji: "受肉", romaji: "jukuniku", hiragana: "じゅくにく", meaning: "Wcielenie" },
             { kanji: "受難", romaji: "jukan", hiragana: "じゅくなん", meaning: "męka" },
-            { kanji: "初領", romaji: "shoryō", hiragana: "しょりょう", meaning: "pierwsza Komunia" }
+            { kanji: "献納", romaji: "kennō", hiragana: "けんのう", meaning: "ofiarowanie / składka" }
         ]
     }
 ];
