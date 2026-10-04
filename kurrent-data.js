@@ -1,5 +1,6 @@
 // Dane do treningu pisma Kurrent (Deutsche Kurrent).
-// Litery: klucz -> grupa rodzinna liter, czytanie i uwagi.
+// Litery: klucz -> grupa liter, "reading" to wymowa kurrentowa, a uwagi
+// ("note") tylko tam, gdzie coś trzeba realnie wyjaśnić.
 // Słowa: niemieckie rzeczowniki (substantive) z rodzajnikiem, więc zawsze
 // zaczynają się wielką literą.
 window.kurrentLetters = [
@@ -7,84 +8,84 @@ window.kurrentLetters = [
         key: "a",
         label: "a",
         items: [
-            { char: "a", upper: "A", reading: "a", note: "" },
-            { char: "b", upper: "B", reading: "b", note: "" },
-            { char: "c", upper: "C", reading: "c", note: "" },
-            { char: "d", upper: "D", reading: "d", note: "przed nią krótki znaczek = 'd' przyłączone" }
+            { char: "a", upper: "A", reading: "a" },
+            { char: "b", upper: "B", reading: "b" },
+            { char: "c", upper: "C", reading: "c" },
+            { char: "d", upper: "D", reading: "d" }
         ]
     },
     {
         key: "e",
         label: "e",
         items: [
-            { char: "e", upper: "E", reading: "e", note: "jak włoska litera 'c' z kreską" },
-            { char: "f", upper: "F", reading: "f", note: "brak samodzielnej formy, tylko w ligaturach" },
-            { char: "g", upper: "G", reading: "g", note: "" },
-            { char: "h", upper: "H", reading: "h", note: "w środku wyrazu ma znaczek (petite)" }
+            { char: "e", upper: "E", reading: "e" },
+            { char: "f", upper: "F", reading: "f" },
+            { char: "g", upper: "G", reading: "g" },
+            { char: "h", upper: "H", reading: "h" }
         ]
     },
     {
         key: "i",
         label: "i",
         items: [
-            { char: "i", upper: "I", reading: "i", note: "kropka nad literą" },
-            { char: "j", upper: "J", reading: "j", note: "" },
-            { char: "k", upper: "K", reading: "k", note: "" },
-            { char: "l", upper: "L", reading: "l", note: "w środku wyrazu ma znaczek (petite)" }
+            { char: "i", upper: "I", reading: "i" },
+            { char: "j", upper: "J", reading: "j" },
+            { char: "k", upper: "K", reading: "k" },
+            { char: "l", upper: "L", reading: "l" }
         ]
     },
     {
         key: "m",
         label: "m",
         items: [
-            { char: "m", upper: "M", reading: "m", note: "" },
-            { char: "n", upper: "N", reading: "n", note: "na końcu wyrazu znaczek tnący (Strich)" },
-            { char: "o", upper: "O", reading: "o", note: "" },
-            { char: "p", upper: "P", reading: "p", note: "" }
+            { char: "m", upper: "M", reading: "m" },
+            { char: "n", upper: "N", reading: "n" },
+            { char: "o", upper: "O", reading: "o" },
+            { char: "p", upper: "P", reading: "p" }
         ]
     },
     {
         key: "q",
         label: "q",
         items: [
-            { char: "q", upper: "Q", reading: "kv", note: "z ogonkiem" },
-            { char: "r", upper: "R", reading: "r", note: "zawsze ze znaczkiem (Strich)" },
-            { char: "s", upper: "S", reading: "s", note: "forma długa; krótka tylko w 'Sonne'" },
-            { char: "t", upper: "T", reading: "t", note: "" }
+            { char: "q", upper: "Q", reading: "kv" },
+            { char: "r", upper: "R", reading: "r" },
+            { char: "s", upper: "S", reading: "z" },
+            { char: "t", upper: "T", reading: "t" }
         ]
     },
     {
         key: "u",
         label: "u",
         items: [
-            { char: "u", upper: "U", reading: "u", note: "nad nim łuk (Bogen)" },
-            { char: "v", upper: "V", reading: "f", note: "czytana jak f" },
-            { char: "w", upper: "W", reading: "w", note: "w środku wyrazu znaczek (petite)" },
-            { char: "x", upper: "X", reading: "ks", note: "" }
+            { char: "u", upper: "U", reading: "u" },
+            { char: "v", upper: "V", reading: "f" },
+            { char: "w", upper: "W", reading: "w" },
+            { char: "x", upper: "X", reading: "ks" }
         ]
     },
     {
         key: "y",
         label: "y",
         items: [
-            { char: "y", upper: "Y", reading: "y", note: "w środku wyrazu znaczek (petite)" },
-            { char: "z", upper: "Z", reading: "z", note: "3-pętlowa, z descenderem" }
+            { char: "y", upper: "Y", reading: "y" },
+            { char: "z", upper: "Z", reading: "c", note: "z z ogonkiem (ʒ)" }
         ]
     },
     {
         key: "umlaut",
         label: "ä ö ü",
         items: [
-            { char: "ä", upper: "Ä", reading: "ae", variants: ["ae", "ä"], note: "umlaut a" },
-            { char: "ö", upper: "Ö", reading: "oe", variants: ["oe", "ö"], note: "umlaut o" },
-            { char: "ü", upper: "Ü", reading: "ue", variants: ["ue", "ü"], note: "umlaut u" }
+            { char: "ä", upper: "Ä", reading: "ae", variants: ["ae", "ä"] },
+            { char: "ö", upper: "Ö", reading: "oe", variants: ["oe", "ö"] },
+            { char: "ü", upper: "Ü", reading: "ue", variants: ["ue", "ü"] }
         ]
     },
     {
         key: "eszett",
         label: "ß",
         items: [
-            { char: "ß", reading: "ss", variants: ["sz"], note: "eszett" }
+            { char: "ß", reading: "ss", variants: ["ss", "sz"], note: "ligatura długiego s (ſ) i z z ogonkiem (ʒ)" }
         ]
     }
 ];
@@ -214,6 +215,221 @@ window.kurrentDecks = [
             { word: "der Hut", plural: "die Hüte", meaning: "kapelusz" },
             { word: "der Mantel", plural: "die Mäntel", meaning: "płaszcz" },
             { word: "der Handschuh", plural: "die Handschuhe", meaning: "rękawica" }
+        ]
+    },
+    {
+        key: "obst-gemuese",
+        label: "Owoce i warzywa",
+        items: [
+            { word: "die Birne", plural: "die Birnen", meaning: "gruszka" },
+            { word: "die Orange", plural: "die Orangen", meaning: "pomarańcza" },
+            { word: "die Zitrone", plural: "die Zitronen", meaning: "cytryna" },
+            { word: "die Banane", plural: "die Bananen", meaning: "banan" },
+            { word: "der Pfirsich", plural: "die Pfirsiche", meaning: "brzoskwinia" },
+            { word: "die Erdbeere", plural: "die Erdbeeren", meaning: "truskawka" },
+            { word: "die Kirsche", plural: "die Kirschen", meaning: "wiśnia" },
+            { word: "die Traube", plural: "die Trauben", meaning: "winogrono" },
+            { word: "die Melone", plural: "die Melonen", meaning: "melon" },
+            { word: "die Kartoffel", plural: "die Kartoffeln", meaning: "ziemniak" },
+            { word: "die Tomate", plural: "die Tomaten", meaning: "pomidor" },
+            { word: "die Karotte", plural: "die Karotten", meaning: "marchew" },
+            { word: "der Kohl", plural: "die Kohle", meaning: "kapusta" },
+            { word: "die Zwiebel", plural: "die Zwiebeln", meaning: "cebula" },
+            { word: "der Knoblauch", plural: "die Knoblauch", meaning: "czosnek" },
+            { word: "die Gurke", plural: "die Gurken", meaning: "ogórek" },
+            { word: "die Erbse", plural: "die Erbsen", meaning: "groch" },
+            { word: "der Pilz", plural: "die Pilze", meaning: "grzyb" },
+            { word: "der Spargel", plural: "die Spargel", meaning: "szparagi" }
+        ]
+    },
+    {
+        key: "getraenke",
+        label: "Napoje",
+        items: [
+            { word: "das Mineralwasser", plural: "die Mineralwässer", meaning: "woda mineralna" },
+            { word: "der Kaffee", plural: "die Kaffees", meaning: "kawa" },
+            { word: "der Tee", plural: "die Tees", meaning: "herbata" },
+            { word: "die Milch", plural: "die Milche", meaning: "mleko" },
+            { word: "der Saft", plural: "die Säfte", meaning: "sok" },
+            { word: "das Bier", plural: "die Biere", meaning: "piwo" },
+            { word: "der Wein", plural: "die Weine", meaning: "wino" },
+            { word: "die Limonade", plural: "die Limonaden", meaning: "lemoniada" },
+            { word: "der Sekt", plural: "die Sekte", meaning: "szampan" },
+            { word: "der Schnaps", plural: "die Schnäpse", meaning: "wódka" },
+            { word: "der Kaffeekanne", plural: "die Kaffeekannen", meaning: "dzbanek do kawy" }
+        ]
+    },
+    {
+        key: "schulwaren",
+        label: "Przybory szkolne",
+        items: [
+            { word: "der Kugelschreiber", plural: "die Kugelschreiber", meaning: "długopis" },
+            { word: "der Füllstift", plural: "die Füllstifte", meaning: "pióro wieczne" },
+            { word: "der Radiergummi", plural: "die Radiergummis", meaning: "gumka do mazania" },
+            { word: "der Tuschestift", plural: "die Tuschestifte", meaning: "flamaster" },
+            { word: "die Schere", plural: "die Scheren", meaning: "nożyczki" },
+            { word: "der Kleber", plural: "die Kleber", meaning: "klej" },
+            { word: "das Geodreieck", plural: "die Geodreiecke", meaning: "ekierka" },
+            { word: "der Zirkel", plural: "die Zirkel", meaning: "cyrkiel" },
+            { word: "der Ordner", plural: "die Ordner", meaning: "segregator" },
+            { word: "der Federmäppchen", plural: "die Federmäppchen", meaning: "piórnik" },
+            { word: "die Schultasche", plural: "die Schultaschen", meaning: "plecak szkolny" },
+            { word: "der Schulranzen", plural: "die Schulranzen", meaning: "tylkojas" },
+            { word: "der Farbstift", plural: "die Farbstifte", meaning: "kredka" },
+            { word: "die Bastelschere", plural: "die Bastelscheren", meaning: "nożyczki dla dzieci" }
+        ]
+    },
+    {
+        key: "buero",
+        label: "Biuro",
+        items: [
+            { word: "der Schreibtisch", plural: "die Schreibtische", meaning: "biurko" },
+            { word: "der Bürostuhl", plural: "die Bürostühle", meaning: "fotel biurowy" },
+            { word: "der Schrank", plural: "die Schränke", meaning: "szafka" },
+            { word: "die Schublade", plural: "die Schubladen", meaning: "szuflada" },
+            { word: "der Aktenordner", plural: "die Aktenordner", meaning: "teczka aktowa" },
+            { word: "der Hefter", plural: "die Hefter", meaning: "zszywacz" },
+            { word: "die Büroklammer", plural: "die Büroklammern", meaning: "spinacz" },
+            { word: "der Locher", plural: "die Locher", meaning: "dziurkacz" },
+            { word: "die Papierschere", plural: "die Papierscheren", meaning: "nożyczki do papieru" },
+            { word: "der Brief", plural: "die Briefe", meaning: "list" },
+            { word: "der Umschlag", plural: "die Umschläge", meaning: "koperta" },
+            { word: "das Formular", plural: "die Formulare", meaning: "formularz" },
+            { word: "die Notiz", plural: "die Notizen", meaning: "notatka" },
+            { word: "der Kalender", plural: "die Kalender", meaning: "kalendarz" },
+            { word: "der Stempel", plural: "die Stempel", meaning: "pieczęć / stempel" },
+            { word: "die Visitenkarte", plural: "die Visitenkarten", meaning: "wizytówka" },
+            { word: "der Register", plural: "die Register", meaning: "rejestr / księga" },
+            { word: "der Aktenvermerk", plural: "die Aktenvermerke", meaning: "notatka w aktach" }
+        ]
+    },
+    {
+        key: "tierzucht",
+        label: "Zwierzęta hodowlane",
+        items: [
+            { word: "der Bulle", plural: "die Bullen", meaning: "byk" },
+            { word: "das Kalb", plural: "die Kälber", meaning: "cielę" },
+            { word: "der Bock", plural: "die Böcke", meaning: "kozioł" },
+            { word: "die Ziege", plural: "die Ziegen", meaning: "koza" },
+            { word: "das Schwein", plural: "die Schweine", meaning: "świnia" },
+            { word: "das Huhn", plural: "die Hühner", meaning: "kura" },
+            { word: "der Hahn", plural: "die Hähne", meaning: "kogut" },
+            { word: "die Ente", plural: "die Enten", meaning: "kaczka" },
+            { word: "das Kaninchen", plural: "die Kaninchen", meaning: "królik" },
+            { word: "der Bienenstock", plural: "die Bienenstöcke", meaning: "ul" },
+            { word: "die Biene", plural: "die Bienen", meaning: "pszczoła" },
+            { word: "das Geflügel", plural: "die Geflügel", meaning: "drób" }
+        ]
+    },
+    {
+        key: "tiere-wild",
+        label: "Zwierzęta dzikie",
+        items: [
+            { word: "der Wolf", plural: "die Wölfe", meaning: "wilk" },
+            { word: "der Fuchs", plural: "die Füchse", meaning: "lis" },
+            { word: "die Wildkatze", plural: "die Wildkatzen", meaning: "dziki kot" },
+            { word: "der Hirsch", plural: "die Hirsche", meaning: "jeleń" },
+            { word: "das Reh", plural: "die Rehe", meaning: "sarna" },
+            { word: "der Eber", plural: "die Eber", meaning: "dzik" },
+            { word: "die Hasen", plural: "die Hasen", meaning: "zające" },
+            { word: "der Igel", plural: "die Igel", meaning: "jeż" },
+            { word: "das Eichhörnchen", plural: "die Eichhörnchen", meaning: "wiewiórka" },
+            { word: "die Fledermaus", plural: "die Fledermäuse", meaning: "nietoperz" },
+            { word: "der Maulwurf", plural: "die Maulwürfe", meaning: "kret" },
+            { word: "die Möwe", plural: "die Möwen", meaning: "mewa" },
+            { word: "der Adler", plural: "die Adler", meaning: "orzeł" },
+            { word: "die Eule", plural: "die Eulen", meaning: "sowa" },
+            { word: "der Barsch", plural: "die Barsche", meaning: "okoń" },
+            { word: "die Forelle", plural: "die Forellen", meaning: "pstrąg" }
+        ]
+    },
+    {
+        key: "koerper-2",
+        label: "Ciało i zdrowie",
+        items: [
+            { word: "der Hals", plural: "die Hälse", meaning: "gardło / szyja" },
+            { word: "die Schulter", plural: "die Schultern", meaning: "ramię" },
+            { word: "der Rücken", plural: "die Rücken", meaning: "plecy" },
+            { word: "der Bauch", plural: "die Bäuche", meaning: "brzuch" },
+            { word: "das Bein", plural: "die Beine", meaning: "noga" },
+            { word: "der Finger", plural: "die Finger", meaning: "palec" },
+            { word: "die Lippe", plural: "die Lippen", meaning: " warga" },
+            { word: "das Zahn", plural: "die Zähne", meaning: "ząb" },
+            { word: "die Zunge", plural: "die Zungen", meaning: "język" },
+            { word: "das Herz", plural: "die Herzen", meaning: "serce" },
+            { word: "die Lunge", plural: "die Lungen", meaning: "płuco" },
+            { word: "das Gelenk", plural: "die Gelenke", meaning: "staw" }
+        ]
+    },
+    {
+        key: "kirche",
+        label: "Kościół katolicki",
+        items: [
+            { word: "der Altar", plural: "die Altäre", meaning: "ołtarz" },
+            { word: "der Kelch", plural: "die Kelche", meaning: "kielich liturgiczny" },
+            { word: "die Hostie", plural: "die Hostien", meaning: "hostia" },
+            { word: "die Bibel", plural: "die Bibeln", meaning: "Biblia" },
+            { word: "das Kreuz", plural: "die Kreuze", meaning: "krzyż" },
+            { word: "der Kerzenleuchter", plural: "die Kerzenleuchter", meaning: "świecznik" },
+            { word: "das Weihrauchfass", plural: "die Weihrauchfässer", meaning: "kadzielnica" },
+            { word: "die Glocke", plural: "die Glocken", meaning: "dzwon" },
+            { word: "der Weihwasser", plural: "die Weihwässer", meaning: "woda święcona" },
+            { word: "das Weihrauch", plural: "die Weihräucher", meaning: "kadzidło" },
+            { word: "die Kerze", plural: "die Kerzen", meaning: "świeca" },
+            { word: "das Kirchenlied", plural: "die Kirchenlieder", meaning: "pieśń kościelna" }
+        ]
+    },
+    {
+        key: "kirche-sakramenty",
+        label: "Sakramenty",
+        items: [
+            { word: "die Taufe", plural: "die Taufen", meaning: "chrzest" },
+            { word: "die Firmung", plural: "die Firmungen", meaning: "bierzmowanie" },
+            { word: "die Kommunion", plural: "die Kommunionen", meaning: "Komunia święta" },
+            { word: "die Beichte", plural: "die Beichten", meaning: "spowiedź" },
+            { word: "die Eucharistie", plural: "die Eucharistien", meaning: "Eucharystia" },
+            { word: "die Salbung", plural: "die Salbungen", meaning: "namaszczenie chorych" },
+            { word: "die Weihe", plural: "die Weihen", meaning: "święcenia kapłańskie" },
+            { word: "die Ersthkommunion", plural: "die Ersthkommunionen", meaning: "pierwsza Komunia" },
+            { word: "die Osterkommunion", plural: "die Osterkommunionen", meaning: "Komunia wielkanocna" }
+        ]
+    },
+    {
+        key: "kirche-personen",
+        label: "Osoby kościelne",
+        items: [
+            { word: "der Priester", plural: "die Priester", meaning: "kapłan" },
+            { word: "der Pater", plural: "die Patres", meaning: "ksiądz katolicki" },
+            { word: "der Mönch", plural: "die Mönche", meaning: "zakonnik" },
+            { word: "die Nonne", plural: "die Nonnen", meaning: "zakonnica" },
+            { word: "der Papst", plural: "die Päpste", meaning: "papież" },
+            { word: "der Kardinal", plural: "die Kardinäle", meaning: "kardynał" },
+            { word: "der Bischof", plural: "die Bischöfe", meaning: "biskup" },
+            { word: "der Erzbischof", plural: "die Erzbischöfe", meaning: "arcybiskup" },
+            { word: "der Apostel", plural: "die Apostel", meaning: "apostoł" },
+            { word: "die Maria", plural: "die Marien", meaning: "Matka Boska" },
+            { word: "der Sohn", plural: "die Söhne", meaning: "Syn Boży" }
+        ]
+    },
+    {
+        key: "kirche-inhalte",
+        label: "Wiarę i treści",
+        items: [
+            { word: "der Gott", plural: "die Götter", meaning: "Pan Bóg" },
+            { word: "die Messe", plural: "die Messen", meaning: "Msza święta" },
+            { word: "die Predigt", plural: "die Predigten", meaning: "kazanie" },
+            { word: "das Gebet", plural: "die Gebete", meaning: "modlitwa" },
+            { word: "der Glaube", plural: "die Glauben", meaning: "wiara" },
+            { word: "die Theologie", plural: "die Theologien", meaning: "teologia" },
+            { word: "das Evangelium", plural: "die Evangelien", meaning: "Ewangelia / dobra nowina" },
+            { word: "die Auferstehung", plural: "die Auferstehungen", meaning: "zmartwychwstanie" },
+            { word: "die Inkarnation", plural: "die Inkarnationen", meaning: "Wcielenie" },
+            { word: "das Leiden", plural: "die Leiden", meaning: "męka" },
+            { word: "die Opfergabe", plural: "die Opfergaben", meaning: "ofiarowanie / składka" },
+            { word: "der Gottesdienst", plural: "die Gottesdienste", meaning: "nabożenstwo" },
+            { word: "das Sakrament", plural: "die Sakramente", meaning: "sakrament" },
+            { word: "das Opfer", plural: "die Opfer", meaning: "ofiara / poświęcenie" },
+            { word: "der Gesang", plural: "die Gesänge", meaning: "pieśń liturgiczna" }
         ]
     }
 ];

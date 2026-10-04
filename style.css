@@ -445,11 +445,12 @@ button:active {
     font-weight: 600;
 }
 
-/* Siatka liter: kafelka para mała + wielka, bez podpisów. */
+/* Siatka liter: kafelka para mała + wielka, bez podpisów.
+   .page-shell jest inline-block i kurczy się do treści, więc kontener
+   dostaje jawną szerokość - inaczej siatka zwija się do kilku kolumn. */
 #kurrent-table {
     display: block;
-    width: 760px;
-    max-width: 96vw;
+    width: min(1100px, 94vw);
     margin: 0 auto 18px;
     border: 3px solid #2b2b2b;
     border-radius: 8px;
@@ -460,9 +461,9 @@ button:active {
 
 .letter-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
-    gap: 5px;
-    padding: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+    gap: 3px;
+    padding: 5px;
 }
 
 .letter-pair {
@@ -487,7 +488,7 @@ button:active {
 /* Podpis pod glifem: która litera to jest, a nie jak się czyta. */
 .letter-name {
     font-family: var(--translit-font);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     color: #4b4b4b;
     letter-spacing: 0.02em;
@@ -495,10 +496,10 @@ button:active {
 }
 
 .letter-glyph {
-    font-size: 30px;
+    font-size: 24px;
     cursor: pointer;
-    padding: 0 2px;
-    border-radius: 4px;
+    padding: 0 1px;
+    border-radius: 3px;
     border: 1px solid transparent;
 }
 

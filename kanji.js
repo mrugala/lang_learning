@@ -47,8 +47,8 @@ const kanjiDecks = [
     },
     {
         key: "deck-5",
-        label: "Zestaw 5 — Kościół (w budowie)",
-        categoryKeys: categories.slice(40, 50).map(category => category.key)
+        label: "Zestaw 5 — Kościół katolicki",
+        categoryKeys: categories.filter(c => c.key.startsWith("church-")).map(c => c.key)
     }
 ];
 let activeKanjiDeck = kanjiDecks[0].key;

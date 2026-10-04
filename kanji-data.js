@@ -1,4 +1,4 @@
-﻿﻿window.kanjiCategories = [
+﻿window.kanjiCategories = [
     {
         key: "animals",
         label: "Zwierzęta",
@@ -661,12 +661,17 @@
             { kanji: "聖杯", romaji: "seihai", meaning: "kielich liturgiczny" },
             { kanji: "祭壇", romaji: "saidan", meaning: "ołtarz" },
             { kanji: "香", romaji: "kō", meaning: "kadzidło" },
-            { kanji: "香炉", romaji: "kōro", meaning: "kadzielnica" },
+            { kanji: "香炉", romaji: "kōro", hiragana: "こうろ", meaning: "kadzielnica" }
             { kanji: "聖書", romaji: "seisho", hiragana: "せいしょ", meaning: "Biblia" },
-            { kanji: "十字架", romaji: "jūjika", meaning: "krzyż" },
             { kanji: "聖水", romaji: "seisui", hiragana: "せいすい", meaning: "woda święcona" },
             { kanji: "燭台", romaji: "shokudai", hiragana: "しょくだい", meaning: "świecznik" },
-            { kanji: "聖餅", romaji: "seihei", hiragana: "せいへい", meaning: "hostia" }
+            { kanji: "聖餅", romaji: "seihei", hiragana: "せいへい", meaning: "hostia" },
+            { kanji: "十字架", romaji: "jūjika", hiragana: "じゅうじか", meaning: "krzyż" },
+            { kanji: "唄", romaji: "uta", hiragana: "うた", meaning: "pieśń liturgiczna" },
+            { kanji: "鐘", romaji: "kane", hiragana: "かね", meaning: "dzwon" },
+            { kanji: "献納", romaji: "kennō", hiragana: "けんのう", meaning: "ofiarowanie / składka" },
+            { kanji: "礼拝", romaji: "reihai", hiragana: "れいはい", meaning: "nabożenstwo" },
+            { kanji: "聖歌", romaji: "seika", hiragana: "せいか", meaning: "pieśń kościelna" },
         ]
     },
     {
@@ -679,7 +684,11 @@
             { kanji: "修道女", romaji: "shūdōjo", hiragana: "しゅうどうじょ", meaning: "zakonnica" },
             { kanji: "教皇", romaji: "kyōkō", hiragana: "きょうこう", meaning: "papież" },
             { kanji: "修道士", romaji: "shūdōshi", hiragana: "しゅうどうし", meaning: "zakonnik" },
-            { kanji: "使徒", romaji: "shito", hiragana: "しと", meaning: "apostoł" }
+            { kanji: "使徒", romaji: "shito", hiragana: "しと", meaning: "apostoł" },
+            { kanji: "聖母", romaji: "seibo", hiragana: "せいぼ", meaning: "Matka Boska" },
+            { kanji: "御子", romaji: "miko", hiragana: "みこ", meaning: "Syn Boży" },
+            { kanji: "主教", romaji: "shukyō", hiragana: "しゅきょう", meaning: "biskup" },
+            { kanji: "枢機", romaji: "sūki", hiragana: "すうき", meaning: "kardynał" }
         ]
     },
     {
@@ -688,11 +697,15 @@
         items: [
             { kanji: "神学", romaji: "shingaku", meaning: "teologia" },
             { kanji: "教会", romaji: "kyōkai", meaning: "kościół" },
+            { kanji: "聖堂", romaji: "seidō", hiragana: "せいどう", meaning: "katedra / kościół katedralny" },
             { kanji: "犠牲", romaji: "gisei", meaning: "ofiara / poświęcenie" },
             { kanji: "祈り", romaji: "inori", hiragana: "いのり", meaning: "modlitwa" },
             { kanji: "信仰", romaji: "shinkō", hiragana: "しんこう", meaning: "wiara" },
             { kanji: "福音", romaji: "fukuin", hiragana: "ふくいん", meaning: "Ewangelia / dobra nowina" },
-            { kanji: "復活", romaji: "fukkatsu", hiragana: "ふっかつ", meaning: "zmartwychwstanie" }
+            { kanji: "復活", romaji: "fukkatsu", hiragana: "ふっかつ", meaning: "zmartwychwstanie" },
+            { kanji: "受肉", romaji: "jukuniku", hiragana: "じゅくにく", meaning: "Wcielenie" },
+            { kanji: "受難", romaji: "jukan", hiragana: "じゅくなん", meaning: "męka" },
+            { kanji: "初領", romaji: "shoryō", hiragana: "しょりょう", meaning: "pierwsza Komunia" }
         ]
     }
 ];

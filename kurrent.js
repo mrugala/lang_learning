@@ -14,8 +14,7 @@ const {
     showContinueButton,
     showSelectionPanel,
     showStudyApp,
-    handleEnterKey,
-    normalizeStudyText
+    handleEnterKey
 } = window.LangCommon;
 
 const letterGroups = window.kurrentLetters;
@@ -75,15 +74,19 @@ function renderLetterTable() {
                     glyph: item.char,
                     caseKey: "lower",
                     label: item.char,
-                    selectionGlyph: item.char
+                    selectionGlyph: item.char,
+                    note: item.note
                 }
             ];
             if (item.char === "s") {
+                // W Kurrentcie są dwie formy s: długie (ſ) i okrągłe.
+                forms[0].note = "okrągłe s";
                 forms.push({
                     glyph: "ſ",
                     caseKey: "lower",
                     label: "s",
-                    selectionGlyph: item.char
+                    selectionGlyph: item.char,
+                    note: "długie s (ſ)"
                 });
             }
             if (item.upper) {
@@ -91,11 +94,12 @@ function renderLetterTable() {
                     glyph: item.upper,
                     caseKey: "upper",
                     label: item.upper,
-                    selectionGlyph: item.upper
+                    selectionGlyph: item.upper,
+                    note: item.note
                 });
             }
 
-            forms.forEach(({ glyph, caseKey, label, selectionGlyph }) => {
+            forms.forEach(({ glyph, caseKey, label, selectionGlyph, note }) => {
                 const glyphEl = document.createElement("span");
                 glyphEl.className = `letter-glyph kurrent-text letter-${caseKey}`;
                 glyphEl.dataset.glyph = selectionGlyph;
@@ -116,11 +120,16 @@ function renderLetterTable() {
                 const name = document.createElement("div");
                 name.className = "letter-name";
                 name.textContent = label;
-                name.title = glyph === "ſ"
-                    ? "Długie s"
-                    : item.reading
-                    ? `Wymowa: ${caseKey === "lower" ? item.reading : item.reading.toUpperCase()}`
-                    : "";
+
+                // Podpowiedź: tożsamość glify, wymowa kurrentowa i uwaga o danej formie.
+                // Wymowę pokazujemy zawsze - także dla liter, które brzmią
+                // tak jak wyglądają (a, b, e...), bo to ćwiczenie właśnie
+                // różnicę tę utrwala.
+                const hints = [label, `wymowa: ${caseKey === "lower" ? item.reading : item.reading.toUpperCase()}`];
+                if (note) {
+                    hints.push(note);
+                }
+                name.title = hints.join(" · ");
 
                 // Glifa wraz z podpisem tworzą jedną jednostkę - inaczej
                 // flex ustawiłby je w kolumnie: mała, podpis, wielka, podpis.
@@ -221,6 +230,7 @@ function switchMode(mode) {
     currentMode = mode;
     document.getElementById("letters-panel").style.display = mode === "letters" ? "block" : "none";
     document.getElementById("words-panel").style.display = mode === "words" ? "block" : "none";
+    document.getElementById("kurrent-answer-note").style.display = mode === "words" ? "block" : "none";
 }
 
 // ---------------------------------------------------------------- nauka ----
@@ -243,7 +253,7 @@ function acceptedAnswersFor(letter, uppercase) {
 
     // Wielki zapis bierzemy z "upper" (eszett: ß -> ẞ, a nie "ss".toUpperCase()).
     const cased = uppercase
-        ? spellings.map(s => s.toUpperCase()).concat(letter.upper)
+        ? spellings.map(s => s.toUpperCase()).concat(letter.upper || [])
         : spellings;
 
     return [...new Set(cased)];
@@ -286,20 +296,28 @@ function buildWordsItems() {
         .filter(deck => selectedDecks.has(deck.key))
         .forEach(deck => {
             deck.items.forEach(entry => {
-                // Pole "word" zawiera rodzajnik, więc wyraz zawsze zaczyna się
-                // wielką literą - o to w tym etapie chodzi.
+                // Ten tryb ćwiczy ODCZYTYWANIE zapisu kurrentowego, czyli
+                // transkrypcję na znaki łacińskie. Odpowiedzią jest więc
+                // zapis wyrazu w współczesnej ortografii ("der Hund"),
+                // a NIE polskie tłumaczenie.
+                //
+                // Losujemy formę pojedynczą albo mnogą, bo w Kurrentcie mają
+                // inną pisownię i to jest właśnie to, co chcemy czytać.
                 items.push({
                     glyph: entry.word,
                     answers: [entry.word],
                     answer: entry.word,
                     uppercase: false
                 });
-                items.push({
-                    glyph: entry.plural,
-                    answers: [entry.plural],
-                    answer: entry.plural,
-                    uppercase: false
-                });
+
+                if (entry.plural && entry.plural !== entry.word) {
+                    items.push({
+                        glyph: entry.plural,
+                        answers: [entry.plural],
+                        answer: entry.plural,
+                        uppercase: false
+                    });
+                }
             });
         });
     return items;
@@ -309,6 +327,8 @@ function currentItems() {
     return currentMode === "letters" ? buildLettersItems() : buildWordsItems();
 }
 
+// Klucz musi rozróżniać formy, bo "das Blatt" i "die Blätter" mają to samo
+// znaczenie, ale są osobnymi pytaniami.
 function itemKey(item) {
     return `${currentMode}|${item.glyph}`;
 }
@@ -364,25 +384,35 @@ function renderPrompt(item) {
         : item.glyph;
     box.appendChild(main);
 
-    document.getElementById("kurrent-answer").placeholder = "Jak się to czyta?";
+    document.getElementById("kurrent-answer").placeholder =
+        currentMode === "letters" ? "Jaką literą to jest?" : "Jak to zapisujemy?";
 }
 
 function normalizeKurrentWordAnswer(value) {
-    return normalizeStudyText(
-        String(value || "")
-            .toLowerCase()
-            .replace(/ä/g, "ae")
-            .replace(/ö/g, "oe")
-            .replace(/ü/g, "ue")
-            .replace(/ß/g, "ss")
-    );
+    return String(value || "")
+        .trim()
+        .toLocaleLowerCase("de-DE")
+        .normalize("NFC")
+        .replace(/\s+/g, "")
+        .replace(/[-_]/g, "");
 }
 
-// normalizeStudyText z common.js zmniejsza wielkość liter, więc dla liter
-// Kurrentu byłoby zgubić informację o wielkości. Tu zachowujemy wielkość,
-// zostawiając tylko porządkowanie (odstępy, myślniki, kropki nad literami).
-// Dzięki temu wielka litera przyjmuje tylko wielkie odpowiedzi, a mała -
-// tylko małe.
+function kurrentWordAnswerVariants(value) {
+    const choicesByCharacter = {
+        "ä": ["ä", "ae"],
+        "ö": ["ö", "oe"],
+        "ü": ["ü", "ue"],
+        "ß": ["ß", "ss", "sz"]
+    };
+
+    return [...String(value || "").toLocaleLowerCase("de-DE").normalize("NFC")]
+        .reduce((variants, character) => {
+            const choices = choicesByCharacter[character] || [character];
+            return variants.flatMap(prefix => choices.map(choice => prefix + choice));
+        }, [""]);
+}
+
+// Dla liter zachowujemy wielkość, ignorując odstępy i separatory.
 function normalizeLetterAnswer(value) {
     return String(value || "")
         .trim()
@@ -397,12 +427,14 @@ function submitAnswer() {
     const entered = input.value;
     if (entered.trim() === "" || currentItem === null) return;
 
-    // Dla liter porównujemy z zachowaniem wielkości (wielka glifa przyjmuje
-    // tylko wielkie zapisy) i z pełną listą wariantów; dla słów korzystamy
-    // z normalizacji z common.js, która ignoruje wielkość.
+    // Litery rozróżniają wielkość; słowa akceptują warianty zapisu umlautów i ß.
     const isCorrect = currentMode === "letters"
         ? currentItem.answers.some(spelling => normalizeLetterAnswer(entered) === normalizeLetterAnswer(spelling))
-        : normalizeKurrentWordAnswer(entered) === normalizeKurrentWordAnswer(currentItem.answer);
+        : currentItem.answers.some(word =>
+            kurrentWordAnswerVariants(word).some(spelling =>
+                normalizeKurrentWordAnswer(entered) === normalizeKurrentWordAnswer(spelling)
+            )
+        );
 
     const key = itemKey(currentItem);
 

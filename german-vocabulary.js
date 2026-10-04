@@ -73,14 +73,33 @@ function startStudy() {
                 const directions = selectedDirection === "mixed"
                     ? ["de-pl", "pl-de"]
                     : [selectedDirection];
+
+                // Każdy wpis daje osobne pozycje dla liczby pojedynczej i mnogiej, więc
+                // obie formy są niezależnie testowane. "Die Kirche" i "die Kirchen"
+                // to dwa różne pytania.
+                //
+                // Czasowniki i przymiotniki odmieniają się przez liczbę tylko
+                // w przymiotniku (klein/kleine), więc dla nich druga pozycja
+                // oznacza formę mnogą w rodzaju żeńskim/męskim - w praktyce
+                // to samo słowo. Mimo to traktujemy je tak samo, żeby każda
+                // pozycja w bazie była ćwiczona dwa razy.
+                const forms = ["singular"];
+                if (Boolean(entry.plural_pl))
+                {
+                    forms = ["singular", "plural"];
+                }
+
                 directions.forEach(direction => {
-                    const key = `${category.key}:${index}:${direction}`;
-                    queue[key] = {
-                        ...entry,
-                        category: category.label,
-                        direction,
-                        reps: BASE_REPS
-                    };
+                    forms.forEach(form => {
+                        const key = `${category.key}:${index}:${direction}:${form}`;
+                        queue[key] = {
+                            ...entry,
+                            category: category.label,
+                            direction,
+                            form,
+                            reps: BASE_REPS
+                        };
+                    });
                 });
             });
         });
@@ -106,23 +125,63 @@ function pickWord() {
     const germanToPolish = item.direction === "de-pl";
     document.getElementById("char-box").innerHTML = "";
 
+    // Przy pytaniu po niemiecku losujemy formę: czasem pojedynczą,
+    // czasem mnogą. Przy tłumaczeniu na polski zawsze widzimy wyraz
+    // w liczbie pojedynczej, bo tylko tak jest w danych.
+    const usePlural = item.form === "plural";
+    const shown = usePlural && item.plural ? item.plural : item.de;
+
     const prompt = document.createElement("div");
     prompt.className = "prompt-main";
-    prompt.textContent = germanToPolish ? item.de : item.pl[0];
+    prompt.textContent = germanToPolish ? shown : item.pl[0];
 
     const detail = document.createElement("div");
     detail.className = "vocabulary-detail";
-    detail.textContent = `${item.category} · ${item.pos}`;
+    // Czasowniki i rzeczowniki rodzaju żeńskiego nie mają odrębnej formy
+    // mnogiej, więc nazywanie tego "liczbą mnogą" byłoby mylące.
+    const formLabel = usePlural && item.plural
+        ? "liczba mnoga"
+        : usePlural
+            ? "forma mnoga (rodzaj żeński)"
+            : "liczba pojedyncza";
+    detail.textContent = `${item.category} · ${item.pos} · ${formLabel}`;
 
     document.getElementById("char-box").append(prompt, detail);
     const input = document.getElementById("vocabulary-answer");
     input.placeholder = germanToPolish ? "Podaj tłumaczenie po polsku" : "Podaj słowo po niemiecku";
     input.value = "";
     input.focus();
+
+    // Przyciski znaków niemieckich są potrzebne tylko tam, gdzie pisze się
+    // po niemiecku. Przy tłumaczeniu na polski tylko przeszkadzają.
+    document.getElementById("german-characters").style.display = germanToPolish ? "none" : "flex";
+}
+
+// Porównanie luźne - dla tłumaczenia na polski, gdzie wielkość liter
+// i ogonki nie mają znaczenia ("Mokka" = "mokka").
+// Czasowniki i rzeczowniki rodzaju żeńskiego nie mają odrębnej formy
+// mnogiej, więc nazywanie tego "liczbą mnogą" byłoby mylące.
+function hasDistinctPlural(item) {
+    return Boolean(item.plural_pl) && Boolean(item.plural) && item.form === "plural";
 }
 
 function normalizeAnswer(value) {
-    return String(value || "").normalize("NFC").trim().toLocaleLowerCase("pl-PL");
+    return String(value || "")
+        .normalize("NFC")
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLocaleLowerCase("pl-PL");
+}
+
+// Porównanie ścisłe - dla odpowiedzi po niemiecku. Wyraz ma być dokładnie
+// taki, jak w danych: z umlautami, eszettem i wielkimi literami. "die Kirchen"
+// nie przechodzi więc jako "kirchen" ani "DIE KIRCHEN". Normalizujemy
+// wyłącznie zapisy oczekiwane, żeby porównanie było sprawiedliwe.
+function normalizeStrictGerman(value) {
+    return String(value || "")
+        .normalize("NFC")
+        .trim()
+        .replace(/\s+/g, " ");
 }
 
 function submitAnswer() {
@@ -130,11 +189,25 @@ function submitAnswer() {
 
     const item = queue[currentKey];
     const germanToPolish = item.direction === "de-pl";
-    const accepted = germanToPolish ? item.pl : [item.de];
-    const isCorrect = accepted.some(answer =>
-        normalizeAnswer(answer) ===
-        normalizeAnswer(document.getElementById("vocabulary-answer").value)
-    );
+    const entered = document.getElementById("vocabulary-answer").value;
+
+    // Tłumaczenie na polski: odpowiedzią jest znaczenie, a liczba mnoga
+    // niemieckiego wyrazu jest dodatkową, równorzędną odpowiedzią
+    // ("kościół" albo "die Kirchen"). Wielkość liter i ogonki nie mają
+    // tu znaczenia.
+    //
+    // Odpowiedź po niemiecku: oczekujemy dokładnie TEJ formy, o którą
+    // pytano - jeśli wypadła liczba mnoga, to tylko mnoga, i tylko
+    // ścisły zapis (z umlautami, eszettem, wielkimi literami).
+    const usePlural = hasDistinctPlural(item);
+    const expectedGerman = usePlural && item.plural ? item.plural : item.de;
+
+    const accepted = germanToPolish
+        ? usePlural ? item.plural_pl : item.pl
+        : [expectedGerman];
+    const normalize = germanToPolish ? normalizeAnswer : normalizeStrictGerman;
+
+    const isCorrect = accepted.some(answer => normalize(answer) === normalize(entered));
 
     if (isCorrect) {
         item.reps--;

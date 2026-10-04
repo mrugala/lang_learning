@@ -1,20 +1,43 @@
 # lang_learning
 
-Prosta aplikacja do nauki hiragany, kanji, pisma Kurrent i niemieckiego słownictwa.
+Aplikacje do nauki języków i pism, jako statyczne strony (bez buildu).
 
-## Niemieckie słownictwo
+## Uruchomienie
 
-Otwórz `german.html`, wybierz kierunek tłumaczenia (niemiecki → polski,
-polski → niemiecki lub oba kierunki wymieszane) oraz kategorie, a następnie
-rozpocznij naukę. Odpowiedzi wymagają poprawnych umlautów i `ß`; przyciski pod
-polem odpowiedzi pozwalają wstawić `ä`, `ö`, `ü` i `ß`. Baza obejmuje
-rzeczowniki, przymiotniki, czasowniki i
-przysłówki z kategorii takich jak jedzenie, meble, pory dnia, dni tygodnia,
-zawody, dom oraz kościół i religię. Niemieckie rzeczowniki pospolite są
-zapisane z rodzajnikiem.
+    node tools/serve.js
 
-Trening Kanji zawiera również niepełny **Zestaw 5 — Kościół**, z podstawowym
-słownictwem chrześcijańskim. Lista obejmuje m.in. Eucharystię, Komunię,
-chrzest, spowiedź, bierzmowanie, Biblię, papieża, kapłana, zakonników,
-modlitwę, wiarę i zmartwychwstanie. Hasła są podzielone na kolumny:
-sakramenty, przedmioty, osoby i inne.
+i otwórz `http://localhost:8731/`.
+
+## Aplikacje
+
+| Plik | Zawartość |
+|---|---|
+| `index.html` | hiragana / katakana |
+| `kanji.html` | kanji, 5 zestawów (deck 5 = Kościół katolicki) |
+| `kurrent.html` | pismo Kurrent: litery, umlauty, eszett, słowa niemieckie |
+
+Wspólny kod: `common.js` (kolejka nawracania, normalizacja odpowiedzi,
+helpery UI), `style.css`.
+
+## Dane
+
+| Plik | Zawartość |
+|---|---|
+| `kanji-data.js` | 446 kanji w 44 kategoriach |
+| `kurrent-data.js` | 30 liter + 174 rzeczowniki w 16 zestawach |
+
+## Narzędzia
+
+    node tools/check-kurrent-data.js   # walidacja danych Kurrent
+    node tools/check-decks.js          # walidacja kategorii i decków kanji
+    node tools/list-cats.js            # lista kategorii kanji
+
+Test przepływu nauki Kurrent (wymaga uruchomionego serwera):
+
+    node "C:\Users\Dell\.codegpt\skills\browser-automation\browser.mjs" \
+        http://localhost:8731/kurrent.html --script tools/qa-kurrent.mjs
+
+## Czcionka
+
+`fonts/WiegelKurrent.ttf` — Wiegel Kurrent by Peter Wiegel, licencja
+SIL OFL 1.1 (`fonts/OFL-Wiegel-Kurrent.txt`).
