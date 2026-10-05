@@ -1,4 +1,4 @@
-﻿window.kanjiCategories = [
+﻿﻿window.kanjiCategories = [
     {
         key: "animals",
         label: "Zwierzęta",
@@ -640,6 +640,130 @@
         ]
     },
     {
+        key: "other-1",
+        label: "Inne 1",
+        items: [
+            { kanji: "略", romaji: "ryaku", meaning: "pominąć / skrót" },
+            { kanji: "追", romaji: "tsui", meaning: "gonić / ścigać" },
+            { kanji: "加", romaji: "ka", meaning: "dodawać" },
+            { kanji: "整", romaji: "sei", meaning: "porządkować" },
+            { kanji: "保", romaji: "ho", meaning: "zachowywać" },
+            { kanji: "存", romaji: "son", meaning: "być / istnieć" },
+            { kanji: "更", romaji: "kō", meaning: "zmieniać / nowy" },
+            { kanji: "開", romaji: "kai", meaning: "otwierać" },
+            { kanji: "始", romaji: "shi", meaning: "zaczynać" },
+            { kanji: "交", romaji: "kō", meaning: "wymieniać / krzyżować" }
+        ]
+    },
+    {
+        key: "other-2",
+        label: "Inne 2",
+        items: [
+            { kanji: "換", romaji: "kan", meaning: "zmieniać / zamieniać" },
+            { kanji: "変", romaji: "hen", meaning: "zmieniać" },
+            { kanji: "計", romaji: "kei", meaning: "liczyć / plan" },
+            { kanji: "作", romaji: "saku", meaning: "tworzyć / robić" },
+            { kanji: "成", romaji: "sei", meaning: "stać się / zyskiwać" },
+            { kanji: "修", romaji: "shū", meaning: "naprawiać / kształcić" },
+            { kanji: "登", romaji: "tō", meaning: "wspinać się / zapisywać" },
+            { kanji: "録", romaji: "roku", meaning: "zapisywać / nagrywać" },
+            { kanji: "削", romaji: "saku", meaning: "skasować / ścinać" },
+            { kanji: "除", romaji: "jo", meaning: "usuwać / z wyjątkiem" }
+        ]
+    },
+    {
+        key: "other-3",
+        label: "Inne 3",
+        items: [
+            { kanji: "表", romaji: "hyō", meaning: "pokazywać / tabela" },
+            { kanji: "示", romaji: "ji", meaning: "pokazywać" },
+            { kanji: "選", romaji: "sen", meaning: "wybierać" },
+            { kanji: "択", romaji: "taku", meaning: "wybierać" },
+            { kanji: "決", romaji: "ketsu", meaning: "decydować" },
+            { kanji: "定", romaji: "tei", meaning: "ustalać / stać" },
+            { kanji: "認", romaji: "nin", meaning: "uznawać" },
+            { kanji: "集", romaji: "shū", meaning: "zbierać / zbiory" },
+            { kanji: "復", romaji: "fuku", meaning: "przywracać / odtwarzać" },
+            { kanji: "元", romaji: "gen", meaning: "początek / źródło" }
+        ]
+    },
+    {
+        key: "other-4",
+        label: "Inne 4",
+        items: [
+            { kanji: "省", romaji: "sei", meaning: "rząd / administracja" },
+            { kanji: "新", romaji: "shin", meaning: "nowy / świeży" },
+            { kanji: "終", romaji: "shū", meaning: "koniec / kończyć" },
+            { kanji: "了", romaji: "ryō", meaning: "kończyć / zakończony" },
+            { kanji: "確", romaji: "kaku", meaning: "pewny / na pewno" },
+            { kanji: "拝", romaji: "hai", hiragana: "はい", meaning: "kłaniać się / czcić" },
+            { kanji: "洗", romaji: "sen", hiragana: "せん", meaning: "myć" },
+            { kanji: "告", romaji: "koku", hiragana: "こく", meaning: "ogłaszać / mówić" },
+            { kanji: "解", romaji: "kai", hiragana: "かい", meaning: "wyjaśniać / rozwiązywać" },
+            { kanji: "秘", romaji: "hi", hiragana: "ひ", meaning: "tajny / sekret" }
+        ]
+    },
+    {
+        key: "other-5",
+        label: "Inne 5",
+        items: [
+            { kanji: "跡", romaji: "seki", hiragana: "せき", meaning: "ślad / oznaka" },
+            { kanji: "堅", romaji: "ken", hiragana: "けん", meaning: "mocny / niezłomny" },
+            { kanji: "叙", romaji: "jo", hiragana: "じょ", meaning: "opowiadać / nadawać stopień" },
+            { kanji: "階", romaji: "kai", hiragana: "かい", meaning: "stopień / schody" },
+            { kanji: "者", romaji: "sha", hiragana: "しゃ", meaning: "osoba (ta, która…)" },
+            { kanji: "塗", romaji: "nu", hiragana: "ぬ", meaning: "mazować / malować" },
+            { kanji: "初", romaji: "sho", hiragana: "しょ", meaning: "pierwszy / początkowy" },
+            { kanji: "杯", romaji: "hai", hiragana: "はい", meaning: "kubek / puchar" },
+            { kanji: "炉", romaji: "ro", hiragana: "ろ", meaning: "piec" },
+            { kanji: "書", romaji: "sho", hiragana: "しょ", meaning: "pisać / książka" }
+        ]
+    },
+    {
+        key: "other-6",
+        label: "Inne 6",
+        items: [
+            { kanji: "水", romaji: "sui", hiragana: "すい", meaning: "woda" },
+            { kanji: "燭", romaji: "shoku", hiragana: "しょく", meaning: "świeca" },
+            { kanji: "餅", romaji: "mochi", hiragana: "もち", meaning: "ciastko / placki" },
+            { kanji: "架", romaji: "ka", hiragana: "か", meaning: "stelaż / rama" },
+            { kanji: "様", romaji: "yō", hiragana: "よう", meaning: "kształt / way" },
+            { kanji: "司", romaji: "shi", hiragana: "し", meaning: "zarządzać" },
+            { kanji: "女", romaji: "jo", hiragana: "じょ", meaning: "kobieta" },
+            { kanji: "皇", romaji: "kō", hiragana: "こう", meaning: "cesarz" },
+            { kanji: "士", romaji: "shi", hiragana: "し", meaning: "pan / mężczyzna" },
+            { kanji: "納", romaji: "nō", hiragana: "のう", meaning: "przyjmować / wpłacać" }
+        ]
+    },
+    {
+        key: "other-7",
+        label: "Inne 7",
+        items: [
+            { kanji: "使", romaji: "shi", hiragana: "し", meaning: "posłaniec" },
+            { kanji: "徒", romaji: "to", hiragana: "と", meaning: "uczeń / wędrowiec" },
+            { kanji: "御", romaji: "go", hiragana: "ご", meaning: "pan / nadzorca" },
+            { kanji: "主", romaji: "shu", hiragana: "しゅ", meaning: "główny / pan" },
+            { kanji: "枢", romaji: "sū", hiragana: "すう", meaning: "zawias / ośrodek" },
+            { kanji: "堂", romaji: "dō", hiragana: "どう", meaning: "hala / dostojny" },
+            { kanji: "歌", romaji: "ka", hiragana: "か", meaning: "piosenka" },
+            { kanji: "犠", romaji: "gi", hiragana: "ぎ", meaning: "ofiara / poświęcenie" },
+            { kanji: "牲", romaji: "seiten", hiragana: "せいてん", meaning: "ofiara / ofiarowany zwierz" },
+            { kanji: "仰", romaji: "gyō", hiragana: "ぎょう", meaning: "spojrzeć w górę / szanować" },
+        ]
+    },
+    {
+        key: "other-8",
+        label: "Inne 8",
+        items: [
+            { kanji: "福", romaji: "fuku", hiragana: "ふく", meaning: "szczęście / błogosławieństwo" },
+            { kanji: "音", romaji: "on", hiragana: "おん", meaning: "dźwięk" },
+            { kanji: "活", romaji: "katsu", hiragana: "かつ", meaning: "żyć / żywy" },
+            { kanji: "受", romaji: "ju", hiragana: "じゅ", meaning: "przyjmować" },
+            { kanji: "難", romaji: "nan", hiragana: "なん", meaning: "trudność / trudny" },
+            { kanji: "献", romaji: "ken", hiragana: "けん", meaning: "poświęcać / ofiarowywać" }
+        ]
+    },
+    {
         key: "church-sacraments",
         label: "Sakramenty",
         items: [
@@ -717,7 +841,9 @@
             { kanji: "復活", romaji: "fukkatsu", hiragana: "ふっかつ", meaning: "zmartwychwstanie" },
             { kanji: "受肉", romaji: "jukuniku", hiragana: "じゅくにく", meaning: "Wcielenie" },
             { kanji: "受難", romaji: "jukan", hiragana: "じゅくなん", meaning: "męka" },
-            { kanji: "献納", romaji: "kennō", hiragana: "けんのう", meaning: "ofiarowanie / składka" }
+            { kanji: "献納", romaji: "kennō", hiragana: "けんのう", meaning: "ofiarowanie / składka" },
+            { kanji: "壇", romaji: "dan", hiragana: "だん", meaning: "ołtarz / podest" },
+            { kanji: "聖", romaji: "sei", hiragana: "せい", meaning: "święty" }
         ]
     }
 ];

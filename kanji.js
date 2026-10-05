@@ -47,7 +47,12 @@ const kanjiDecks = [
     },
     {
         key: "deck-5",
-        label: "Zestaw 5 — Kościół katolicki",
+        label: "Zestaw 5",
+        categoryKeys: categories.slice(40, 48).map(category => category.key)
+    },
+    {
+        key: "deck-6",
+        label: "Zestaw 6 — Kościół katolicki",
         categoryKeys: categories.filter(c => c.key.startsWith("church-")).map(c => c.key)
     }
 ];
