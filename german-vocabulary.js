@@ -83,7 +83,7 @@ function startStudy() {
                 // oznacza formę mnogą w rodzaju żeńskim/męskim - w praktyce
                 // to samo słowo. Mimo to traktujemy je tak samo, żeby każda
                 // pozycja w bazie była ćwiczona dwa razy.
-                const forms = ["singular"];
+                let forms = ["singular"];
                 if (Boolean(entry.plural_pl))
                 {
                     forms = ["singular", "plural"];

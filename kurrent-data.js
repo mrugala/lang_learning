@@ -167,7 +167,7 @@ window.kurrentDecks = [
         items: [
             { word: "das Buch", plural: "die Bücher", meaning: "książka" },
             { word: "das Heft", plural: "die Hefte", meaning: "zeszyt" },
-            { word: "der Feder", plural: "die Federn", meaning: "pióro" },
+            { word: "die Feder", plural: "die Federn", meaning: "pióro" },
             { word: "die Tafel", plural: "die Tafeln", meaning: "tablica" },
             { word: "der Bleistift", plural: "die Bleistifte", meaning: "ołówek" },
             { word: "das Lineal", plural: "die Lineale", meaning: "linijka" },
@@ -272,7 +272,7 @@ window.kurrentDecks = [
             { word: "das Geodreieck", plural: "die Geodreiecke", meaning: "ekierka" },
             { word: "der Zirkel", plural: "die Zirkel", meaning: "cyrkiel" },
             { word: "der Ordner", plural: "die Ordner", meaning: "segregator" },
-            { word: "der Federmäppchen", plural: "die Federmäppchen", meaning: "piórnik" },
+            { word: "das Federmäppchen", plural: "die Federmäppchen", meaning: "piórnik" },
             { word: "die Schultasche", plural: "die Schultaschen", meaning: "plecak szkolny" },
             { word: "der Schulranzen", plural: "die Schulranzen", meaning: "tylkojas" },
             { word: "der Farbstift", plural: "die Farbstifte", meaning: "kredka" },
@@ -299,7 +299,7 @@ window.kurrentDecks = [
             { word: "der Kalender", plural: "die Kalender", meaning: "kalendarz" },
             { word: "der Stempel", plural: "die Stempel", meaning: "pieczęć / stempel" },
             { word: "die Visitenkarte", plural: "die Visitenkarten", meaning: "wizytówka" },
-            { word: "der Register", plural: "die Register", meaning: "rejestr / księga" },
+            { word: "das Register", plural: "die Register", meaning: "rejestr / księga" },
             { word: "der Aktenvermerk", plural: "die Aktenvermerke", meaning: "notatka w aktach" }
         ]
     },
@@ -331,7 +331,7 @@ window.kurrentDecks = [
             { word: "der Hirsch", plural: "die Hirsche", meaning: "jeleń" },
             { word: "das Reh", plural: "die Rehe", meaning: "sarna" },
             { word: "der Eber", plural: "die Eber", meaning: "dzik" },
-            { word: "die Hasen", plural: "die Hasen", meaning: "zające" },
+            { word: "der Hase", plural: "die Hasen", meaning: "zając" },
             { word: "der Igel", plural: "die Igel", meaning: "jeż" },
             { word: "das Eichhörnchen", plural: "die Eichhörnchen", meaning: "wiewiórka" },
             { word: "die Fledermaus", plural: "die Fledermäuse", meaning: "nietoperz" },
@@ -354,7 +354,7 @@ window.kurrentDecks = [
             { word: "das Bein", plural: "die Beine", meaning: "noga" },
             { word: "der Finger", plural: "die Finger", meaning: "palec" },
             { word: "die Lippe", plural: "die Lippen", meaning: " warga" },
-            { word: "das Zahn", plural: "die Zähne", meaning: "ząb" },
+            { word: "der Zahn", plural: "die Zähne", meaning: "ząb" },
             { word: "die Zunge", plural: "die Zungen", meaning: "język" },
             { word: "das Herz", plural: "die Herzen", meaning: "serce" },
             { word: "die Lunge", plural: "die Lungen", meaning: "płuco" },
@@ -373,8 +373,8 @@ window.kurrentDecks = [
             { word: "der Kerzenleuchter", plural: "die Kerzenleuchter", meaning: "świecznik" },
             { word: "das Weihrauchfass", plural: "die Weihrauchfässer", meaning: "kadzielnica" },
             { word: "die Glocke", plural: "die Glocken", meaning: "dzwon" },
-            { word: "der Weihwasser", plural: "die Weihwässer", meaning: "woda święcona" },
-            { word: "das Weihrauch", plural: "die Weihräucher", meaning: "kadzidło" },
+            { word: "das Weihwasser", plural: "die Weihwässer", meaning: "woda święcona" },
+            { word: "der Weihrauch", plural: "die Weihräucher", meaning: "kadzidło" },
             { word: "die Kerze", plural: "die Kerzen", meaning: "świeca" },
             { word: "das Kirchenlied", plural: "die Kirchenlieder", meaning: "pieśń kościelna" }
         ]
