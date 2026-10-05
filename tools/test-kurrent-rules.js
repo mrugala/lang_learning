@@ -64,7 +64,7 @@ const CASES = {
 
     // UWAGA: tu s NIE jest Fugen-s, tylko początek członu złożenia, więc
     // jest DŁUGIE (reguła sp/st/sch dla "Schuh") albo zamyka sylabę.
-    "Obstsorten": "Obſtſorten",   // Obst + Sorten: wstawiane ſ okrągłe na pozycji 4
+    "Obstsorten": "Obſtsorten",   // Obst + Sorten: wstawiane s okrągłe na pozycji 4
     "Handschuh": "Handſchuh",
     "Rucksack": "Ruckſack",
     "Kugelschreiber": "Kugelſchreiber",

@@ -140,11 +140,11 @@ function pickWord() {
     // Czasowniki i rzeczowniki rodzaju żeńskiego nie mają odrębnej formy
     // mnogiej, więc nazywanie tego "liczbą mnogą" byłoby mylące.
     const formLabel = usePlural && item.plural
-        ? "liczba mnoga"
-        : usePlural
-            ? "forma mnoga (rodzaj żeński)"
-            : "liczba pojedyncza";
-    detail.textContent = `${item.category} · ${item.pos} · ${formLabel}`;
+        ? " · liczba mnoga"
+        : item.pos == "rzeczownik"
+            ? " · liczba pojedyncza"
+            : "";
+    detail.textContent = `${item.category} · ${item.pos}${formLabel}`;
 
     document.getElementById("char-box").append(prompt, detail);
     const input = document.getElementById("vocabulary-answer");
