@@ -28,7 +28,10 @@ const decks = (window.germanVocabularyCategories || []).map(category => ({
     label: category.label,
     items: category.items.map(item => ({
         word: item.de,
-        plural: item.plural
+        plural: item.plural,
+        // Zapis kurrentowy, jeśli baza go podaje. Glif to forma kurrentowa,
+        // a odpowiedzią jest transkrypcja - więc trzymamy oba zapisy.
+        kurrent: item.kurrent
     }))
 }));
 
@@ -310,13 +313,20 @@ function buildWordsItems() {
             deck.items.forEach(entry => {
                 // Ten tryb ćwiczy ODCZYTYWANIE zapisu kurrentowego, czyli
                 // transkrypcję na znaki łacińskie. Odpowiedzią jest więc
-                // zapis wyrazu w współczesnej ortografii ("der Hund"),
+                // zapis wyrazu w współczesnej ortografii ("der Fisch"),
                 // a NIE polskie tłumaczenie.
                 //
+                // Glif bierzemy z pola "kurrent", które stosuje reguły
+                // długiego (ſ) i okrągłego (s) s dla niemieckiego. Odpowiedź
+                // zostaje we współczesnym zapisie - to właśnie jest transkrypcja.
+                // Gdy pola brak, glif jest równy odpowiedzi.
+                const kurrentDe = entry.kurrent && entry.kurrent.de;
+                const kurrentPlural = entry.kurrent && entry.kurrent.plural;
+
                 // Losujemy formę pojedynczą albo mnogą, bo w Kurrentcie mają
                 // inną pisownię i to jest właśnie to, co chcemy czytać.
                 items.push({
-                    glyph: entry.word,
+                    glyph: kurrentDe || entry.word,
                     answers: [entry.word],
                     answer: entry.word,
                     uppercase: false
@@ -324,7 +334,7 @@ function buildWordsItems() {
 
                 if (entry.plural && entry.plural !== entry.word) {
                     items.push({
-                        glyph: entry.plural,
+                        glyph: kurrentPlural || entry.plural,
                         answers: [entry.plural],
                         answer: entry.plural,
                         uppercase: false
@@ -383,6 +393,8 @@ function pickItem() {
     renderPrompt(item);
 }
 
+// Glif jest już zapisany kurrentowo, więc podmiana na długie s dotyczy
+// tylko trybu liter. W trybie wyrazów glif przyszedł już gotowy.
 function renderPrompt(item) {
     const box = document.getElementById("char-box");
     box.innerHTML = "";
@@ -391,9 +403,7 @@ function renderPrompt(item) {
     main.className = currentMode === "words"
         ? "prompt-main kurrent-text kurrent-word"
         : "prompt-main kurrent-text";
-    main.textContent = currentMode === "words"
-        ? item.glyph.replace(/s(?=[a-zäöüß])/g, "ſ")
-        : item.glyph;
+    main.textContent = item.glyph;
     box.appendChild(main);
 
     document.getElementById("kurrent-answer").placeholder =

@@ -1,3 +1,11 @@
+// Baza słownictwa niemieckiego dla trenera słów.
+//
+// Opcjonalne pole "kurrent" trzyma zapis kurrentowy formy: { de, plural? }.
+// Trener Kurrent pokazuje tę formę jako glif, a odpowiedzią jest transkrypcja
+// we współczesnej ortografii ("der Fiſch" -> "der Fisch", "Waſſer" -> "Wasser").
+// Zasady doboru długiego (ſ) i okrągłego (s) s opisuje tools/gen-kurrent-field.js,
+// który wygenerował to pole na podstawie kurrentschrift.net. Brak pola oznacza,
+// że forma zapisuje się tak samo jak współczesnie.
 window.germanVocabularyCategories = [
     {
         key: "jedzenie",
@@ -8,26 +16,26 @@ window.germanVocabularyCategories = [
             { de: "das Brot", pl: ["chleb"], pos: "rzeczownik", plural: "die Brote", plural_pl: ["chleby"] },
             { de: "die Butter", pl: ["masło"], pos: "rzeczownik", plural: "die Butter", plural_pl: ["masła"] },
             { de: "das Ei", pl: ["jajko", "jajo"], pos: "rzeczownik", plural: "die Eier", plural_pl: ["jajka", "jaja"] },
-            { de: "der Fisch", pl: ["ryba"], pos: "rzeczownik", plural: "die Fische", plural_pl: ["ryby"] },
-            { de: "das Fleisch", pl: ["mięso"], pos: "rzeczownik", plural: "die Fleisch", plural_pl: ["mięsa"] },
-            { de: "der Käse", pl: ["ser"], pos: "rzeczownik", plural: "die Käse", plural_pl: ["sery"] },
+            { de: "der Fisch", pl: ["ryba"], pos: "rzeczownik", plural: "die Fische", plural_pl: ["ryby"], kurrent: { de: "der Fiſch", plural: "die Fiſche" } },
+            { de: "das Fleisch", pl: ["mięso"], pos: "rzeczownik", plural: "die Fleisch", plural_pl: ["mięsa"], kurrent: { de: "das Fleiſch", plural: "die Fleiſch" } },
+            { de: "der Käse", pl: ["ser"], pos: "rzeczownik", plural: "die Käse", plural_pl: ["sery"], kurrent: { de: "der Käſe", plural: "die Käſe" } },
             { de: "die Milch", pl: ["mleko"], pos: "rzeczownik", plural: "die Milch", plural_pl: ["mleko"] },
-            { de: "das Wasser", pl: ["woda"], pos: "rzeczownik", plural: "die Wässer", plural_pl: ["wody"] },
+            { de: "das Wasser", pl: ["woda"], pos: "rzeczownik", plural: "die Wässer", plural_pl: ["wody"], kurrent: { de: "das Waſſer", plural: "die Wäſſer" } },
             { de: "der Kaffee", pl: ["kawa"], pos: "rzeczownik", plural: "die Kaffees", plural_pl: ["kawy"] },
             { de: "der Tee", pl: ["herbata"], pos: "rzeczownik", plural: "die Tees", plural_pl: ["herbaty"] },
-            { de: "das Obst", pl: ["owoce"], pos: "rzeczownik", plural: "die Obstsorten", plural_pl: ["owoce", "rodzaje owoców"] },
+            { de: "das Obst", pl: ["owoce"], pos: "rzeczownik", plural: "die Obstsorten", plural_pl: ["owoce", "rodzaje owoców"], kurrent: { de: "das Obſt", plural: "die Obſtsorten" } },
             { de: "der Salat", pl: ["sałatka"], pos: "rzeczownik", plural: "die Salate", plural_pl: ["sałatki"] },
             { de: "die Suppe", pl: ["zupa"], pos: "rzeczownik", plural: "die Suppen", plural_pl: ["upy", "zupy"] },
             { de: "der Zucker", pl: ["cukier"], pos: "rzeczownik", plural: "die Zucker", plural_pl: ["cukry"] },
-            { de: "das Mineralwasser", pl: ["woda mineralna"], pos: "rzeczownik", plural: "die Mineralwässer", plural_pl: ["wody mineralne"] },
+            { de: "das Mineralwasser", pl: ["woda mineralna"], pos: "rzeczownik", plural: "die Mineralwässer", plural_pl: ["wody mineralne"], kurrent: { de: "das Mineralwaſſer", plural: "die Mineralwäſſer" } },
             { de: "der Saft", pl: ["sok"], pos: "rzeczownik", plural: "die Säfte", plural_pl: ["soki"] },
             { de: "das Bier", pl: ["piwo"], pos: "rzeczownik", plural: "die Biere", plural_pl: ["piwa"] },
             { de: "der Wein", pl: ["wino"], pos: "rzeczownik", plural: "die Weine", plural_pl: ["wina"] },
             { de: "die Limonade", pl: ["lemoniada"], pos: "rzeczownik", plural: "die Limonaden", plural_pl: ["lemoniady"] },
             { de: "der Sekt", pl: ["szampan"], pos: "rzeczownik", plural: "die Sekte", plural_pl: ["szampany"] },
-            { de: "der Schnaps", pl: ["wódka"], pos: "rzeczownik", plural: "die Schnäpse", plural_pl: ["wódki"] },
+            { de: "der Schnaps", pl: ["wódka"], pos: "rzeczownik", plural: "die Schnäpse", plural_pl: ["wódki"], kurrent: { plural: "die Schnäpſe" } },
             { de: "der Kaffeekanne", pl: ["dzbanek do kawy"], pos: "rzeczownik", plural: "die Kaffeekannen", plural_pl: ["dzbanki do kawy"] },
-            { de: "essen", pl: ["jeść", "spożywać"], pos: "czasownik" },
+            { de: "essen", pl: ["jeść", "spożywać"], pos: "czasownik", kurrent: { de: "eſſen" } },
             { de: "trinken", pl: ["pić"], pos: "czasownik" }
         ]
     },
@@ -35,7 +43,7 @@ window.germanVocabularyCategories = [
         key: "meble",
         label: "Meble i wyposażenie",
         items: [
-            { de: "der Tisch", pl: ["stół"], pos: "rzeczownik", plural: "die Tische", plural_pl: ["stoły"] },
+            { de: "der Tisch", pl: ["stół"], pos: "rzeczownik", plural: "die Tische", plural_pl: ["stoły"], kurrent: { de: "der Tiſch", plural: "die Tiſche" } },
             { de: "der Stuhl", pl: ["krzesło"], pos: "rzeczownik", plural: "die Stühle", plural_pl: ["krzesła"] },
             { de: "das Bett", pl: ["łóżko"], pos: "rzeczownik", plural: "die Betten", plural_pl: ["łóżka"] },
             { de: "das Sofa", pl: ["sofa", "kanapa"], pos: "rzeczownik", plural: "die Sofas", plural_pl: ["sofy", "kanapy"] },
@@ -44,7 +52,7 @@ window.germanVocabularyCategories = [
             { de: "die Lampe", pl: ["lampa"], pos: "rzeczownik", plural: "die Lampen", plural_pl: ["lampy"] },
             { de: "der Spiegel", pl: ["lustro"], pos: "rzeczownik", plural: "die Spiegel", plural_pl: ["lustra"] },
             { de: "der Teppich", pl: ["dywan"], pos: "rzeczownik", plural: "die Teppiche" },
-            { de: "der Sessel", pl: ["fotel"], pos: "rzeczownik", plural: "die Sessel" }
+            { de: "der Sessel", pl: ["fotel"], pos: "rzeczownik", plural: "die Sessel", kurrent: { de: "der Seſſel", plural: "die Seſſel" } }
         ]
     },
     {
@@ -60,7 +68,7 @@ window.germanVocabularyCategories = [
             { de: "heute", pl: ["dzisiaj", "dziś"], pos: "przysłówek" },
             { de: "morgen", pl: ["jutro"], pos: "przysłówek" },
             { de: "früh", pl: ["wcześnie"], pos: "przysłówek" },
-            { de: "spät", pl: ["późno"], pos: "przysłówek" }
+            { de: "spät", pl: ["późno"], pos: "przysłówek", kurrent: { de: "ſpät" } }
         ]
     },
     {
@@ -68,11 +76,11 @@ window.germanVocabularyCategories = [
         label: "Dni tygodnia",
         items: [
             { de: "der Montag", pl: ["poniedziałek"], pos: "rzeczownik", plural: "die Montage" },
-            { de: "der Dienstag", pl: ["wtorek"], pos: "rzeczownik", plural: "die Dienstage" },
+            { de: "der Dienstag", pl: ["wtorek"], pos: "rzeczownik", plural: "die Dienstage"  },
             { de: "der Mittwoch", pl: ["środa"], pos: "rzeczownik", plural: "die Mittwoche" },
-            { de: "der Donnerstag", pl: ["czwartek"], pos: "rzeczownik", plural: "die Donnerstage" },
+            { de: "der Donnerstag", pl: ["czwartek"], pos: "rzeczownik", plural: "die Donnerstage"  },
             { de: "der Freitag", pl: ["piątek"], pos: "rzeczownik", plural: "die Freitage" },
-            { de: "der Samstag", pl: ["sobota"], pos: "rzeczownik", plural: "die Samstage" },
+            { de: "der Samstag", pl: ["sobota"], pos: "rzeczownik", plural: "die Samstage"  },
             { de: "der Sonntag", pl: ["niedziela"], pos: "rzeczownik", plural: "die Sonntage" },
             { de: "die Woche", pl: ["tydzień"], pos: "rzeczownik", plural: "die Wochen" },
             { de: "das Wochenende", pl: ["weekend"], pos: "rzeczownik", plural: "die Wochenenden" }
@@ -94,8 +102,8 @@ window.germanVocabularyCategories = [
             { de: "die Verkäuferin", pl: ["sprzedawczyni"], pos: "rzeczownik", plural: "die Verkäuferinnen" },
             { de: "der Student", pl: ["student"], pos: "rzeczownik", plural: "die Studenten" },
             { de: "die Studentin", pl: ["studentka"], pos: "rzeczownik", plural: "die Studentinnen" },
-            { de: "der Polizist", pl: ["policjant"], pos: "rzeczownik", plural: "die Polizisten" },
-            { de: "die Polizistin", pl: ["policjantka"], pos: "rzeczownik", plural: "die Polizistinnen" }
+            { de: "der Polizist", pl: ["policjant"], pos: "rzeczownik", plural: "die Polizisten", kurrent: { de: "der Poliziſt", plural: "die Poliziſten" } },
+            { de: "die Polizistin", pl: ["policjantka"], pos: "rzeczownik", plural: "die Polizistinnen", kurrent: { de: "die Poliziſtin", plural: "die Poliziſtinnen" } }
         ]
     },
     {
@@ -103,15 +111,15 @@ window.germanVocabularyCategories = [
         label: "Przymiotniki",
         items: [
             { de: "gut", pl: ["dobry", "dobra", "dobre"], pos: "przymiotnik" },
-            { de: "schlecht", pl: ["zły", "zła", "złe"], pos: "przymiotnik" },
+            { de: "schlecht", pl: ["zły", "zła", "złe"], pos: "przymiotnik", kurrent: { de: "ſchlecht" } },
             { de: "groß", pl: ["duży", "duża", "duże", "wielki", "wielka", "wielkie"], pos: "przymiotnik" },
             { de: "klein", pl: ["mały", "mała", "małe"], pos: "przymiotnik" },
             { de: "alt", pl: ["stary", "stara", "stare"], pos: "przymiotnik" },
             { de: "jung", pl: ["młody", "młoda", "młode"], pos: "przymiotnik" },
             { de: "neu", pl: ["nowy", "nowa", "nowe"], pos: "przymiotnik" },
-            { de: "schön", pl: ["piękny", "piękna", "piękne", "ładny", "ładna", "ładne"], pos: "przymiotnik" },
-            { de: "schnell", pl: ["szybki", "szybka", "szybkie"], pos: "przymiotnik" },
-            { de: "langsam", pl: ["wolny", "wolna", "wolne", "powolny", "powolna", "powolne"], pos: "przymiotnik" },
+            { de: "schön", pl: ["piękny", "piękna", "piękne", "ładny", "ładna", "ładne"], pos: "przymiotnik", kurrent: { de: "ſchön" } },
+            { de: "schnell", pl: ["szybki", "szybka", "szybkie"], pos: "przymiotnik", kurrent: { de: "ſchnell" } },
+            { de: "langsam", pl: ["wolny", "wolna", "wolne", "powolny", "powolna", "powolne"], pos: "przymiotnik", kurrent: { de: "langſam" } },
             { de: "warm", pl: ["ciepły", "ciepła", "ciepłe"], pos: "przymiotnik" },
             { de: "kalt", pl: ["zimny", "zimna", "zimne"], pos: "przymiotnik" },
             { de: "teuer", pl: ["drogi", "droga", "drogie"], pos: "przymiotnik" },
@@ -122,17 +130,17 @@ window.germanVocabularyCategories = [
         key: "czasowniki",
         label: "Czasowniki",
         items: [
-            { de: "sein", pl: ["być"], pos: "czasownik" },
+            { de: "sein", pl: ["być"], pos: "czasownik", kurrent: { de: "ſein" } },
             { de: "haben", pl: ["mieć"], pos: "czasownik" },
             { de: "gehen", pl: ["iść", "chodzić"], pos: "czasownik" },
             { de: "kommen", pl: ["przychodzić", "przyjść", "przyjeżdżać", "przyjechać"], pos: "czasownik" },
             { de: "machen", pl: ["robić"], pos: "czasownik" },
-            { de: "sprechen", pl: ["mówić", "rozmawiać"], pos: "czasownik" },
+            { de: "sprechen", pl: ["mówić", "rozmawiać"], pos: "czasownik", kurrent: { de: "ſprechen" } },
             { de: "lernen", pl: ["uczyć się"], pos: "czasownik" },
             { de: "arbeiten", pl: ["pracować"], pos: "czasownik" },
             { de: "wohnen", pl: ["mieszkać"], pos: "czasownik" },
-            { de: "lesen", pl: ["czytać"], pos: "czasownik" },
-            { de: "schreiben", pl: ["pisać"], pos: "czasownik" },
+            { de: "lesen", pl: ["czytać"], pos: "czasownik", kurrent: { de: "leſen" } },
+            { de: "schreiben", pl: ["pisać"], pos: "czasownik", kurrent: { de: "ſchreiben" } },
             { de: "kaufen", pl: ["kupować", "kupić"], pos: "czasownik" },
             { de: "brauchen", pl: ["potrzebować"], pos: "czasownik" },
             { de: "finden", pl: ["znajdować", "znaleźć"], pos: "czasownik" }
@@ -142,14 +150,14 @@ window.germanVocabularyCategories = [
         key: "dom",
         label: "Dom i mieszkanie",
         items: [
-            { de: "das Haus", pl: ["dom"], pos: "rzeczownik", plural: "die Häuser" },
+            { de: "das Haus", pl: ["dom"], pos: "rzeczownik", plural: "die Häuser", kurrent: { plural: "die Häuſer" } },
             { de: "die Wohnung", pl: ["mieszkanie"], pos: "rzeczownik", plural: "die Wohnungen" },
             { de: "das Zimmer", pl: ["pokój"], pos: "rzeczownik", plural: "die Zimmer" },
             { de: "die Küche", pl: ["kuchnia"], pos: "rzeczownik", plural: "die Küchen" },
             { de: "das Bad", pl: ["łazienka"], pos: "rzeczownik", plural: "die Bäder" },
             { de: "die Tür", pl: ["drzwi"], pos: "rzeczownik", plural: "die Türen" },
-            { de: "das Fenster", pl: ["okno"], pos: "rzeczownik", plural: "die Fenster" },
-            { de: "der Schlüssel", pl: ["klucz"], pos: "rzeczownik", plural: "die Schlüssel" },
+            { de: "das Fenster", pl: ["okno"], pos: "rzeczownik", plural: "die Fenster", kurrent: { de: "das Fenſter", plural: "die Fenſter" } },
+            { de: "der Schlüssel", pl: ["klucz"], pos: "rzeczownik", plural: "die Schlüssel", kurrent: { de: "der Schlüſſel", plural: "die Schlüſſel" } },
             { de: "wohnen", pl: ["mieszkać"], pos: "czasownik" },
             { de: "öffnen", pl: ["otwierać", "otworzyć"], pos: "czasownik" }
         ]
@@ -163,7 +171,7 @@ window.germanVocabularyCategories = [
             { de: "das Pferd", pl: ["koń"], pos: "rzeczownik", plural: "die Pferde", plural_pl: ["konie"] },
             { de: "die Kuh", pl: ["krowa"], pos: "rzeczownik", plural: "die Kühe", plural_pl: ["krowy"] },
             { de: "das Schaf", pl: ["owca"], pos: "rzeczownik", plural: "die Schafe", plural_pl: ["owce"] },
-            { de: "die Gans", pl: ["gęś"], pos: "rzeczownik", plural: "die Gänse", plural_pl: ["gęsi"] },
+            { de: "die Gans", pl: ["gęś"], pos: "rzeczownik", plural: "die Gänse", plural_pl: ["gęsi"], kurrent: { plural: "die Gänſe" } },
             { de: "der Vogel", pl: ["ptak"], pos: "rzeczownik", plural: "die Vögel", plural_pl: ["ptaki"] },
             { de: "der Bär", pl: ["niedźwiedź"], pos: "rzeczownik", plural: "die Bären", plural_pl: ["niedźwiedzie"] }
         ]
@@ -180,7 +188,7 @@ window.germanVocabularyCategories = [
             { de: "der Mond", pl: ["księżyc"], pos: "rzeczownik", plural: "die Monde", plural_pl: ["księżyce"] },
             { de: "die Sonne", pl: ["słońce"], pos: "rzeczownik", plural: "die Sonnen", plural_pl: ["słońca"] },
             { de: "der See", pl: ["jezioro"], pos: "rzeczownik", plural: "die Seen", plural_pl: ["jeziora"] },
-            { de: "der Fluss", pl: ["rzeka"], pos: "rzeczownik", plural: "die Flüsse", plural_pl: ["rzeki"] }
+            { de: "der Fluss", pl: ["rzeka"], pos: "rzeczownik", plural: "die Flüsse", plural_pl: ["rzeki"], kurrent: { de: "der Fluß", plural: "die Flüſſe" } }
         ]
     },
     {
@@ -192,15 +200,15 @@ window.germanVocabularyCategories = [
             { de: "der Markt", pl: ["rynek"], pos: "rzeczownik", plural: "die Märkte", plural_pl: ["rynki", "targi"] },
             { de: "die Brücke", pl: ["most"], pos: "rzeczownik", plural: "die Brücken", plural_pl: ["mosty"] },
             { de: "der Bahnhof", pl: ["dworzec"], pos: "rzeczownik", plural: "die Bahnhöfe", plural_pl: ["dworce"] },
-            { de: "das Museum", pl: ["muzeum"], pos: "rzeczownik", plural: "die Museen", plural_pl: ["muzea"] },
+            { de: "das Museum", pl: ["muzeum"], pos: "rzeczownik", plural: "die Museen", plural_pl: ["muzea"], kurrent: { de: "das Muſeum", plural: "die Muſeen" } },
             { de: "die Schule", pl: ["szkoła"], pos: "rzeczownik", plural: "die Schulen", plural_pl: ["szkoły"] },
             { de: "das Buch", pl: ["książka"], pos: "rzeczownik", plural: "die Bücher", plural_pl: ["książki"] },
             { de: "das Heft", pl: ["zeszyt"], pos: "rzeczownik", plural: "die Hefte", plural_pl: ["zeszyty"] },
             { de: "die Feder", pl: ["pióro"], pos: "rzeczownik", plural: "die Federn", plural_pl: ["pióra"] },
             { de: "die Tafel", pl: ["tablica"], pos: "rzeczownik", plural: "die Tafeln", plural_pl: ["tablice"] },
-            { de: "der Bleistift", pl: ["ołówek"], pos: "rzeczownik", plural: "die Bleistifte", plural_pl: ["ołówki"] },
+            { de: "der Bleistift", pl: ["ołówek"], pos: "rzeczownik", plural: "die Bleistifte", plural_pl: ["ołówki"], kurrent: { de: "der Bleiſtift", plural: "die Bleiſtifte" } },
             { de: "das Lineal", pl: ["linijka"], pos: "rzeczownik", plural: "die Lineale", plural_pl: ["linijki"] },
-            { de: "der Rucksack", pl: ["plecak"], pos: "rzeczownik", plural: "die Rucksäcke", plural_pl: ["plecaki"] },
+            { de: "der Rucksack", pl: ["plecak"], pos: "rzeczownik", plural: "die Rucksäcke", plural_pl: ["plecaki"], kurrent: { de: "der Ruckſack", plural: "die Ruckſäcke" } },
             { de: "die Mappe", pl: ["teczka"], pos: "rzeczownik", plural: "die Mappen", plural_pl: ["teczki"] }
         ]
     },
@@ -210,13 +218,13 @@ window.germanVocabularyCategories = [
         items: [
             { de: "der Kopf", pl: ["głowa"], pos: "rzeczownik", plural: "die Köpfe", plural_pl: ["głowy"] },
             { de: "das Auge", pl: ["oko"], pos: "rzeczownik", plural: "die Augen", plural_pl: ["oczy"] },
-            { de: "die Nase", pl: ["nos"], pos: "rzeczownik", plural: "die Nasen", plural_pl: ["nosy"] },
+            { de: "die Nase", pl: ["nos"], pos: "rzeczownik", plural: "die Nasen", plural_pl: ["nosy"], kurrent: { de: "die Naſe", plural: "die Naſen" } },
             { de: "der Mund", pl: ["usta"], pos: "rzeczownik", plural: "die Münder", plural_pl: ["usta"] },
             { de: "das Ohr", pl: ["ucho"], pos: "rzeczownik", plural: "die Ohren", plural_pl: ["uszy"] },
             { de: "die Hand", pl: ["ręka"], pos: "rzeczownik", plural: "die Hände", plural_pl: ["ręce"] },
             { de: "der Fuß", pl: ["stopa", "noga"], pos: "rzeczownik", plural: "die Füße", plural_pl: ["stopy", "nogi"] },
             { de: "das Haar", pl: ["włosy"], pos: "rzeczownik", plural: "die Haare", plural_pl: ["włosy"] },
-            { de: "der Hals", pl: ["gardło", "szyja"], pos: "rzeczownik", plural: "die Hälse", plural_pl: ["gardła", "szyje"] },
+            { de: "der Hals", pl: ["gardło", "szyja"], pos: "rzeczownik", plural: "die Hälse", plural_pl: ["gardła", "szyje"], kurrent: { plural: "die Hälſe" } },
             { de: "die Schulter", pl: ["ramię"], pos: "rzeczownik", plural: "die Schultern", plural_pl: ["ramiona"] },
             { de: "der Rücken", pl: ["plecy"], pos: "rzeczownik", plural: "die Rücken", plural_pl: ["plecy"] },
             { de: "der Bauch", pl: ["brzuch"], pos: "rzeczownik", plural: "die Bäuche", plural_pl: ["brzuchy"] },
@@ -240,16 +248,16 @@ window.germanVocabularyCategories = [
             { de: "die Zange", pl: ["kleszcze", "szczypce"], pos: "rzeczownik", plural: "die Zangen", plural_pl: ["kleszcze", "szczypce"] },
             { de: "der Nagel", pl: ["gwóźdź"], pos: "rzeczownik", plural: "die Nägel", plural_pl: ["gwoździe"] },
             { de: "das Sägeblatt", pl: ["brzesnica"], pos: "rzeczownik", plural: "die Sägeblätter", plural_pl: ["brzesnice"] },
-            { de: "der Kessel", pl: ["kotel"], pos: "rzeczownik", plural: "die Kessel", plural_pl: ["kotły"] },
+            { de: "der Kessel", pl: ["kotel"], pos: "rzeczownik", plural: "die Kessel", plural_pl: ["kotły"], kurrent: { de: "der Keſſel", plural: "die Keſſel" } },
             { de: "der Korb", pl: ["kosz"], pos: "rzeczownik", plural: "die Körbe", plural_pl: ["kosze"] },
             { de: "das Kleid", pl: ["sukienka"], pos: "rzeczownik", plural: "die Kleider", plural_pl: ["sukienki"] },
-            { de: "die Hose", pl: ["spodnie"], pos: "rzeczownik", plural: "die Hosen", plural_pl: ["spodnie"] },
+            { de: "die Hose", pl: ["spodnie"], pos: "rzeczownik", plural: "die Hosen", plural_pl: ["spodnie"], kurrent: { de: "die Hoſe", plural: "die Hoſen" } },
             { de: "der Rock", pl: ["spódnica", "marynarka"], pos: "rzeczownik", plural: "die Röcke", plural_pl: ["spódnice", "marynarki"] },
             { de: "das Hemd", pl: ["koszula"], pos: "rzeczownik", plural: "die Hemden", plural_pl: ["koszule"] },
             { de: "der Schuh", pl: ["but"], pos: "rzeczownik", plural: "die Schuhe", plural_pl: ["buty"] },
             { de: "der Hut", pl: ["kapelusz"], pos: "rzeczownik", plural: "die Hüte", plural_pl: ["kapelusze"] },
             { de: "der Mantel", pl: ["płaszcz"], pos: "rzeczownik", plural: "die Mäntel", plural_pl: ["płaszcze"] },
-            { de: "der Handschuh", pl: ["rękawica"], pos: "rzeczownik", plural: "die Handschuhe", plural_pl: ["rękawice"] }
+            { de: "der Handschuh", pl: ["rękawica"], pos: "rzeczownik", plural: "die Handschuhe", plural_pl: ["rękawice"], kurrent: { de: "der Handſchuh", plural: "die Handſchuhe" } }
         ]
     },
     {
@@ -259,9 +267,9 @@ window.germanVocabularyCategories = [
             { de: "die Birne", pl: ["gruszka"], pos: "rzeczownik", plural: "die Birnen", plural_pl: ["gruszki"] },
             { de: "die Orange", pl: ["pomarańcza"], pos: "rzeczownik", plural: "die Orangen", plural_pl: ["pomarańcze"] },
             { de: "die Zitrone", pl: ["cytryna"], pos: "rzeczownik", plural: "die Zitronen", plural_pl: ["cytryny"] },
-            { de: "der Pfirsich", pl: ["brzoskwinia"], pos: "rzeczownik", plural: "die Pfirsiche", plural_pl: ["brzoskwinie"] },
+            { de: "der Pfirsich", pl: ["brzoskwinia"], pos: "rzeczownik", plural: "die Pfirsiche", plural_pl: ["brzoskwinie"], kurrent: { de: "der Pfirſich", plural: "die Pfirſiche" } },
             { de: "die Erdbeere", pl: ["truskawka"], pos: "rzeczownik", plural: "die Erdbeeren", plural_pl: ["truskawki"] },
-            { de: "die Kirsche", pl: ["wiśnia"], pos: "rzeczownik", plural: "die Kirschen", plural_pl: ["wiśnie"] },
+            { de: "die Kirsche", pl: ["wiśnia"], pos: "rzeczownik", plural: "die Kirschen", plural_pl: ["wiśnie"], kurrent: { de: "die Kirſche", plural: "die Kirſchen" } },
             { de: "die Traube", pl: ["winogrono"], pos: "rzeczownik", plural: "die Trauben", plural_pl: ["winogrona"] },
             { de: "die Melone", pl: ["melon"], pos: "rzeczownik", plural: "die Melonen", plural_pl: ["melony"] },
             { de: "die Kartoffel", pl: ["ziemniak"], pos: "rzeczownik", plural: "die Kartoffeln", plural_pl: ["ziemniaki"] },
@@ -271,7 +279,7 @@ window.germanVocabularyCategories = [
             { de: "die Zwiebel", pl: ["cebula"], pos: "rzeczownik", plural: "die Zwiebeln", plural_pl: ["cebulę"] },
             { de: "der Knoblauch", pl: ["czosnek"], pos: "rzeczownik", plural: "die Knoblauch", plural_pl: ["czosnki"] },
             { de: "die Gurke", pl: ["ogórek"], pos: "rzeczownik", plural: "die Gurken", plural_pl: ["ogórki"] },
-            { de: "die Erbse", pl: ["groch"], pos: "rzeczownik", plural: "die Erbsen", plural_pl: ["grochy"] },
+            { de: "die Erbse", pl: ["groch"], pos: "rzeczownik", plural: "die Erbsen", plural_pl: ["grochy"], kurrent: { de: "die Erbſe", plural: "die Erbſen" } },
             { de: "der Pilz", pl: ["grzyb"], pos: "rzeczownik", plural: "die Pilze", plural_pl: ["grzyby"] },
             { de: "der Spargel", pl: ["szparagi"], pos: "rzeczownik", plural: "die Spargel", plural_pl: ["szparagi"] }
         ]
@@ -280,10 +288,10 @@ window.germanVocabularyCategories = [
         key: "przybory-szkolne",
         label: "Przybory szkolne",
         items: [
-            { de: "der Kugelschreiber", pl: ["długopis"], pos: "rzeczownik", plural: "die Kugelschreiber", plural_pl: ["długopisy"] },
-            { de: "der Füllstift", pl: ["pióro wieczne"], pos: "rzeczownik", plural: "die Füllstifte", plural_pl: ["pióra wieczne"] },
+            { de: "der Kugelschreiber", pl: ["długopis"], pos: "rzeczownik", plural: "die Kugelschreiber", plural_pl: ["długopisy"], kurrent: { de: "der Kugelſchreiber", plural: "die Kugelſchreiber" } },
+            { de: "der Füllstift", pl: ["pióro wieczne"], pos: "rzeczownik", plural: "die Füllstifte", plural_pl: ["pióra wieczne"], kurrent: { de: "der Füllſtift", plural: "die Füllſtifte" } },
             { de: "der Radiergummi", pl: ["gumka do mazania"], pos: "rzeczownik", plural: "die Radiergummis", plural_pl: ["gumki do mazania"] },
-            { de: "der Tuschestift", pl: ["flamaster"], pos: "rzeczownik", plural: "die Tuschestifte", plural_pl: ["flamastry"] },
+            { de: "der Tuschestift", pl: ["flamaster"], pos: "rzeczownik", plural: "die Tuschestifte", plural_pl: ["flamastry"], kurrent: { de: "der Tuſcheſtift", plural: "die Tuſcheſtifte" } },
             { de: "die Schere", pl: ["nożyczki"], pos: "rzeczownik", plural: "die Scheren", plural_pl: ["nożyczki"] },
             { de: "der Kleber", pl: ["klej"], pos: "rzeczownik", plural: "die Kleber", plural_pl: ["kleje"] },
             { de: "das Geodreieck", pl: ["ekierka"], pos: "rzeczownik", plural: "die Geodreiecke", plural_pl: ["ekierki"] },
@@ -292,30 +300,30 @@ window.germanVocabularyCategories = [
             { de: "das Federmäppchen", pl: ["piórnik"], pos: "rzeczownik", plural: "die Federmäppchen", plural_pl: ["piórniki"] },
             { de: "die Schultasche", pl: ["plecak szkolny"], pos: "rzeczownik", plural: "die Schultaschen", plural_pl: ["plecaki szkolne"] },
             { de: "der Schulranzen", pl: ["tylkojas"], pos: "rzeczownik", plural: "die Schulranzen", plural_pl: ["tylkojasy"] },
-            { de: "der Farbstift", pl: ["kredka"], pos: "rzeczownik", plural: "die Farbstifte", plural_pl: ["kredki"] },
-            { de: "die Bastelschere", pl: ["nożyczki dla dzieci"], pos: "rzeczownik", plural: "die Bastelscheren", plural_pl: ["nożyczki dla dzieci"] }
+            { de: "der Farbstift", pl: ["kredka"], pos: "rzeczownik", plural: "die Farbstifte", plural_pl: ["kredki"], kurrent: { de: "der Farbſtift", plural: "die Farbſtifte" } },
+            { de: "die Bastelschere", pl: ["nożyczki dla dzieci"], pos: "rzeczownik", plural: "die Bastelscheren", plural_pl: ["nożyczki dla dzieci"], kurrent: { de: "die Baſtelschere", plural: "die Baſtelscheren" } }
         ]
     },
     {
         key: "biuro",
         label: "Biuro",
         items: [
-            { de: "der Schreibtisch", pl: ["biurko"], pos: "rzeczownik", plural: "die Schreibtische", plural_pl: ["biurka"] },
-            { de: "der Bürostuhl", pl: ["fotel biurowy"], pos: "rzeczownik", plural: "die Bürostühle", plural_pl: ["fotele biurowe"] },
+            { de: "der Schreibtisch", pl: ["biurko"], pos: "rzeczownik", plural: "die Schreibtische", plural_pl: ["biurka"], kurrent: { de: "der Schreibtiſch", plural: "die Schreibtiſche" } },
+            { de: "der Bürostuhl", pl: ["fotel biurowy"], pos: "rzeczownik", plural: "die Bürostühle", plural_pl: ["fotele biurowe"], kurrent: { de: "der Büroſtuhl", plural: "die Büroſtühle" } },
             { de: "die Schublade", pl: ["szuflada"], pos: "rzeczownik", plural: "die Schubladen", plural_pl: ["szuflady"] },
             { de: "der Aktenordner", pl: ["teczka aktowa"], pos: "rzeczownik", plural: "die Aktenordner", plural_pl: ["teczki aktowe"] },
             { de: "der Hefter", pl: ["zszywacz"], pos: "rzeczownik", plural: "die Hefter", plural_pl: ["zszywacze"] },
             { de: "die Büroklammer", pl: ["spinacz"], pos: "rzeczownik", plural: "die Büroklammern", plural_pl: ["spinacze"] },
             { de: "der Locher", pl: ["dziurkacz"], pos: "rzeczownik", plural: "die Locher", plural_pl: ["dziurkacze"] },
-            { de: "die Papierschere", pl: ["nożyczki do papieru"], pos: "rzeczownik", plural: "die Papierscheren", plural_pl: ["nożyczki do papieru"] },
+            { de: "die Papierschere", pl: ["nożyczki do papieru"], pos: "rzeczownik", plural: "die Papierscheren", plural_pl: ["nożyczki do papieru"]  },
             { de: "der Brief", pl: ["list"], pos: "rzeczownik", plural: "die Briefe", plural_pl: ["listy"] },
-            { de: "der Umschlag", pl: ["koperta"], pos: "rzeczownik", plural: "die Umschläge", plural_pl: ["koperty"] },
+            { de: "der Umschlag", pl: ["koperta"], pos: "rzeczownik", plural: "die Umschläge", plural_pl: ["koperty"], kurrent: { de: "der Umſchlag", plural: "die Umſchläge" } },
             { de: "das Formular", pl: ["formularz"], pos: "rzeczownik", plural: "die Formulare", plural_pl: ["formularze"] },
             { de: "die Notiz", pl: ["notatka"], pos: "rzeczownik", plural: "die Notizen", plural_pl: ["notatki"] },
             { de: "der Kalender", pl: ["kalendarz"], pos: "rzeczownik", plural: "die Kalender", plural_pl: ["kalendarze"] },
             { de: "der Stempel", pl: ["pieczęć", "stempel"], pos: "rzeczownik", plural: "die Stempel", plural_pl: ["pieczęcie", "stemple"] },
-            { de: "die Visitenkarte", pl: ["wizytówka"], pos: "rzeczownik", plural: "die Visitenkarten", plural_pl: ["wizytówki"] },
-            { de: "das Register", pl: ["rejestr", "księga"], pos: "rzeczownik", plural: "die Register", plural_pl: ["rejestry", "księgi"] },
+            { de: "die Visitenkarte", pl: ["wizytówka"], pos: "rzeczownik", plural: "die Visitenkarten", plural_pl: ["wizytówki"], kurrent: { de: "die Viſitenkarte", plural: "die Viſitenkarten" } },
+            { de: "das Register", pl: ["rejestr", "księga"], pos: "rzeczownik", plural: "die Register", plural_pl: ["rejestry", "księgi"], kurrent: { de: "das Regiſter", plural: "die Regiſter" } },
             { de: "der Aktenvermerk", pl: ["notatka w aktach"], pos: "rzeczownik", plural: "die Aktenvermerke", plural_pl: ["notatki w aktach"] }
         ]
     },
@@ -332,7 +340,7 @@ window.germanVocabularyCategories = [
             { de: "der Hahn", pl: ["kogut"], pos: "rzeczownik", plural: "die Hähne", plural_pl: ["koguty"] },
             { de: "die Ente", pl: ["kaczka"], pos: "rzeczownik", plural: "die Enten", plural_pl: ["kaczki"] },
             { de: "das Kaninchen", pl: ["królik"], pos: "rzeczownik", plural: "die Kaninchen", plural_pl: ["króliki"] },
-            { de: "der Bienenstock", pl: ["ul"], pos: "rzeczownik", plural: "die Bienenstöcke", plural_pl: ["ule"] },
+            { de: "der Bienenstock", pl: ["ul"], pos: "rzeczownik", plural: "die Bienenstöcke", plural_pl: ["ule"], kurrent: { de: "der Bienenſtock", plural: "die Bienenſtöcke" } },
             { de: "die Biene", pl: ["pszczoła"], pos: "rzeczownik", plural: "die Bienen", plural_pl: ["pszczoły"] },
             { de: "das Geflügel", pl: ["drób"], pos: "rzeczownik", plural: "die Geflügel", plural_pl: ["drób"] }
         ]
@@ -342,20 +350,20 @@ window.germanVocabularyCategories = [
         label: "Zwierzęta dzikie i ryby",
         items: [
             { de: "der Wolf", pl: ["wilk"], pos: "rzeczownik", plural: "die Wölfe", plural_pl: ["wilki"] },
-            { de: "der Fuchs", pl: ["lis"], pos: "rzeczownik", plural: "die Füchse", plural_pl: ["lisy"] },
+            { de: "der Fuchs", pl: ["lis"], pos: "rzeczownik", plural: "die Füchse", plural_pl: ["lisy"], kurrent: { plural: "die Füchſe" } },
             { de: "die Wildkatze", pl: ["dziki kot"], pos: "rzeczownik", plural: "die Wildkatzen", plural_pl: ["dzikie koty"] },
-            { de: "der Hirsch", pl: ["jeleń"], pos: "rzeczownik", plural: "die Hirsche", plural_pl: ["jelenie"] },
+            { de: "der Hirsch", pl: ["jeleń"], pos: "rzeczownik", plural: "die Hirsche", plural_pl: ["jelenie"], kurrent: { de: "der Hirſch", plural: "die Hirſche" } },
             { de: "das Reh", pl: ["sarna"], pos: "rzeczownik", plural: "die Rehe", plural_pl: ["sarny"] },
             { de: "der Eber", pl: ["dzik"], pos: "rzeczownik", plural: "die Eber", plural_pl: ["dziki"] },
-            { de: "der Hase", pl: ["zając"], pos: "rzeczownik", plural: "die Hasen", plural_pl: ["zajace"] },
+            { de: "der Hase", pl: ["zając"], pos: "rzeczownik", plural: "die Hasen", plural_pl: ["zajace"], kurrent: { de: "der Haſe", plural: "die Haſen" } },
             { de: "der Igel", pl: ["jeż"], pos: "rzeczownik", plural: "die Igel", plural_pl: ["jeże"] },
             { de: "das Eichhörnchen", pl: ["wiewiórka"], pos: "rzeczownik", plural: "die Eichhörnchen", plural_pl: ["wiewiórki"] },
-            { de: "die Fledermaus", pl: ["nietoperz"], pos: "rzeczownik", plural: "die Fledermäuse", plural_pl: ["nietoperze"] },
+            { de: "die Fledermaus", pl: ["nietoperz"], pos: "rzeczownik", plural: "die Fledermäuse", plural_pl: ["nietoperze"], kurrent: { plural: "die Fledermäuſe" } },
             { de: "der Maulwurf", pl: ["kret"], pos: "rzeczownik", plural: "die Maulwürfe", plural_pl: ["krety"] },
             { de: "die Möwe", pl: ["mewa"], pos: "rzeczownik", plural: "die Möwen", plural_pl: ["mewy"] },
             { de: "der Adler", pl: ["orzeł"], pos: "rzeczownik", plural: "die Adler", plural_pl: ["orły"] },
             { de: "die Eule", pl: ["sowa"], pos: "rzeczownik", plural: "die Eulen", plural_pl: ["sowy"] },
-            { de: "der Barsch", pl: ["okoń"], pos: "rzeczownik", plural: "die Barsche", plural_pl: ["oknie"] },
+            { de: "der Barsch", pl: ["okoń"], pos: "rzeczownik", plural: "die Barsche", plural_pl: ["oknie"], kurrent: { de: "der Barſch", plural: "die Barſche" } },
             { de: "die Forelle", pl: ["pstrąg"], pos: "rzeczownik", plural: "die Forellen", plural_pl: ["pstrągi"] }
         ]
     },
@@ -365,36 +373,36 @@ window.germanVocabularyCategories = [
         items: [
             { de: "Gott", pl: ["Bóg", "Pan Bóg"], pos: "rzeczownik" },
             { de: "der Herr", pl: ["Pan", "Bóg"], pos: "rzeczownik", plural: "die Herren" },
-            { de: "Jesus Christus", pl: ["Jezus Chrystus"], pos: "rzeczownik" },
-            { de: "der Heilige Geist", pl: ["Duch Święty"], pos: "rzeczownik" },
+            { de: "Jesus Christus", pl: ["Jezus Chrystus"], pos: "rzeczownik", kurrent: { de: "Jeſus Chriſtus" } },
+            { de: "der Heilige Geist", pl: ["Duch Święty"], pos: "rzeczownik", kurrent: { de: "der Heilige Geiſt" } },
             { de: "die Kirche", pl: ["kościół"], pos: "rzeczownik", plural: "die Kirchen" },
-            { de: "der Gottesdienst", pl: ["nabożeństwo"], pos: "rzeczownik", plural: "die Gottesdienste" },
-            { de: "die Messe", pl: ["Msza", "Msza święta"], pos: "rzeczownik", plural: "die Messen" },
-            { de: "die Eucharistie", pl: ["Eucharystia"], pos: "rzeczownik", plural: "die Eucharistien" },
+            { de: "der Gottesdienst", pl: ["nabożeństwo"], pos: "rzeczownik", plural: "die Gottesdienste", kurrent: { de: "der Gottesdienſt", plural: "die Gottesdienſte" } },
+            { de: "die Messe", pl: ["Msza", "Msza święta"], pos: "rzeczownik", plural: "die Messen", kurrent: { de: "die Meſſe", plural: "die Meſſen" } },
+            { de: "die Eucharistie", pl: ["Eucharystia"], pos: "rzeczownik", plural: "die Eucharistien", kurrent: { de: "die Euchariſtie", plural: "die Euchariſtien" } },
             { de: "die Kommunion", pl: ["Komunia", "Komunia święta"], pos: "rzeczownik", plural: "die Kommunionen" },
             { de: "das Sakrament", pl: ["sakrament"], pos: "rzeczownik", plural: "die Sakramente" },
             { de: "die Taufe", pl: ["chrzest"], pos: "rzeczownik", plural: "die Taufen" },
             { de: "die Firmung", pl: ["bierzmowanie"], pos: "rzeczownik", plural: "die Firmungen" },
             { de: "die Beichte", pl: ["spowiedź"], pos: "rzeczownik", plural: "die Beichten" },
-            { de: "die Priesterweihe", pl: ["święcenia kapłańskie"], pos: "rzeczownik", plural: "die Priesterweihen" },
-            { de: "die Krankensalbung", pl: ["namaszczenie chorych"], pos: "rzeczownik", plural: "die Krankensalbungen" },
+            { de: "die Priesterweihe", pl: ["święcenia kapłańskie"], pos: "rzeczownik", plural: "die Priesterweihen", kurrent: { de: "die Prieſterweihe", plural: "die Prieſterweihen" } },
+            { de: "die Krankensalbung", pl: ["namaszczenie chorych"], pos: "rzeczownik", plural: "die Krankensalbungen"  },
             { de: "der Altar", pl: ["ołtarz"], pos: "rzeczownik", plural: "die Altäre" },
             { de: "der Kelch", pl: ["kielich"], pos: "rzeczownik", plural: "die Kelche" },
             { de: "der Weihrauch", pl: ["kadzidło"], pos: "rzeczownik", plural: "die Weihräucher" },
-            { de: "das Weihrauchfass", pl: ["kadzielnica"], pos: "rzeczownik", plural: "die Weihrauchfässer" },
-            { de: "das Weihwasser", pl: ["woda święcona"], pos: "rzeczownik", plural: "die Weihwässer" },
-            { de: "die Hostie", pl: ["hostia"], pos: "rzeczownik", plural: "die Hostien" },
+            { de: "das Weihrauchfass", pl: ["kadzielnica"], pos: "rzeczownik", plural: "die Weihrauchfässer", kurrent: { de: "das Weihrauchfaß", plural: "die Weihrauchfäſſer" } },
+            { de: "das Weihwasser", pl: ["woda święcona"], pos: "rzeczownik", plural: "die Weihwässer", kurrent: { de: "das Weihwaſſer", plural: "die Weihwäſſer" } },
+            { de: "die Hostie", pl: ["hostia"], pos: "rzeczownik", plural: "die Hostien", kurrent: { de: "die Hoſtie", plural: "die Hoſtien" } },
             { de: "das Kreuz", pl: ["krzyż"], pos: "rzeczownik", plural: "die Kreuze" },
             { de: "die Bibel", pl: ["Biblia"], pos: "rzeczownik", plural: "die Bibeln" },
             { de: "das Gebet", pl: ["modlitwa"], pos: "rzeczownik", plural: "die Gebete" },
-            { de: "der Priester", pl: ["kapłan", "ksiądz"], pos: "rzeczownik", plural: "die Priester" },
-            { de: "der Papst", pl: ["papież"], pos: "rzeczownik", plural: "die Päpste" },
-            { de: "der Apostel", pl: ["apostoł"], pos: "rzeczownik", plural: "die Apostel" },
+            { de: "der Priester", pl: ["kapłan", "ksiądz"], pos: "rzeczownik", plural: "die Priester", kurrent: { de: "der Prieſter", plural: "die Prieſter" } },
+            { de: "der Papst", pl: ["papież"], pos: "rzeczownik", plural: "die Päpste", kurrent: { de: "der Papſt", plural: "die Päpſte" } },
+            { de: "der Apostel", pl: ["apostoł"], pos: "rzeczownik", plural: "die Apostel", kurrent: { de: "der Apoſtel", plural: "die Apoſtel" } },
             { de: "der Mönch", pl: ["mnich", "zakonnik"], pos: "rzeczownik", plural: "die Mönche" },
             { de: "die Nonne", pl: ["zakonnica"], pos: "rzeczownik", plural: "die Nonnen" },
             { de: "der Glaube", pl: ["wiara"], pos: "rzeczownik", plural: "die Glauben" },
             { de: "das Evangelium", pl: ["Ewangelia", "dobra nowina"], pos: "rzeczownik", plural: "die Evangelien" },
-            { de: "die Auferstehung", pl: ["zmartwychwstanie"], pos: "rzeczownik", plural: "die Auferstehungen" },
+            { de: "die Auferstehung", pl: ["zmartwychwstanie"], pos: "rzeczownik", plural: "die Auferstehungen", kurrent: { de: "die Auferſtehung", plural: "die Auferſtehungen" } },
             { de: "das Opfer", pl: ["ofiara"], pos: "rzeczownik", plural: "die Opfer" },
             { de: "der Weihrauch", pl: ["kadzidło"], pos: "rzeczownik", plural: "die Weihräucher" },
             { de: "der Kerzenleuchter", pl: ["świecznik"], pos: "rzeczownik", plural: "die Kerzenleuchter" },
@@ -403,12 +411,12 @@ window.germanVocabularyCategories = [
             { de: "das Kirchenlied", pl: ["pieśń kościelna"], pos: "rzeczownik", plural: "die Kirchenlieder", plural_pl: ["pieśni kościelne"] },
             { de: "die Salbung", pl: ["namaszczenie chorych"], pos: "rzeczownik", plural: "die Salbungen", plural_pl: ["namaszczenia"] },
             { de: "die Weihe", pl: ["święcenia"], pos: "rzeczownik", plural: "die Weihen", plural_pl: ["święcenia"] },
-            { de: "die Ersthkommunion", pl: ["pierwsza Komunia"], pos: "rzeczownik", plural: "die Ersthkommunionen", plural_pl: ["pierwsze Komunie"] },
-            { de: "die Osterkommunion", pl: ["Komunia wielkanocna"], pos: "rzeczownik", plural: "die Osterkommunionen", plural_pl: ["Komunie wielkanocne"] },
+            { de: "die Ersthkommunion", pl: ["pierwsza Komunia"], pos: "rzeczownik", plural: "die Ersthkommunionen", plural_pl: ["pierwsze Komunie"], kurrent: { de: "die Erſthkommunion", plural: "die Erſthkommunionen" } },
+            { de: "die Osterkommunion", pl: ["Komunia wielkanocna"], pos: "rzeczownik", plural: "die Osterkommunionen", plural_pl: ["Komunie wielkanocne"], kurrent: { de: "die Oſterkommunion", plural: "die Oſterkommunionen" } },
             { de: "der Pater", pl: ["ksiądz"], pos: "rzeczownik", plural: "die Patres", plural_pl: ["księża"] },
             { de: "der Kardinal", pl: ["kardynał"], pos: "rzeczownik", plural: "die Kardinäle", plural_pl: ["kardynałowie"] },
-            { de: "der Bischof", pl: ["biskup"], pos: "rzeczownik", plural: "die Bischöfe", plural_pl: ["biskupi"] },
-            { de: "der Erzbischof", pl: ["arcybiskup"], pos: "rzeczownik", plural: "die Erzbischöfe", plural_pl: ["arcybiskupi"] },
+            { de: "der Bischof", pl: ["biskup"], pos: "rzeczownik", plural: "die Bischöfe", plural_pl: ["biskupi"], kurrent: { de: "der Biſchof", plural: "die Biſchöfe" } },
+            { de: "der Erzbischof", pl: ["arcybiskup"], pos: "rzeczownik", plural: "die Erzbischöfe", plural_pl: ["arcybiskupi"], kurrent: { de: "der Erzbiſchof", plural: "die Erzbiſchöfe" } },
             { de: "die Maria", pl: ["Maryja", "Matka Boska"], pos: "rzeczownik", plural: "die Marien", plural_pl: ["Maryje"] },
             { de: "der Sohn", pl: ["Syn", "Syn Boży"], pos: "rzeczownik", plural: "die Söhne", plural_pl: ["Synowie"] },
             { de: "der Gott", pl: ["Bóg"], pos: "rzeczownik", plural: "die Götter", plural_pl: ["bogowie"] },
@@ -417,10 +425,10 @@ window.germanVocabularyCategories = [
             { de: "die Inkarnation", pl: ["Wcielenie"], pos: "rzeczownik", plural: "die Inkarnationen", plural_pl: ["Wcielenia"] },
             { de: "das Leiden", pl: ["męka"], pos: "rzeczownik", plural: "die Leiden", plural_pl: ["męki"] },
             { de: "die Opfergabe", pl: ["ofiarowanie", "dar ofiarny"], pos: "rzeczownik", plural: "die Opfergaben", plural_pl: ["dary ofiarne"] },
-            { de: "der Gesang", pl: ["pieśń", "pieśń liturgiczna"], pos: "rzeczownik", plural: "die Gesänge", plural_pl: ["pieśni"] },
+            { de: "der Gesang", pl: ["pieśń", "pieśń liturgiczna"], pos: "rzeczownik", plural: "die Gesänge", plural_pl: ["pieśni"], kurrent: { de: "der Geſang", plural: "die Geſänge" } },
             { de: "beten", pl: ["modlić się"], pos: "czasownik" },
             { de: "glauben", pl: ["wierzyć"], pos: "czasownik" },
-            { de: "segnen", pl: ["błogosławić"], pos: "czasownik" },
+            { de: "segnen", pl: ["błogosławić"], pos: "czasownik", kurrent: { de: "ſegnen" } },
             { de: "heilig", pl: ["święty", "święta", "święte"], pos: "przymiotnik" }
         ]
     }

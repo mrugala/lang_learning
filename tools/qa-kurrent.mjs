@@ -10,22 +10,35 @@ export default async function run(page) {
   const words = global.window.germanVocabularyCategories.flatMap(c => c.items);
   const deckKeys = global.window.germanVocabularyCategories.map(c => c.key);
 
-  // Czcionka renderuje długie s jako "ſ", więc porównanie surowego tekstu
-  // z danymi zawodzi - normalizujemy znak po znaku.
-  const norm = value => String(value || '').replace(/\u017F/g, 's').trim();
+  // Czcionka renderuje długie s jako "ſ", a końcowe "ss" jako ß (reguła Das ß),
+  // więc normalizujemy oba zapisy, żeby znaleźć wyraz w bazie.
+  const norm = value => String(value || '')
+    .replace(/\u017F/g, 's')
+    .replace(/ß/g, 'ss')
+    .trim();
 
   // Tryb liter: odpowiedzią jest tożsamość litery.
   // Tryb słów: transkrypcja zapisu kurrentowego, więc odpowiedzią jest sam
   // wyraz we współczesnej ortografii, w tej samej liczbie co glifa.
+  // Kurrent pokazuje formy zapisane polem "kurrent" (długie ſ), a odpowiedzią
+  // jest transkrypcja we współczesnym zapisie.
   const lookup = glyph => {
     const letter = letters.find(item => item.char === glyph || item.upper === glyph);
     if (letter) return glyph;
 
     const key = norm(glyph);
-    const entry = words.find(item => norm(item.de) === key || norm(item.plural) === key);
+    const entry = words.find(item => {
+      const kDe = item.kurrent && item.kurrent.de;
+      const kPl = item.kurrent && item.kurrent.plural;
+      return norm(kDe || item.de) === key || norm(kPl || item.plural) === key;
+    });
     if (!entry) return null;
-    return norm(entry.plural) === key ? entry.plural : entry.de;
+
+    const kPl = entry.kurrent && entry.kurrent.plural;
+    return norm(kPl || entry.plural) === key ? entry.plural : entry.de;
   };
+
+  const item_plural = item => item.plural;
 
   // Kolejka kończy się w trakcie długiego testu - wtedy restartujemy naukę.
   const ensureSession = async () => {
