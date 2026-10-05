@@ -4,9 +4,11 @@ export default async function run(page) {
   const out = { steps: [] };
 
   global.window = {};
+  await import('../german-vocabulary-data.js');
   await import('../kurrent-data.js');
   const letters = global.window.kurrentLetters.flatMap(g => g.items);
-  const words = global.window.kurrentDecks.flatMap(d => d.items);
+  const words = global.window.germanVocabularyCategories.flatMap(c => c.items);
+  const deckKeys = global.window.germanVocabularyCategories.map(c => c.key);
 
   // Czcionka renderuje długie s jako "ſ", więc porównanie surowego tekstu
   // z danymi zawodzi - normalizujemy znak po znaku.
@@ -20,9 +22,9 @@ export default async function run(page) {
     if (letter) return glyph;
 
     const key = norm(glyph);
-    const entry = words.find(item => norm(item.word) === key || norm(item.plural) === key);
+    const entry = words.find(item => norm(item.de) === key || norm(item.plural) === key);
     if (!entry) return null;
-    return norm(entry.plural) === key ? entry.plural : entry.word;
+    return norm(entry.plural) === key ? entry.plural : entry.de;
   };
 
   // Kolejka kończy się w trakcie długiego testu - wtedy restartujemy naukę.
@@ -159,7 +161,7 @@ export default async function run(page) {
   // "die Gänſe" (z długim s w Kurrentcie) ma być przepisane "die Gänse".
   await page.locator('#end-study').click();
   await page.locator('#clear-all-decks').click();
-  await page.locator('#kurrent-decks input[value="haustiere"]').check();
+  await page.locator('#kurrent-decks input[value="' + deckKeys[0] + '"]').check();
   await page.locator('#start').click();
   await page.waitForTimeout(150);
 

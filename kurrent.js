@@ -18,7 +18,19 @@ const {
 } = window.LangCommon;
 
 const letterGroups = window.kurrentLetters;
-const decks = window.kurrentDecks;
+
+// Tryb wyrazów nie ma własnej listy słów - bierze ją z bazy słownictwa
+// niemieckiego, żeby nie istniały dwie niezależne listy do utrzymywania.
+// Bierzemy tylko "de" i "plural": Kurrent ćwiczy zapis wyrazu, więc
+// tłumaczenia, część mowy i polskie formy mnogie są tu zbędne.
+const decks = (window.germanVocabularyCategories || []).map(category => ({
+    key: category.key,
+    label: category.label,
+    items: category.items.map(item => ({
+        word: item.de,
+        plural: item.plural
+    }))
+}));
 
 let currentMode = "letters";
 
