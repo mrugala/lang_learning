@@ -4,10 +4,15 @@ global.window = {};
 require("../german-vocabulary-data.js");
 
 const items = window.germanVocabularyCategories.flatMap(c => c.items);
-let checked = 0, bad = [];
+let checked = 0;
+const bad = [];
 
 items.forEach(i => {
   if (!i.kurrent) return;
+  if (typeof i.kurrent !== "object" || Array.isArray(i.kurrent)) {
+    bad.push(`${i.de}: pole kurrent musi być obiektem`);
+    return;
+  }
   if (i.kurrent.de) {
     checked++;
     // Zmiana może dotyczyć s/ſ oraz ss -> ß (reguła Das ß na końcu wyrazu).
@@ -18,7 +23,9 @@ items.forEach(i => {
   }
   if (i.kurrent.plural) {
     checked++;
-    if (i.kurrent.plural !== i.plural) {
+    if (!i.plural) {
+      bad.push(`plural Kurrent bez współczesnej liczby mnogiej: ${i.de}`);
+    } else if (i.kurrent.plural !== i.plural) {
       // różnica musi dotyczyć wyłącznie s/ſ oraz ß
       const back = i.kurrent.plural.replace(/ſ/g, "s").replace(/ß/g, "ss");
       if (back !== i.plural) {
@@ -41,3 +48,4 @@ items.forEach(i => {
   if (back !== i.de) mismatch.push(i.de);
 });
 console.log("formy, w których zmieniło się coś poza s/ſ/ß:", mismatch.length, mismatch);
+if (bad.length || mismatch.length) process.exitCode = 1;

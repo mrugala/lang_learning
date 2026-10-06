@@ -25,3 +25,4 @@ const allMissing = new Set();
 multi.forEach(m => m.chars.forEach(ch => { if (!singles.has(ch)) allMissing.add(ch); }));
 console.log(`\nUnikalne brakujące kanji: ${allMissing.size}`);
 console.log([...allMissing].join(" "));
+if (allMissing.size) process.exitCode = 1;

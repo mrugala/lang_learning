@@ -29,29 +29,7 @@ const restoredUiState = readReloadState(UI_STATE_KEY);
 
 const MIN_ROWS = 10;
 const selectedCells = new Set();
-const nonChurchCategories = categories.filter(
-    category => !category.key.startsWith("church-")
-);
-const decks = [];
-for (let index = 0; index < nonChurchCategories.length; index += 10) {
-    const deckNumber = decks.length + 1;
-    decks.push({
-        key: `deck-${deckNumber}`,
-        label: `Zestaw ${deckNumber}`,
-        categoryKeys: nonChurchCategories
-            .slice(index, index + 10)
-            .map(category => category.key)
-    });
-}
-
-const kanjiDecks = [
-    ...decks,
-    {
-        key: "deck-church",
-        label: `Zestaw ${decks.length + 1} — Kościół katolicki`,
-        categoryKeys: categories.filter(c => c.key.startsWith("church-")).map(c => c.key)
-    }
-];
+const kanjiDecks = window.createKanjiDecks(categories);
 let activeKanjiDeck = kanjiDecks.some(deck => deck.key === restoredUiState?.deck)
     ? restoredUiState.deck
     : kanjiDecks[0].key;

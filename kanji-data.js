@@ -980,7 +980,7 @@ window.kanjiCategories = [
         label: "Cechy i oceny",
         items: [
             { kanji: "大", romaji: "ō", meaning: "duży", distractors: ["犬","太"] },
-            { kanji: "太", romaji: "futo(i)", meaning: "gruby", distractors: ["犬","大"] },
+            { kanji: "太", romaji: "futo(i)", hiragana: "ふとい", meaning: "gruby", distractors: ["犬","大"] },
             { kanji: "特", romaji: "toku", meaning: "szczególny", distractors: ["牛","午"] },
             { kanji: "豊", romaji: "yutaka", meaning: "obfity", distractors: ["豆","喜"] },
             { kanji: "益", romaji: "eki", meaning: "korzyść", distractors: ["盃","盆"] },
@@ -1126,7 +1126,7 @@ window.kanjiCategories = [
             { kanji: "末", romaji: "sue", meaning: "koniec", distractors: ["本","未"] },
             { kanji: "未", romaji: "mi", meaning: "jeszcze nie", distractors: ["本","末"] },
             { kanji: "充", romaji: "jū", meaning: "wypełniać", distractors: ["育","流"] },
-            { kanji: "衰", romaji: "otor(o)eru", meaning: "słabnąć", distractors: ["哀","衷"] },
+            { kanji: "衰", romaji: "otor(o)eru", hiragana: "おとろえる", meaning: "słabnąć", distractors: ["哀","衷"] },
             { kanji: "熟", romaji: "juku", meaning: "dojrzały / dobrze opanowany", distractors: ["熱","煮"] },
             { kanji: "周", romaji: "shū", meaning: "obwód / dookoła", distractors: ["調","稠"] },
             { kanji: "先", romaji: "saki", meaning: "przód", distractors: ["毛","尾"] },

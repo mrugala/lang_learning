@@ -5,21 +5,33 @@ const vm = require("vm");
 const src = fs.readFileSync(__dirname + "/../kanji.js", "utf8");
 const start = src.indexOf("// Consonant + vowel");
 const end = src.indexOf("function getDisplayValue");
+if (start === -1 || end === -1 || end <= start) {
+    console.error("Nie znaleziono konwertera romaji w kanji.js.");
+    process.exit(1);
+}
 const snippet = src.slice(start, end);
 
 const sandbox = { console };
 vm.createContext(sandbox);
 vm.runInContext(snippet + "\ntoHiraganaFromRomaji;", sandbox);
 const convert = sandbox.toHiraganaFromRomaji;
+if (typeof convert !== "function") {
+    console.error("Nie udało się załadować toHiraganaFromRomaji.");
+    process.exit(1);
+}
 
 global.window = {};
 require("../kanji-data.js");
 const items = window.kanjiCategories.flatMap(c => c.items);
 
-const bad = items.filter(i => /[a-z]/i.test(convert(i.romaji)) || !convert(i.romaji));
+const readings = items.map(item => ({
+    item,
+    hiragana: item.hiragana || convert(item.romaji)
+}));
+const bad = readings.filter(({ hiragana }) => !hiragana || /[a-z]/i.test(hiragana));
 console.log("total items:", items.length);
-console.log("romaji that do not fully convert:", bad.length);
-bad.forEach(i => console.log("  ", i.kanji, i.romaji, "->", convert(i.romaji)));
+console.log("readings that do not fully convert:", bad.length);
+bad.forEach(({ item, hiragana }) => console.log("  ", item.kanji, item.romaji, "->", hiragana));
 
 const cases = [
     // Sokuon and basic regressions (kept so the long-vowel work cannot regress them).
@@ -59,7 +71,7 @@ const cases = [
     ["ippo", "いっぽ"], ["nippon", "にっぽん"], ["gakkou", "がっこう"]
 ];
 
-let failed = 0;
+let failed = bad.length;
 cases.forEach(([inp, want]) => {
     const got = convert(inp);
     if (got !== want) {
@@ -68,3 +80,4 @@ cases.forEach(([inp, want]) => {
     }
 });
 console.log("long vowel cases:", cases.length, "failed:", failed);
+if (failed) process.exitCode = 1;

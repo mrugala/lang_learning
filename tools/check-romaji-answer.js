@@ -11,6 +11,10 @@ vm.createContext(sandbox);
 vm.runInContext(src, sandbox);
 
 const { normalizeRomaji, romajiAnswerVariants } = sandbox.LangCommon;
+if (typeof normalizeRomaji !== "function" || typeof romajiAnswerVariants !== "function") {
+    console.error("Nie znaleziono funkcji romaji w common.js.");
+    process.exit(1);
+}
 
 const accepts = (expected, typed) =>
     romajiAnswerVariants(expected).includes(normalizeRomaji(typed));
@@ -51,9 +55,11 @@ console.log(`  checked ${longVowelCases.reduce((a, [, v]) => a + v.length, 0)} s
 console.log("\n=== case and spacing are still forgiving ===");
 // Note: bare "KO" is deliberately not accepted for "kō", because without the
 // macron there is no way to tell it from the short vowel. The macron must stay.
+let formatFailures = 0;
 [["kō", "KŌ"], ["kō", " kō "], ["Shū", "shuu"], ["kōshin", "  Koushin  "]].forEach(([exp, typed]) => {
     const ok = accepts(exp, typed);
     if (!ok) console.log(`  FAIL ${exp} should accept ${JSON.stringify(typed)}`);
+    if (!ok) formatFailures++;
     console.log(`  ${ok ? "OK  " : "FAIL"} ${exp} accepts ${JSON.stringify(typed)}`);
 });
 
@@ -80,19 +86,24 @@ const wrong = [
     ["ryō", "ryu"], ["ryō", "rio"], ["zō", "zu"], ["tō", "ta"], ["n", "na"]
 ];
 let wrongOk = 0;
+let wrongFailures = 0;
 wrong.forEach(([exp, typed]) => {
     const accepted = accepts(exp, typed);
     if (!accepted) wrongOk++;
+    else wrongFailures++;
     console.log(`  ${accepted ? "FAIL" : "OK  "} ${exp} rejects ${typed}`);
 });
 
 // "toroku" is deliberately NOT accepted for "tōroku": it is the ordinary
-    // reading of 録 (record), a different word. The macron, "oo" and "ou" are
-    // the spellings that are unambiguously long.
+// reading of 録 (record), a different word. The macron, "oo" and "ou" are
+// the spellings that are unambiguously long.
 console.log("\n=== ambiguous spellings are intentionally rejected ===");
+let ambiguousFailures = 0;
 [["tōroku", "toroku"], ["kō", "ko"], ["shō", "sho"]].forEach(([exp, typed]) => {
     const ok = accepts(exp, typed);
+    if (ok) ambiguousFailures++;
     console.log(`  ${ok ? "FAIL" : "OK  "} ${exp} rejects ${typed}`);
 });
 
-console.log(`\nsummary: long-vowel failures=${fail}, short-vowel over-acceptance=${over}, wrong answers correctly rejected=${wrongOk}/${wrong.length}`);
+console.log(`\nsummary: long-vowel failures=${fail}, format failures=${formatFailures}, short-vowel over-acceptance=${over}, wrong answers correctly rejected=${wrongOk}/${wrong.length}`);
+if (fail || formatFailures || over || wrongFailures || ambiguousFailures) process.exitCode = 1;

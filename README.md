@@ -36,7 +36,8 @@ zapisać i wczytać postęp z pliku JSON.
 | [`german-vocabulary-data.js`](german-vocabulary-data.js) | Niemieckie słowa, tłumaczenia, części mowy, liczby mnogie oraz opcjonalne zapisy Kurrent. |
 | [`kurrent-data.js`](kurrent-data.js) | Zestawy liter Kurrent, w tym umlauty i ß. |
 | [`app.js`](app.js) | Tabele i trening kana. |
-| [`kanji.js`](kanji.js) | Wybór kategorii, generowanie zestawów i trening kanji. |
+| [`kanji-decks.js`](kanji-decks.js) | Wspólna funkcja automatycznie grupująca kategorie kanji w zestawy; używana przez aplikację i `check-decks.js`. |
+| [`kanji.js`](kanji.js) | Wybór kategorii i trening kanji. |
 | [`german-vocabulary.js`](german-vocabulary.js) | Trening niemieckiego słownictwa. |
 | [`kurrent.js`](kurrent.js) | Trening liter i słów Kurrent. |
 | [`common.js`](common.js) | Pomocniki współdzielone przez aplikacje, m.in. kolejka nauki i obsługa interfejsu. |
@@ -44,25 +45,36 @@ zapisać i wczytać postęp z pliku JSON.
 
 Tryb Kurrent pobiera słownictwo i kategorie z `german-vocabulary-data.js`,
 aby nie utrzymywać drugiej kopii listy słów. Dane zawierają obecnie około
-890 wpisów kanji w 91 kategoriach, 472 niemieckie hasła w 27 kategoriach
+892 wpisy kanji w 91 kategoriach, 472 niemieckie hasła w 27 kategoriach
 oraz 30 pozycji liter Kurrent w 9 grupach. Liczby mogą się zmieniać wraz
 z rozbudową zestawów.
 
 ## Narzędzia deweloperskie
 
-Skrypty uruchamia się z katalogu projektu za pomocą Node.js:
+Skrypty kontrolne uruchamia się z katalogu projektu za pomocą Node.js:
 
 ```powershell
 node tools/check-data-syntax.js
+node tools/check-decks.js
 node tools/check-vocab.js
 node tools/check-kurrent-field.js
 node tools/test-kurrent-rules.js
 node tools/check-hiragana.js
 node tools/check-kanji-words.js
+node tools/check-romaji-answer.js
 ```
 
-`list-cats.js` i `list-vocab-cats.js` wypisują kategorie danych. `gen-kurrent-field.js`
-jest generatorem pola zapisu Kurrent w bazie słownictwa.
+Kontrole kończą się kodem błędu, gdy wykryją nieprawidłowe dane lub nieudany
+test. `check-decks.js` korzysta z tej samej funkcji generującej zestawy co
+aplikacja Kanji. `check-data-syntax.js` sprawdza składnię skryptów JavaScript
+i ładowanie plików danych.
+
+`list-cats.js` i `list-vocab-cats.js` wypisują bieżące kategorie kanji
+i słownictwa. `qa-kurrent.mjs` zawiera test przepływu przeglądarkowego
+Kurrent i wymaga zgodnego runnera automatyzacji przeglądarki.
+`gen-kurrent-field.js` generuje pole `kurrent` w bazie słownictwa i zapisuje
+zmiany do `german-vocabulary-data.js`; uruchamiaj go tylko wtedy, gdy chcesz
+ponownie wygenerować te dane.
 
 ## Czcionka Kurrent
 
