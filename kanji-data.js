@@ -483,48 +483,48 @@ window.kanjiCategories = [
         key: "shapes",
         label: "Kształty i pozycje",
         items: [
-            { kanji: "角", romaji: "kaku", meaning: "kąt / narożnik" },
+            { kanji: "角", romaji: "kaku", meaning: "kąt / narożnik", distractors: ["田","同"] },
             { kanji: "丸", romaji: "maru", meaning: "koło / okrągły", distractors: ["九","力"] },
-            { kanji: "円", romaji: "en", meaning: "okrąg / yen" },
-            { kanji: "点", romaji: "ten", meaning: "punkt / kropka" },
-            { kanji: "面", romaji: "men", meaning: "twarz / powierzchnia" },
+            { kanji: "円", romaji: "en", meaning: "okrąg / yen", distractors: ["月","内"] },
+            { kanji: "点", romaji: "ten", meaning: "punkt / kropka", distractors: ["占","黒"] },
+            { kanji: "面", romaji: "men", meaning: "twarz / powierzchnia", distractors: ["百","白"] },
             { kanji: "立", romaji: "tatsu", meaning: "stać / wstać", distractors: ["泣","位"] },
-            { kanji: "正", romaji: "sei", meaning: "dokładny / sprawiedliwy" },
+            { kanji: "正", romaji: "sei", meaning: "dokładny / sprawiedliwy", distractors: ["王","止"] },
             { kanji: "反", romaji: "hen", meaning: "przeciwny", distractors: ["板","版"] },
-            { kanji: "対", romaji: "tai", meaning: "para / przeciwieństwo" },
-            { kanji: "方", romaji: "hō", meaning: "strona / kierunek" }
+            { kanji: "対", romaji: "tai", meaning: "para / przeciwieństwo", distractors: ["討","村"] },
+            { kanji: "方", romaji: "hō", meaning: "strona / kierunek", distractors: ["旅","万"] }
         ]
     },
     {
         key: "shapes-2",
         label: "Kształty i wymiary",
         items: [
-            { kanji: "向", romaji: "muku", meaning: "zwrócić się" },
-            { kanji: "斜", romaji: "sha", meaning: "skośny" },
-            { kanji: "縦", romaji: "tate", meaning: "pionowy" },
-            { kanji: "横", romaji: "yoko", meaning: "poziomy" },
-            { kanji: "幅", romaji: "haba", meaning: "szerokość" },
-            { kanji: "広", romaji: "hiro", meaning: "szeroki" },
-            { kanji: "狭", romaji: "sema", meaning: "wąski" },
+            { kanji: "向", romaji: "muku", meaning: "zwrócić się", distractors: ["同","尚"] },
+            { kanji: "斜", romaji: "sha", meaning: "skośny", distractors: ["料","科"] },
+            { kanji: "縦", romaji: "tate", meaning: "pionowy", distractors: ["線","綿"] },
+            { kanji: "横", romaji: "yoko", meaning: "poziomy", distractors: ["黄","同"] },
+            { kanji: "幅", romaji: "haba", meaning: "szerokość", distractors: ["帳","帽"] },
+            { kanji: "広", romaji: "hiro", meaning: "szeroki", distractors: ["庁","庄"] },
+            { kanji: "狭", romaji: "sema", meaning: "wąski", distractors: ["峡","挟"] },
             { kanji: "深", romaji: "fukai", meaning: "głęboki", distractors: ["淵","測"] },
             { kanji: "浅", romaji: "asai", meaning: "płytki", distractors: ["銭","銀"] },
-            { kanji: "楕", romaji: "dai", meaning: "owal / elipsa" }
+            { kanji: "楕", romaji: "dai", meaning: "owal / elipsa", distractors: ["他","堕"] }
         ]
     },
     {
         key: "shapes-3",
         label: "Wagi i twardość",
         items: [
-            { kanji: "長", romaji: "nagai", meaning: "długi" },
-            { kanji: "短", romaji: "tanji", meaning: "krótki" },
+            { kanji: "長", romaji: "nagai", meaning: "długi", distractors: ["帳","張"] },
+            { kanji: "短", romaji: "tanji", meaning: "krótki", distractors: ["矢","知"] },
             { kanji: "厚", romaji: "atsui", meaning: "gruby", distractors: ["暦","歴"] },
-            { kanji: "薄", romaji: "usui", meaning: "cienki" },
-            { kanji: "重", romaji: "omosa", meaning: "ciężki" },
+            { kanji: "薄", romaji: "usui", meaning: "cienki", distractors: ["薪","蒔"] },
+            { kanji: "重", romaji: "omosa", meaning: "ciężki", distractors: ["動","働"] },
             { kanji: "軽", romaji: "karui", meaning: "lekki", distractors: ["転","軌"] },
             { kanji: "固", romaji: "katai", meaning: "twardy", distractors: ["古","吉"] },
-            { kanji: "柔", romaji: "jū", meaning: "miękki" },
-            { kanji: "強", romaji: "tsuyo", meaning: "mocny" },
-            { kanji: "弱", romaji: "jaku", meaning: "słaby" }
+            { kanji: "柔", romaji: "jū", meaning: "miękki", distractors: ["矛","予"] },
+            { kanji: "強", romaji: "tsuyo", meaning: "mocny", distractors: ["弘","弓"] },
+            { kanji: "弱", romaji: "jaku", meaning: "słaby", distractors: ["弓","弟"] }
         ]
     },
     {
@@ -532,15 +532,15 @@ window.kanjiCategories = [
         label: "Tekstury i temperatura",
         items: [
             { kanji: "硬", romaji: "kō", meaning: "sztywny", distractors: ["研","砕"] },
-            { kanji: "軟", romaji: "nan", meaning: "miękki / elastyczny" },
-            { kanji: "滑", romaji: "kawara", meaning: "gładki / dachówka" },
-            { kanji: "粗", romaji: "sogo", meaning: "szorstki" },
-            { kanji: "温", romaji: "atatakai", meaning: "ciepły" },
-            { kanji: "涼", romaji: "suzushii", meaning: "chłodny" },
+            { kanji: "軟", romaji: "nan", meaning: "miękki / elastyczny", distractors: ["転","軌"] },
+            { kanji: "滑", romaji: "kawara", meaning: "gładki / dachówka", distractors: ["猾","骨"] },
+            { kanji: "粗", romaji: "sogo", meaning: "szorstki", distractors: ["組","租"] },
+            { kanji: "温", romaji: "atatakai", meaning: "ciepły", distractors: ["湿","暖"] },
+            { kanji: "涼", romaji: "suzushii", meaning: "chłodny", distractors: ["京","凉"] },
             { kanji: "暖", romaji: "dandan", meaning: "łagodny", distractors: ["暇","偶"] },
-            { kanji: "寒", romaji: "kan", meaning: "zimno" },
-            { kanji: "乾", romaji: "kan", meaning: "suchy" },
-            { kanji: "湿", romaji: "shitsuki", meaning: "wilgotny" }
+            { kanji: "寒", romaji: "kan", meaning: "zimno", distractors: ["塞","察"] },
+            { kanji: "乾", romaji: "kan", meaning: "suchy", distractors: ["幹","朝"] },
+            { kanji: "湿", romaji: "shitsuki", meaning: "wilgotny", distractors: ["溫","温"] }
         ]
     },
     {
@@ -1287,7 +1287,12 @@ window.kanjiCategories = [
             { kanji: "輸", romaji: "yusō", meaning: "transportować", distractors: ["愉","愈"] },
             { kanji: "化", romaji: "ka", meaning: "zmiana / przemiana", distractors: ["代","伐"] },
             { kanji: "吾", romaji: "ware", meaning: "ja (forma literacka)", distractors: ["五","互"] },
-            { kanji: "匕", romaji: "hi", meaning: "sztylet", distractors: ["七","十"] }
+            { kanji: "匕", romaji: "hi", meaning: "sztylet", distractors: ["七","十"] },
+            { kanji: "弘", romaji: "kō", meaning: "rozległy", distractors: ["強","弓"] },
+            { kanji: "猾", romaji: "katsu", meaning: "podstępny", distractors: ["骨","滑"] },
+            { kanji: "骨", romaji: "hone", meaning: "kość", distractors: ["猾","滑"] },
+            { kanji: "組", romaji: "kumi", meaning: "grupa / zestawiać", distractors: ["租","粗"] },
+            { kanji: "租", romaji: "so", meaning: "podatek gruntowy", distractors: ["組","粗"] }
         ]
     },
     {
@@ -1304,6 +1309,49 @@ window.kanjiCategories = [
             { kanji: "或", romaji: "aru", meaning: "pewien / jakiś", distractors: ["域","城"] },
             { kanji: "玄", romaji: "gen", meaning: "tajemniczy / czarny", distractors: ["弦","弓"] },
             { kanji: "力", romaji: "chikara", meaning: "siła", distractors: ["刀","刃"] }
+        ]
+    },
+    {
+        key: "other-9",
+        label: "Inne 2",
+        items: [
+            { kanji: "月", romaji: "tsuki", meaning: "księżyc / miesiąc", distractors: ["日","目"] },
+            { kanji: "占", romaji: "sen", meaning: "wróżyć / zajmować", distractors: ["点","古"] },
+            { kanji: "止", romaji: "tomaru", meaning: "zatrzymać się", distractors: ["正","古"] },
+            { kanji: "討", romaji: "tō", meaning: "atakować / omawiać", distractors: ["計","村"] },
+            { kanji: "万", romaji: "man", meaning: "dziesięć tysięcy", distractors: ["方","力"] },
+            { kanji: "尚", romaji: "shō", meaning: "jeszcze / ponadto", distractors: ["同","向"] },
+            { kanji: "帽", romaji: "bō", meaning: "czapka / kapelusz", distractors: ["帳","幅"] },
+            { kanji: "庁", romaji: "chō", meaning: "urząd", distractors: ["庄","広"] },
+            { kanji: "庄", romaji: "shō", meaning: "posiadłość / majątek", distractors: ["庁","広"] },
+            { kanji: "峡", romaji: "kyō", meaning: "wąwóz", distractors: ["挟","狭"] }
+        ]
+    },
+    {
+        key: "other-10",
+        label: "Inne 3",
+        items: [
+            { kanji: "挟", romaji: "hasamu", meaning: "ściskać / wkładać między", distractors: ["峡","狭"] },
+            { kanji: "他", romaji: "hoka", meaning: "inny / pozostali", distractors: ["堕","楕"] },
+            { kanji: "堕", romaji: "da", meaning: "upadać / degenerować", distractors: ["他","楕"] },
+            { kanji: "張", romaji: "chō", meaning: "napinać / rozciągać", distractors: ["長","帳"] },
+            { kanji: "薪", romaji: "maki", meaning: "drewno opałowe", distractors: ["蒔","薄"] },
+            { kanji: "蒔", romaji: "maku", meaning: "siać / sadzić", distractors: ["薪","薄"] },
+            { kanji: "動", romaji: "dō", meaning: "ruch / poruszać się", distractors: ["働","重"] },
+            { kanji: "働", romaji: "hataraku", meaning: "pracować", distractors: ["動","重"] },
+            { kanji: "矛", romaji: "hoko", meaning: "włócznia", distractors: ["予","柔"] },
+            { kanji: "予", romaji: "yo", meaning: "wcześniej / uprzedni", distractors: ["矛","柔"] }
+        ]
+    },
+    {
+        key: "other-11",
+        label: "Inne 4",
+        items: [
+            { kanji: "凉", romaji: "ryō", meaning: "chłodny (wariant znaku 涼)", distractors: ["京","涼"] },
+            { kanji: "塞", romaji: "sai", meaning: "zatykać / forteca", distractors: ["察","寒"] },
+            { kanji: "幹", romaji: "miki", meaning: "pień / główna część", distractors: ["朝","乾"] },
+            { kanji: "溫", romaji: "on", meaning: "ciepły (wariant znaku 温)", distractors: ["温","湿"] },
+            { kanji: "濕", romaji: "shitsu", meaning: "wilgotny (wariant znaku 湿)", distractors: ["湿","温"] }
         ]
     },
     {

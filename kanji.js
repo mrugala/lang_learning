@@ -62,6 +62,11 @@ const kanjiByCharacter = new Map(
         .filter(item => item.distractors?.length)
         .map(item => [item.kanji, item])
 );
+const kanjiByText = new Map(
+    categories
+        .flatMap(category => category.items)
+        .map(item => [item.kanji, item])
+);
 const studyModes = {
     "kanji-hiragana": { prompt: "kanji", answer: "hiragana" },
     "kanji-romaji": { prompt: "kanji", answer: "romaji" },
@@ -709,7 +714,11 @@ function submitKanjiChoice(answer, selectedButton) {
     }
 
     queue[currentKey].reps += WRONG_ANSWER_PENALTY;
-    setText("feedback", `Źle! Poprawna odpowiedź: ${expected}`);
+    const selectedItem = kanjiByText.get(answer);
+    const selectedDetails = selectedItem
+        ? `Zaznaczone kanji: ${answer} — ${selectedItem.romaji}, ${selectedItem.meaning}.`
+        : `Zaznaczone kanji: ${answer}. Brak romaji i znaczenia w danych.`;
+    setText("feedback", `Źle! Poprawna odpowiedź: ${expected}. ${selectedDetails}`);
     document.querySelectorAll(".kanji-choice-button").forEach(button => {
         button.disabled = true;
         if (button.textContent === expected) button.classList.add("choice-correct");
