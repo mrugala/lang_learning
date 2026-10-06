@@ -115,6 +115,21 @@
     const BASE_REPS = 5;
     const STREAK_BONUS_THRESHOLD = 3;
     const WRONG_ANSWER_PENALTY = 2;
+    let repeatAction = null;
+
+    function setupRepeatButton(onRepeat) {
+        const button = document.getElementById("repeat-study");
+        if (!button) {
+            throw new Error('Missing required "repeat-study" button.');
+        }
+        if (typeof onRepeat !== "function") {
+            throw new TypeError("The repeat action must be a function.");
+        }
+
+        repeatAction = onRepeat;
+        button.style.display = "none";
+        button.onclick = () => repeatAction();
+    }
 
     function pickRandomKey(queue) {
         const remaining = Object.keys(queue);
@@ -129,6 +144,8 @@
 
     function showQueueFinished() {
         setText("char-box", "Koniec! 🎉");
+        const repeatButton = document.getElementById("repeat-study");
+        if (repeatButton && repeatAction) repeatButton.style.display = "inline-block";
     }
 
     function hideContinueButton() {
@@ -144,15 +161,19 @@
     function showSelectionPanel() {
         const panel = document.getElementById("selection-panel");
         const app = document.getElementById("app");
+        const repeatButton = document.getElementById("repeat-study");
         if (panel) panel.style.display = "block";
         if (app) app.style.display = "none";
+        if (repeatButton) repeatButton.style.display = "none";
     }
 
     function showStudyApp() {
         const panel = document.getElementById("selection-panel");
         const app = document.getElementById("app");
+        const repeatButton = document.getElementById("repeat-study");
         if (panel) panel.style.display = "none";
         if (app) app.style.display = "block";
+        if (repeatButton) repeatButton.style.display = "none";
     }
 
     function handleEnterKey(event, submitAnswer) {
@@ -256,6 +277,7 @@
         setGroupSelection,
         pickRandomKey,
         setText,
+        setupRepeatButton,
         showQueueFinished,
         hideContinueButton,
         showContinueButton,

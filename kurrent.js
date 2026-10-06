@@ -11,6 +11,7 @@ const {
     setGroupSelection,
     pickRandomKey,
     setText,
+    setupRepeatButton,
     showQueueFinished,
     hideContinueButton,
     showContinueButton,
@@ -280,6 +281,7 @@ function switchMode(mode) {
 // ---------------------------------------------------------------- nauka ----
 
 let queue = {};
+let studySet = [];
 let currentItem = null;
 let consecutiveCorrectKey = null;
 let consecutiveCorrectCount = 0;
@@ -384,19 +386,22 @@ function itemKey(item) {
     return `${currentMode}|${item.glyph}`;
 }
 
-function startStudy() {
+function startStudy(items = currentItems()) {
     queue = {};
     currentItem = null;
     consecutiveCorrectKey = null;
     consecutiveCorrectCount = 0;
+    hideContinueButton();
+    document.getElementById("kurrent-answer").value = "";
+    setText("feedback", "");
 
-    const items = currentItems();
     if (items.length === 0) {
         alert("Wybierz coś do nauki!");
         return;
     }
 
-    items.forEach(item => {
+    studySet = items.map(item => ({ ...item, answers: [...item.answers] }));
+    studySet.forEach(item => {
         queue[itemKey(item)] = BASE_REPS;
     });
 
@@ -411,7 +416,7 @@ function pickItem() {
         return;
     }
 
-    const item = currentItems().find(i => itemKey(i) === key);
+    const item = studySet.find(i => itemKey(i) === key);
     if (!item) {
         delete queue[key];
         pickItem();
@@ -560,7 +565,8 @@ document.getElementById("clear-all").onclick = () => {
 
 document.getElementById("select-all-decks").onclick = () => setAllDecks(true);
 document.getElementById("clear-all-decks").onclick = () => setAllDecks(false);
-document.getElementById("start").onclick = startStudy;
+document.getElementById("start").onclick = () => startStudy();
+setupRepeatButton(() => startStudy(studySet));
 document.getElementById("submit").onclick = submitAnswer;
 document.getElementById("end-study").onclick = endStudy;
 

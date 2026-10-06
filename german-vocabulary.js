@@ -5,6 +5,7 @@ const {
     storeSessionState,
     pickRandomKey,
     setText,
+    setupRepeatButton,
     showQueueFinished,
     hideContinueButton,
     showContinueButton,
@@ -32,7 +33,14 @@ function saveUiState() {
 }
 
 let queue = {};
+let studySet = {};
 let currentKey = null;
+
+function cloneQueue(sourceQueue) {
+    return Object.fromEntries(
+        Object.entries(sourceQueue).map(([key, item]) => [key, { ...item }])
+    );
+}
 
 function renderCategories() {
     const host = document.getElementById("vocabulary-categories");
@@ -132,7 +140,16 @@ function startStudy() {
         return;
     }
 
+    studySet = cloneQueue(queue);
+    beginStudy(studySet);
+}
+
+function beginStudy(items) {
+    queue = cloneQueue(items);
+    currentKey = null;
     setText("feedback", "");
+    document.getElementById("vocabulary-answer").value = "";
+    hideContinueButton();
     showStudyApp();
     pickWord();
 }
@@ -258,6 +275,7 @@ function endStudy() {
 document.getElementById("select-all-categories").onclick = () => setAllCategories(true);
 document.getElementById("clear-all-categories").onclick = () => setAllCategories(false);
 document.getElementById("start").onclick = startStudy;
+setupRepeatButton(() => beginStudy(studySet));
 document.getElementById("submit").onclick = submitAnswer;
 document.getElementById("end-study").onclick = endStudy;
 document.getElementById("continue").onclick = () => {

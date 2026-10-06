@@ -10,6 +10,7 @@ const {
     setGroupSelection,
     pickRandomKey,
     setText,
+    setupRepeatButton,
     showQueueFinished,
     hideContinueButton,
     showContinueButton,
@@ -167,6 +168,7 @@ function saveUiState() {
 selectVisibleDeckItems();
 let currentKey = null;
 let queue = {};
+let studySet = [];
 
 function getCellKey(categoryKey, rowIndex) {
     return `${categoryKey}:${rowIndex}`;
@@ -641,39 +643,50 @@ function endStudySession() {
     showSelectionPanel();
 }
 
-document.getElementById("start").onclick = () => {
+function startStudy(keys) {
     queue = {};
+    currentKey = null;
+    setText("feedback", "");
+    hideContinueButton();
+    clearAnswerInputs();
+
+    keys.forEach(key => {
+        const [categoryKey, rowValue] = key.split(":");
+        const category = categories.find(item => item.key === categoryKey);
+        const item = category && category.items[Number(rowValue)];
+        if (item) queue[key] = { ...item, reps: BASE_REPS };
+    });
+
+    if (Object.keys(queue).length === 0) {
+        alert("Wybierz coś do nauki!");
+        return false;
+    }
+
+    showStudyApp();
+    pickChar();
+    return true;
+}
+
+document.getElementById("start").onclick = () => {
     currentStudyMode = getSelectedStudyModeKey();
     syncStudyInputs();
-    setText("feedback", "");
-
-    const selectedCols = getSelectedCols();
     const chars = new Set();
-
-    selectedCols.forEach(categoryKey => {
+    getSelectedCols().forEach(categoryKey => {
         const category = categories.find(item => item.key === categoryKey);
         if (!category) return;
         category.items.forEach((item, rowIndex) => {
             if (item) chars.add(getCellKey(category.key, rowIndex));
         });
     });
-
     getSelectedCells().forEach(cell => chars.add(cell));
 
-    if (chars.size === 0) {
-        alert("Wybierz coś do nauki!");
-        return;
+    const keys = [...chars];
+    if (startStudy(keys)) {
+        studySet = keys;
     }
-
-    chars.forEach(key => {
-        const [categoryKey, rowValue] = key.split(":");
-        const item = getCellData(categoryKey, Number(rowValue));
-        if (item) queue[key] = { ...item, reps: BASE_REPS };
-    });
-
-    showStudyApp();
-    pickChar();
 };
+
+setupRepeatButton(() => startStudy(studySet));
 
 function submitAnswer() {
     if (!currentKey || !queue[currentKey]) return;

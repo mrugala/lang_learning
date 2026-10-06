@@ -11,6 +11,7 @@ const {
     setGroupSelection,
     pickRandomKey,
     setText,
+    setupRepeatButton,
     showQueueFinished,
     hideContinueButton,
     showContinueButton,
@@ -771,13 +772,25 @@ syncSelectionHighlights();
 saveUiState();
 
 let queue = {};
+let studySet = [];
 let currentChar = null;
 let consecutiveCorrectChar = null;
 let consecutiveCorrectCount = 0;
 
-document.getElementById("start").onclick = () => {
+function startStudy(chars) {
     queue = {};
+    chars.forEach(ch => queue[ch] = BASE_REPS);
+    currentChar = null;
+    consecutiveCorrectChar = null;
+    consecutiveCorrectCount = 0;
+    document.getElementById("answer").value = "";
+    setText("feedback", "");
+    hideContinueButton();
+    showStudyApp();
+    pickChar();
+}
 
+document.getElementById("start").onclick = () => {
     const selectedRows = getSelectedRows();
     const selectedCols = getSelectedCols();
 
@@ -807,10 +820,8 @@ document.getElementById("start").onclick = () => {
         return;
     }
 
-    chars.forEach(ch => queue[ch] = BASE_REPS);
-
-    showStudyApp();
-    pickChar();
+    studySet = [...chars];
+    startStudy(studySet);
 };
 
 function endStudySession() {
@@ -823,6 +834,7 @@ function endStudySession() {
 }
 
 document.getElementById("end-study").onclick = endStudySession;
+setupRepeatButton(() => startStudy(studySet));
 
 function pickChar() {
     const key = pickRandomKey(queue);
