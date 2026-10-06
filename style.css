@@ -466,6 +466,32 @@ h1 span {
     margin: 12px 0;
 }
 
+.kanji-choice-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 12px 0;
+}
+
+.kanji-choice-button {
+    min-width: 88px;
+    min-height: 74px;
+    margin: 0;
+    border: 1px solid #2f2f2f;
+    background: #f8f8f2;
+    font-family: var(--hiragana-font);
+    font-size: 40px;
+}
+
+.kanji-choice-button.choice-correct {
+    background: #d9f2dc;
+}
+
+.kanji-choice-button.choice-wrong {
+    background: #f8d7da;
+}
+
 .kanji-meaning {
     font-size: 9px;
     color: #575757;

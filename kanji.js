@@ -29,35 +29,26 @@ const restoredUiState = readReloadState(UI_STATE_KEY);
 
 const MIN_ROWS = 10;
 const selectedCells = new Set();
+const nonChurchCategories = categories.filter(
+    category => !category.key.startsWith("church-")
+);
+const decks = [];
+for (let index = 0; index < nonChurchCategories.length; index += 10) {
+    const deckNumber = decks.length + 1;
+    decks.push({
+        key: `deck-${deckNumber}`,
+        label: `Zestaw ${deckNumber}`,
+        categoryKeys: nonChurchCategories
+            .slice(index, index + 10)
+            .map(category => category.key)
+    });
+}
+
 const kanjiDecks = [
+    ...decks,
     {
-        key: "deck-1",
-        label: "Zestaw 1",
-        categoryKeys: categories.slice(0, 10).map(category => category.key)
-    },
-    {
-        key: "deck-2",
-        label: "Zestaw 2",
-        categoryKeys: categories.slice(10, 20).map(category => category.key)
-    },
-    {
-        key: "deck-3",
-        label: "Zestaw 3",
-        categoryKeys: categories.slice(20, 30).map(category => category.key)
-    },
-    {
-        key: "deck-4",
-        label: "Zestaw 4",
-        categoryKeys: categories.slice(30, 40).map(category => category.key)
-    },
-    {
-        key: "deck-5",
-        label: "Zestaw 5",
-        categoryKeys: categories.slice(40, 48).map(category => category.key)
-    },
-    {
-        key: "deck-6",
-        label: "Zestaw 6 — Kościół katolicki",
+        key: "deck-church",
+        label: `Zestaw ${decks.length + 1} — Kościół katolicki`,
         categoryKeys: categories.filter(c => c.key.startsWith("church-")).map(c => c.key)
     }
 ];
@@ -65,6 +56,12 @@ let activeKanjiDeck = kanjiDecks.some(deck => deck.key === restoredUiState?.deck
     ? restoredUiState.deck
     : kanjiDecks[0].key;
 let restoreDeckSelection = activeKanjiDeck === restoredUiState?.deck;
+const kanjiByCharacter = new Map(
+    categories
+        .flatMap(category => category.items)
+        .filter(item => item.distractors?.length)
+        .map(item => [item.kanji, item])
+);
 const studyModes = {
     "kanji-hiragana": { prompt: "kanji", answer: "hiragana" },
     "kanji-romaji": { prompt: "kanji", answer: "romaji" },
@@ -384,6 +381,11 @@ function playPronunciationForCurrentItem() {
 function syncStudyInputs() {
     const mode = studyModes[normalizeModeKey(currentStudyMode)] || studyModes["romaji-polski"];
     const target = mode.answer;
+    const choiceButtons = document.getElementById("kanji-choice-buttons");
+    const studyInputs = document.querySelector(".study-inputs");
+    if (choiceButtons) choiceButtons.style.display = target === "kanji" ? "flex" : "none";
+    if (studyInputs) studyInputs.style.display = target === "kanji" ? "none" : "flex";
+
     const inputs = [
         { id: "romaji-answer", active: target === "romaji" },
         { id: "hiragana-answer", active: target === "hiragana" },
@@ -621,11 +623,99 @@ function pickChar() {
     } else {
         charBox.innerHTML = `<div class="prompt-main">${promptValue}</div>`;
     }
+    if (mode.answer === "kanji") renderKanjiChoiceButtons(item);
 
     // The feedback ("Dobrze!" / "Źle! ...") is deliberately kept, so the result of
     // the previous answer stays visible while the next question is shown. It is
     // cleared by endStudySession and by the continue button instead.
     clearAnswerInputs();
+}
+
+function getKanjiChoiceOptions(item) {
+    const correct = item.kanji;
+    const mappedDistractors = [...correct].map(character =>
+        [...new Set(kanjiByCharacter.get(character)?.distractors || [])]
+            .filter(distractor => distractor && distractor !== character)
+    );
+
+    if (mappedDistractors.length > 0 && mappedDistractors.every(options => options?.length >= 2)) {
+        for (let attempt = 0; attempt < 20; attempt++) {
+            const firstDistractor = mappedDistractors
+                .map(options => options[Math.floor(Math.random() * options.length)])
+                .join("");
+            const secondDistractor = mappedDistractors
+                .map(options => options[Math.floor(Math.random() * options.length)])
+                .join("");
+            if (
+                firstDistractor !== correct &&
+                secondDistractor !== correct &&
+                firstDistractor !== secondDistractor
+            ) {
+                return [firstDistractor, secondDistractor, correct];
+            }
+        }
+    }
+
+    const visibleKanji = [...new Set(getVisibleCategories()
+        .flatMap(category => category.items.map(candidate => candidate.kanji))
+        .filter(candidate => candidate && candidate !== correct))];
+    const sameLength = visibleKanji.filter(candidate => [...candidate].length === [...correct].length);
+    const candidates = sameLength.length >= 2 ? sameLength : visibleKanji;
+
+    for (let index = candidates.length - 1; index > 0; index--) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [candidates[index], candidates[swapIndex]] = [candidates[swapIndex], candidates[index]];
+    }
+
+    return [candidates[0] || "", candidates[1] || "", correct];
+}
+
+function renderKanjiChoiceButtons(item) {
+    const host = document.getElementById("kanji-choice-buttons");
+    host.replaceChildren();
+
+    const options = getKanjiChoiceOptions(item);
+    for (let index = options.length - 1; index > 0; index--) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [options[index], options[swapIndex]] = [options[swapIndex], options[index]];
+    }
+
+    options.forEach(value => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "kanji-choice-button";
+        button.textContent = value;
+        button.disabled = !value;
+        button.addEventListener("click", () => submitKanjiChoice(value, button));
+        host.appendChild(button);
+    });
+}
+
+function submitKanjiChoice(answer, selectedButton) {
+    if (!currentKey || !queue[currentKey]) return;
+
+    const expected = queue[currentKey].kanji;
+    const isCorrect = answer === expected;
+    if (isCorrect) {
+        queue[currentKey].reps--;
+        setText("feedback", "Dobrze!");
+
+        if (queue[currentKey].reps <= 0) {
+            delete queue[currentKey];
+        }
+
+        pickChar();
+        return;
+    }
+
+    queue[currentKey].reps += WRONG_ANSWER_PENALTY;
+    setText("feedback", `Źle! Poprawna odpowiedź: ${expected}`);
+    document.querySelectorAll(".kanji-choice-button").forEach(button => {
+        button.disabled = true;
+        if (button.textContent === expected) button.classList.add("choice-correct");
+    });
+    selectedButton.classList.add("choice-wrong");
+    showContinueButton();
 }
 
 function clearAnswerInputs() {
