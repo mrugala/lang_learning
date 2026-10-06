@@ -330,8 +330,15 @@ const savedFontStyle = readStoredFontStyle();
 if (fontStyleSelect) {
     fontStyleSelect.addEventListener("change", (event) => {
         applyFontStyle(event.target.value);
+        renderSupplementalTables();
+        syncSelectionHighlights();
     });
 }
+
+document.fonts?.addEventListener("loadingdone", () => {
+    renderSupplementalTables();
+    syncSelectionHighlights();
+});
 
 const alphabetTypeSelect = document.getElementById("alphabet-type");
 if (alphabetTypeSelect) {
@@ -405,7 +412,7 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
     const lastColumnIndex = Math.max(...rows.map(row => primaryColumnKeys.indexOf(row.baseKey)));
     const tableWidth = primaryHeaderCells[lastColumnIndex + 1].getBoundingClientRect().right -
         primaryTable.getBoundingClientRect().left;
-    section.style.width = `${tableWidth + 6}px`;
+    section.style.width = `${Math.ceil(tableWidth) + 6}px`;
 
     const titleButton = document.createElement("button");
     titleButton.type = "button";
@@ -500,6 +507,9 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
             smallKana.textContent = rowLabel;
             rowLabelText.appendChild(smallKana);
             rowLabelText.classList.add("youon-row-label");
+            if (voicing === "marked") {
+                smallKana.style.marginLeft = "-0.45em";
+            }
         }
         rowHeader.appendChild(label);
         rowEl.appendChild(rowHeader);
