@@ -125,7 +125,15 @@ window.germanVocabularyCategories = [
             { de: "teuer", pl: ["drogi", "droga", "drogie"], pos: "przymiotnik" },
             { de: "billig", pl: ["tani", "tania", "tanie"], pos: "przymiotnik" },
             { de: "viel", pl: ["dużo", "wiele"], pos: "przymiotnik" },
-            { de: "wenig", pl: ["mało"], pos: "przymiotnik" }
+            { de: "wenig", pl: ["mało"], pos: "przymiotnik" },
+            { de: "lang", pl: ["długi", "długa", "długie"], pos: "przymiotnik" },
+            { de: "kurz", pl: ["krótki", "krótka", "krótkie"], pos: "przymiotnik" },
+            { de: "hoch", pl: ["wysoki", "wysoka", "wysokie"], pos: "przymiotnik" },
+            { de: "niedrig", pl: ["niski", "niska", "niskie"], pos: "przymiotnik" },
+            { de: "leicht", pl: ["lekki", "lekka", "lekkie", "łatwy", "łatwa", "łatwe"], pos: "przymiotnik" },
+            { de: "schwer", pl: ["ciężki", "ciężka", "ciężkie", "trudny", "trudna", "trudne"], pos: "przymiotnik" },
+            { de: "breit", pl: ["szeroki", "szeroka", "szerokie"], pos: "przymiotnik" },
+            { de: "eng", pl: ["wąski", "wąska", "wąskie", "ciasny", "ciasna", "ciasne"], pos: "przymiotnik" }
         ]
     },
     {
@@ -145,7 +153,25 @@ window.germanVocabularyCategories = [
             { de: "schreiben", pl: ["pisać"], pos: "czasownik", kurrent: { de: "ſchreiben" } },
             { de: "kaufen", pl: ["kupować", "kupić"], pos: "czasownik" },
             { de: "brauchen", pl: ["potrzebować"], pos: "czasownik" },
-            { de: "finden", pl: ["znajdować", "znaleźć"], pos: "czasownik" }
+            { de: "finden", pl: ["znajdować", "znaleźć"], pos: "czasownik" },
+            { de: "aufstehen", pl: ["wstawać", "wstać"], pos: "czasownik" },
+            { de: "schlafen", pl: ["spać"], pos: "czasownik" },
+            { de: "fahren", pl: ["jechać", "prowadzić"], pos: "czasownik" },
+            { de: "sehen", pl: ["widzieć", "zobaczyć"], pos: "czasownik" },
+            { de: "hören", pl: ["słyszeć", "słuchać"], pos: "czasownik" },
+            { de: "fragen", pl: ["pytać", "zapytać"], pos: "czasownik" },
+            { de: "antworten", pl: ["odpowiadać", "odpowiedzieć"], pos: "czasownik" },
+            { de: "suchen", pl: ["szukać"], pos: "czasownik" },
+            { de: "nehmen", pl: ["brać", "wziąć"], pos: "czasownik" },
+            { de: "geben", pl: ["dawać", "dać"], pos: "czasownik" },
+            { de: "bleiben", pl: ["zostawać", "zostać", "pozostawać"], pos: "czasownik" },
+            { de: "sitzen", pl: ["siedzieć"], pos: "czasownik" },
+            { de: "spielen", pl: ["grać", "bawić się"], pos: "czasownik" },
+            { de: "kochen", pl: ["gotować"], pos: "czasownik" },
+            { de: "helfen", pl: ["pomagać", "pomóc"], pos: "czasownik" },
+            { de: "warten", pl: ["czekać"], pos: "czasownik" },
+            { de: "bezahlen", pl: ["płacić", "zapłacić"], pos: "czasownik" },
+            { de: "schließen", pl: ["zamykać", "zamknąć"], pos: "czasownik" }
         ]
     },
     {
@@ -494,7 +520,23 @@ window.germanVocabularyCategories = [
             { de: "müde", pl: ["zmęczony"], pos: "przymiotnik" },
             { de: "krank", pl: ["chory"], pos: "przymiotnik" },
             { de: "gesund", pl: ["zdrowy"], pos: "przymiotnik", kurrent: { de: "geſund" } },
-            { de: "verheiratet", pl: ["żonaty", "zamążna"], pos: "przymiotnik" }
+            { de: "verheiratet", pl: ["żonaty", "zamężna"], pos: "przymiotnik" },
+            { de: "wichtig", pl: ["ważny", "ważna", "ważne"], pos: "przymiotnik" },
+            { de: "unwichtig", pl: ["nieważny", "nieważna", "nieważne"], pos: "przymiotnik" },
+            { de: "interessant", pl: ["interesujący", "interesująca", "interesujące"], pos: "przymiotnik" },
+            { de: "langweilig", pl: ["nudny", "nudna", "nudne"], pos: "przymiotnik" },
+            { de: "einfach", pl: ["prosty", "prosta", "proste", "łatwy", "łatwa", "łatwe"], pos: "przymiotnik" },
+            { de: "schwierig", pl: ["trudny", "trudna", "trudne"], pos: "przymiotnik" },
+            { de: "möglich", pl: ["możliwy", "możliwa", "możliwe"], pos: "przymiotnik" },
+            { de: "unmöglich", pl: ["niemożliwy", "niemożliwa", "niemożliwe"], pos: "przymiotnik" },
+            { de: "laut", pl: ["głośny", "głośna", "głośne"], pos: "przymiotnik" },
+            { de: "leise", pl: ["cichy", "cicha", "ciche"], pos: "przymiotnik" },
+            { de: "sauber", pl: ["czysty", "czysta", "czyste"], pos: "przymiotnik" },
+            { de: "schmutzig", pl: ["brudny", "brudna", "brudne"], pos: "przymiotnik" },
+            { de: "offen", pl: ["otwarty", "otwarta", "otwarte"], pos: "przymiotnik" },
+            { de: "geschlossen", pl: ["zamknięty", "zamknięta", "zamknięte"], pos: "przymiotnik" },
+            { de: "voll", pl: ["pełny", "pełna", "pełne"], pos: "przymiotnik" },
+            { de: "leer", pl: ["pusty", "pusta", "puste"], pos: "przymiotnik" }
         ]
     },
     {

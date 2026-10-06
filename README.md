@@ -44,7 +44,7 @@ zapisać i wczytać postęp z pliku JSON.
 
 Tryb Kurrent pobiera słownictwo i kategorie z `german-vocabulary-data.js`,
 aby nie utrzymywać drugiej kopii listy słów. Dane zawierają obecnie około
-890 wpisów kanji w 91 kategoriach, 430 niemieckich słów w 27 kategoriach
+890 wpisów kanji w 91 kategoriach, 472 niemieckie hasła w 27 kategoriach
 oraz 30 pozycji liter Kurrent w 9 grupach. Liczby mogą się zmieniać wraz
 z rozbudową zestawów.
 
