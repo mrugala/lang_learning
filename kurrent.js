@@ -4,6 +4,8 @@ const {
     BASE_REPS,
     STREAK_BONUS_THRESHOLD,
     WRONG_ANSWER_PENALTY,
+    readReloadState,
+    storeSessionState,
     createToggleLabel,
     isGroupFullySelected: areAllSelected,
     setGroupSelection,
@@ -36,6 +38,12 @@ const decks = (window.germanVocabularyCategories || []).map(category => ({
 }));
 
 let currentMode = "letters";
+const UI_STATE_KEY = "kurrentSelectionUiState";
+const restoredUiState = readReloadState(UI_STATE_KEY);
+const validModes = ["letters", "words"];
+if (validModes.includes(restoredUiState?.mode)) {
+    currentMode = restoredUiState.mode;
+}
 
 // Spłaszczona lista liter: każda ma wariant mały i wielki.
 const letters = letterGroups.flatMap(group =>
@@ -51,12 +59,29 @@ const letters = letterGroups.flatMap(group =>
 );
 
 const selectedLetters = new Set();
-letters.forEach(letter => {
-    selectedLetters.add(letter.char);
-    if (letter.upper) selectedLetters.add(letter.upper);
-});
+const allLetterGlyphs = letters.flatMap(letter => [letter.char, letter.upper].filter(Boolean));
+if (Array.isArray(restoredUiState?.selectedLetters)) {
+    restoredUiState.selectedLetters
+        .filter(glyph => allLetterGlyphs.includes(glyph))
+        .forEach(glyph => selectedLetters.add(glyph));
+} else {
+    allLetterGlyphs.forEach(glyph => selectedLetters.add(glyph));
+}
 
-const selectedDecks = new Set(decks.map(deck => deck.key));
+const validDeckKeys = new Set(decks.map(deck => deck.key));
+const selectedDecks = new Set(
+    Array.isArray(restoredUiState?.selectedDecks)
+        ? restoredUiState.selectedDecks.filter(key => validDeckKeys.has(key))
+        : validDeckKeys
+);
+
+function saveUiState() {
+    storeSessionState(UI_STATE_KEY, {
+        mode: currentMode,
+        selectedLetters: [...selectedLetters],
+        selectedDecks: [...selectedDecks]
+    });
+}
 
 // ------------------------------------------------------------------- UI ----
 
@@ -126,6 +151,7 @@ function renderLetterTable() {
                     } else {
                         selectedLetters.add(selectionGlyph);
                     }
+                    saveUiState();
                     syncLetterHighlights();
                 });
 
@@ -204,7 +230,7 @@ function renderDecks() {
         const input = document.createElement("input");
         input.type = "checkbox";
         input.value = deck.key;
-        input.checked = true;
+        input.checked = selectedDecks.has(deck.key);
 
         const name = document.createElement("span");
         name.className = "deck-name";
@@ -217,7 +243,7 @@ function renderDecks() {
         label.appendChild(input);
         label.appendChild(name);
         label.appendChild(count);
-        label.classList.add("deck-selected");
+        label.classList.toggle("deck-selected", input.checked);
         host.appendChild(label);
 
         input.addEventListener("change", () => {
@@ -227,6 +253,7 @@ function renderDecks() {
                 selectedDecks.delete(deck.key);
             }
             label.classList.toggle("deck-selected", input.checked);
+            saveUiState();
         });
     });
 }
@@ -239,10 +266,12 @@ function setAllDecks(checked) {
         input.checked = checked;
         input.closest(".deck-label").classList.toggle("deck-selected", checked);
     });
+    saveUiState();
 }
 
 function switchMode(mode) {
     currentMode = mode;
+    saveUiState();
     document.getElementById("letters-panel").style.display = mode === "letters" ? "block" : "none";
     document.getElementById("words-panel").style.display = mode === "words" ? "block" : "none";
     document.getElementById("kurrent-answer-note").style.display = mode === "words" ? "block" : "none";
@@ -508,6 +537,7 @@ document.addEventListener("change", event => {
 
     if (input.closest(".letter-case-bar")) {
         setGroupSelection(cellIdsForRow(input.value), selectedLetters, input.checked);
+        saveUiState();
         syncLetterHighlights();
     }
 });
@@ -518,11 +548,13 @@ document.getElementById("select-all").onclick = () => {
         selectedLetters.add(letter.char);
         if (letter.upper) selectedLetters.add(letter.upper);
     });
+    saveUiState();
     syncLetterHighlights();
 };
 
 document.getElementById("clear-all").onclick = () => {
     selectedLetters.clear();
+    saveUiState();
     syncLetterHighlights();
 };
 
@@ -539,6 +571,7 @@ document.getElementById("continue").onclick = () => {
     pickItem();
 };
 
+document.getElementById("kurrent-mode").value = currentMode;
 document.getElementById("kurrent-mode").addEventListener("change", event => switchMode(event.target.value));
 
 document.getElementById("kurrent-answer").addEventListener("keydown", event => {
@@ -548,3 +581,5 @@ document.getElementById("kurrent-answer").addEventListener("keydown", event => {
 renderLetterTable();
 renderDecks();
 syncLetterHighlights();
+switchMode(currentMode);
+saveUiState();

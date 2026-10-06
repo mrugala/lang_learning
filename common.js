@@ -24,6 +24,29 @@
         }
     }
 
+    function readReloadState(key) {
+        const navigationEntry = performance.getEntriesByType("navigation")[0];
+        const isReload = navigationEntry
+            ? navigationEntry.type === "reload"
+            : performance.navigation && performance.navigation.type === 1;
+        if (!isReload) return null;
+
+        try {
+            const serialized = sessionStorage.getItem(key);
+            return serialized ? JSON.parse(serialized) : null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function storeSessionState(key, state) {
+        try {
+            sessionStorage.setItem(key, JSON.stringify(state));
+        } catch (error) {
+            // Session storage may be unavailable in restricted browser contexts.
+        }
+    }
+
     function applyFontStyle(styleName, selectEl) {
         const normalized = FONT_STYLES.includes(styleName) ? styleName : "default";
 
@@ -225,6 +248,8 @@
         applyFontStyle,
         readStoredFontStyle,
         storeFontStyle,
+        readReloadState,
+        storeSessionState,
         createToggleLabel,
         isGroupFullySelected,
         checkedValues,

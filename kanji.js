@@ -2,6 +2,8 @@ const {
     BASE_REPS,
     WRONG_ANSWER_PENALTY,
     applyFontStyle: applyCommonFontStyle,
+    readReloadState,
+    storeSessionState,
     createToggleLabel,
     isGroupFullySelected: areAllSelected,
     checkedValues,
@@ -21,6 +23,8 @@ const {
 } = window.LangCommon;
 
 const categories = window.kanjiCategories || [];
+const UI_STATE_KEY = "kanjiSelectionUiState";
+const restoredUiState = readReloadState(UI_STATE_KEY);
 
 const MIN_ROWS = 10;
 const selectedCells = new Set();
@@ -56,7 +60,10 @@ const kanjiDecks = [
         categoryKeys: categories.filter(c => c.key.startsWith("church-")).map(c => c.key)
     }
 ];
-let activeKanjiDeck = kanjiDecks[0].key;
+let activeKanjiDeck = kanjiDecks.some(deck => deck.key === restoredUiState?.deck)
+    ? restoredUiState.deck
+    : kanjiDecks[0].key;
+let restoreDeckSelection = activeKanjiDeck === restoredUiState?.deck;
 const studyModes = {
     "kanji-hiragana": { prompt: "kanji", answer: "hiragana" },
     "kanji-romaji": { prompt: "kanji", answer: "romaji" },
@@ -124,14 +131,36 @@ function populateQuestionOptions() {
     questionModeSelect.value = values.includes(currentValue) ? currentValue : values[0];
 }
 
-let currentStudyMode = "romaji-polski";
+let currentStudyMode = restoredUiState?.studyMode || "romaji-polski";
 
 function selectVisibleDeckItems() {
     selectedCells.clear();
+    const visibleCellKeys = new Set();
     getVisibleCategories().forEach(category => {
         category.items.forEach((item, rowIndex) => {
-            if (item) selectedCells.add(getCellKey(category.key, rowIndex));
+            if (item) visibleCellKeys.add(getCellKey(category.key, rowIndex));
         });
+    });
+
+    if (restoreDeckSelection && Array.isArray(restoredUiState.selected)) {
+        restoreDeckSelection = false;
+        restoredUiState.selected
+            .filter(key => visibleCellKeys.has(key))
+            .forEach(key => selectedCells.add(key));
+        return;
+    }
+    restoreDeckSelection = false;
+
+    visibleCellKeys.forEach(key => selectedCells.add(key));
+}
+
+function saveUiState() {
+    storeSessionState(UI_STATE_KEY, {
+        deck: activeKanjiDeck,
+        selected: [...selectedCells],
+        displayMode: document.getElementById("display-mode")?.value || "romaji",
+        questionMode: document.getElementById("question-mode")?.value || "polski",
+        studyMode: getSelectedStudyModeKey()
     });
 }
 
@@ -471,6 +500,7 @@ function renderTable() {
                     } else {
                         selectedCells.add(key);
                     }
+                    saveUiState();
                     syncSelectionHighlights();
                 });
             }
@@ -538,6 +568,7 @@ function setAllCheckboxes(checked) {
             });
         });
     }
+    saveUiState();
     syncSelectionHighlights();
 }
 
@@ -562,6 +593,7 @@ document.addEventListener("change", event => {
     if (!colHeader) return;
 
     setGroupSelection(getGroupCells("col", input.value), selectedCells, input.checked);
+    saveUiState();
     syncSelectionHighlights();
 });
 
@@ -703,6 +735,7 @@ const questionModeSelect = document.getElementById("question-mode");
 function updateStudyModeFromControls() {
     populateQuestionOptions();
     currentStudyMode = getSelectedStudyModeKey();
+    saveUiState();
     syncStudyInputs();
     if (document.getElementById("app").style.display !== "none" && currentKey) {
         pickChar();
@@ -717,6 +750,7 @@ kanjiDeckSelect.addEventListener("change", () => {
     activeKanjiDeck = kanjiDeckSelect.value;
     selectVisibleDeckItems();
     renderTable();
+    saveUiState();
 });
 
 const fontStyleSelect = document.getElementById("font-style");
@@ -728,8 +762,14 @@ fontStyleSelect.addEventListener("change", event => applyFontStyle(event.target.
 applyFontStyle("default");
 populateDeckOptions();
 renderTable();
+displayModeSelect.value = restoredUiState?.displayMode || displayModeSelect.value;
 populateQuestionOptions();
+if (restoredUiState?.questionMode) {
+    questionModeSelect.value = restoredUiState.questionMode;
+}
+currentStudyMode = getSelectedStudyModeKey();
 syncStudyInputs();
+saveUiState();
 
 const app = document.getElementById("app");
 const speechButton = document.createElement("button");

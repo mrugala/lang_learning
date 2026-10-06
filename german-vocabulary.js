@@ -1,6 +1,8 @@
 const {
     BASE_REPS,
     WRONG_ANSWER_PENALTY,
+    readReloadState,
+    storeSessionState,
     pickRandomKey,
     setText,
     showQueueFinished,
@@ -12,7 +14,22 @@ const {
 } = window.LangCommon;
 
 const categories = window.germanVocabularyCategories;
-const selectedCategories = new Set(categories.map(category => category.key));
+const UI_STATE_KEY = "germanVocabularySelectionUiState";
+const restoredUiState = readReloadState(UI_STATE_KEY);
+const categoryKeys = new Set(categories.map(category => category.key));
+const selectedCategories = new Set(
+    Array.isArray(restoredUiState?.selectedCategories)
+        ? restoredUiState.selectedCategories.filter(key => categoryKeys.has(key))
+        : categoryKeys
+);
+const directions = ["de-pl", "pl-de", "mixed"];
+
+function saveUiState() {
+    storeSessionState(UI_STATE_KEY, {
+        selectedCategories: [...selectedCategories],
+        direction: document.getElementById("translation-direction").value
+    });
+}
 
 let queue = {};
 let currentKey = null;
@@ -23,12 +40,12 @@ function renderCategories() {
 
     categories.forEach(category => {
         const label = document.createElement("label");
-        label.className = "deck-label deck-selected";
+        label.className = "deck-label";
 
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.value = category.key;
-        checkbox.checked = true;
+        checkbox.checked = selectedCategories.has(category.key);
         checkbox.addEventListener("change", () => {
             if (checkbox.checked) {
                 selectedCategories.add(category.key);
@@ -36,6 +53,7 @@ function renderCategories() {
                 selectedCategories.delete(category.key);
             }
             label.classList.toggle("deck-selected", checkbox.checked);
+            saveUiState();
         });
 
         const name = document.createElement("span");
@@ -47,18 +65,23 @@ function renderCategories() {
         count.textContent = `(${category.items.length})`;
 
         label.append(checkbox, name, count);
+        label.classList.toggle("deck-selected", checkbox.checked);
         host.appendChild(label);
     });
 }
 
 function setAllCategories(checked) {
-    selectedCategories.clear();
-    if (checked) categories.forEach(category => selectedCategories.add(category.key));
+    if (checked) {
+        categories.forEach(category => selectedCategories.add(category.key));
+    } else {
+        categories.forEach(category => selectedCategories.delete(category.key));
+    }
 
     document.querySelectorAll("#vocabulary-categories input").forEach(input => {
         input.checked = checked;
         input.closest(".deck-label").classList.toggle("deck-selected", checked);
     });
+    saveUiState();
 }
 
 function startStudy() {
@@ -247,6 +270,12 @@ document.getElementById("vocabulary-answer").addEventListener("keydown", event =
     handleEnterKey(event, submitAnswer);
 });
 
+const directionSelect = document.getElementById("translation-direction");
+if (directions.includes(restoredUiState?.direction)) {
+    directionSelect.value = restoredUiState.direction;
+}
+directionSelect.addEventListener("change", saveUiState);
+
 document.querySelectorAll("[data-character]").forEach(button => {
     button.addEventListener("click", () => {
         const input = document.getElementById("vocabulary-answer");
@@ -258,3 +287,4 @@ document.querySelectorAll("[data-character]").forEach(button => {
 });
 
 renderCategories();
+saveUiState();
