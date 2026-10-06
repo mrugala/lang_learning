@@ -756,11 +756,14 @@
         label: "Inne 8",
         items: [
             { kanji: "福", romaji: "fuku", hiragana: "ふく", meaning: "szczęście / błogosławieństwo" },
-            { kanji: "音", romaji: "on", hiragana: "おん", meaning: "dźwięk" },
             { kanji: "活", romaji: "katsu", hiragana: "かつ", meaning: "żyć / żywy" },
             { kanji: "受", romaji: "ju", hiragana: "じゅ", meaning: "przyjmować" },
             { kanji: "難", romaji: "nan", hiragana: "なん", meaning: "trudność / trudny" },
-            { kanji: "献", romaji: "ken", hiragana: "けん", meaning: "poświęcać / ofiarowywać" }
+            { kanji: "献", romaji: "ken", hiragana: "けん", meaning: "poświęcać / ofiarowywać" },
+            { kanji: "半", romaji: "han", hiragana: "はん", meaning: "połowa / pół" },
+            { kanji: "濁", romaji: "daku", hiragana: "だく", meaning: "dźwięczny / mętny" },
+            { kanji: "音", romaji: "on", hiragana: "おん", meaning: "dźwięk" },
+            { kanji: "清", romaji: "sei", hiragana: "せい", meaning: "czysty / czystość" }
         ]
     },
     {
