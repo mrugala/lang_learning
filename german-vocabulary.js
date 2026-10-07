@@ -6,6 +6,10 @@ const {
     pickRandomKey,
     setText,
     setupRepeatButton,
+    setupRepeatMistakesButton,
+    recordMissedQuestion,
+    getMissedQuestionKeys,
+    resetMissedQuestions,
     showQueueFinished,
     hideContinueButton,
     showContinueButton,
@@ -141,6 +145,7 @@ function startStudy() {
     }
 
     studySet = cloneQueue(queue);
+    resetMissedQuestions();
     beginStudy(studySet);
 }
 
@@ -259,6 +264,7 @@ function submitAnswer() {
     }
 
     item.reps += WRONG_ANSWER_PENALTY;
+    recordMissedQuestion(currentKey);
     setText("feedback", `Niepoprawnie. Poprawna odpowiedź: ${accepted.join(" / ")}`);
     showContinueButton();
 }
@@ -276,6 +282,14 @@ document.getElementById("select-all-categories").onclick = () => setAllCategorie
 document.getElementById("clear-all-categories").onclick = () => setAllCategories(false);
 document.getElementById("start").onclick = startStudy;
 setupRepeatButton(() => beginStudy(studySet));
+setupRepeatMistakesButton(() => {
+    const missedItems = Object.fromEntries(
+        getMissedQuestionKeys()
+            .filter(key => studySet[key])
+            .map(key => [key, studySet[key]])
+    );
+    beginStudy(missedItems);
+});
 document.getElementById("submit").onclick = submitAnswer;
 document.getElementById("end-study").onclick = endStudy;
 document.getElementById("continue").onclick = () => {

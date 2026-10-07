@@ -26,7 +26,8 @@ można uruchomić lokalny serwer za pomocą `node tools/serve.js`.
 Wspólne elementy treningów to powtarzanie pytań, informacja zwrotna oraz wybór
 czcionki. Wybrany styl czcionki jest zapamiętywany. Ustawienia zaznaczenia
 i trybu są odtwarzane po odświeżeniu karty. Strona kana pozwala dodatkowo
-zapisać i wczytać postęp z pliku JSON.
+zapisać i wczytać postęp z pliku JSON. Po zakończeniu treningu można powtórzyć
+tylko znaki lub słowa, przy których podczas bieżącej sesji popełniono błąd.
 
 ## Dane i kod
 

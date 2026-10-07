@@ -12,6 +12,10 @@ const {
     pickRandomKey,
     setText,
     setupRepeatButton,
+    setupRepeatMistakesButton,
+    recordMissedQuestion,
+    getMissedQuestionKeys,
+    resetMissedQuestions,
     showQueueFinished,
     hideContinueButton,
     showContinueButton,
@@ -386,7 +390,7 @@ function itemKey(item) {
     return `${currentMode}|${item.glyph}`;
 }
 
-function startStudy(items = currentItems()) {
+function startStudy(items = currentItems(), isNewSession = false) {
     queue = {};
     currentItem = null;
     consecutiveCorrectKey = null;
@@ -400,6 +404,7 @@ function startStudy(items = currentItems()) {
         return;
     }
 
+    if (isNewSession) resetMissedQuestions();
     studySet = items.map(item => ({ ...item, answers: [...item.answers] }));
     studySet.forEach(item => {
         queue[itemKey(item)] = BASE_REPS;
@@ -514,6 +519,7 @@ function submitAnswer() {
         input.value = "";
         pickItem();
     } else {
+        recordMissedQuestion(key);
         consecutiveCorrectKey = null;
         consecutiveCorrectCount = 0;
         queue[key] = queue[key] + WRONG_ANSWER_PENALTY;
@@ -565,8 +571,12 @@ document.getElementById("clear-all").onclick = () => {
 
 document.getElementById("select-all-decks").onclick = () => setAllDecks(true);
 document.getElementById("clear-all-decks").onclick = () => setAllDecks(false);
-document.getElementById("start").onclick = () => startStudy();
+document.getElementById("start").onclick = () => startStudy(currentItems(), true);
 setupRepeatButton(() => startStudy(studySet));
+setupRepeatMistakesButton(() => {
+    const missedKeys = new Set(getMissedQuestionKeys());
+    startStudy(studySet.filter(item => missedKeys.has(itemKey(item))));
+});
 document.getElementById("submit").onclick = submitAnswer;
 document.getElementById("end-study").onclick = endStudy;
 

@@ -12,6 +12,10 @@ const {
     pickRandomKey,
     setText,
     setupRepeatButton,
+    setupRepeatMistakesButton,
+    recordMissedQuestion,
+    getMissedQuestionKeys,
+    resetMissedQuestions,
     showQueueFinished,
     hideContinueButton,
     showContinueButton,
@@ -821,6 +825,7 @@ document.getElementById("start").onclick = () => {
     }
 
     studySet = [...chars];
+    resetMissedQuestions();
     startStudy(studySet);
 };
 
@@ -835,6 +840,7 @@ function endStudySession() {
 
 document.getElementById("end-study").onclick = endStudySession;
 setupRepeatButton(() => startStudy(studySet));
+setupRepeatMistakesButton(() => startStudy(getMissedQuestionKeys()));
 
 function pickChar() {
     const key = pickRandomKey(queue);
@@ -874,6 +880,7 @@ function submitAnswer() {
         document.getElementById("answer").value = "";
         pickChar();
     } else {
+        recordMissedQuestion(currentChar);
         consecutiveCorrectChar = null;
         consecutiveCorrectCount = 0;
         queue[currentChar] += WRONG_ANSWER_PENALTY;

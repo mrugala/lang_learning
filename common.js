@@ -116,6 +116,8 @@
     const STREAK_BONUS_THRESHOLD = 3;
     const WRONG_ANSWER_PENALTY = 2;
     let repeatAction = null;
+    let repeatMistakesAction = null;
+    const missedQuestionKeys = new Set();
 
     function setupRepeatButton(onRepeat) {
         const button = document.getElementById("repeat-study");
@@ -129,6 +131,37 @@
         repeatAction = onRepeat;
         button.style.display = "none";
         button.onclick = () => repeatAction();
+    }
+
+    function setupRepeatMistakesButton(onRepeat) {
+        const button = document.getElementById("repeat-mistakes-study");
+        if (!button) {
+            throw new Error('Missing required "repeat-mistakes-study" button.');
+        }
+        if (typeof onRepeat !== "function") {
+            throw new TypeError("The repeat-mistakes action must be a function.");
+        }
+
+        repeatMistakesAction = onRepeat;
+        button.style.display = "none";
+        button.onclick = () => repeatMistakesAction();
+    }
+
+    function recordMissedQuestion(key) {
+        if (typeof key !== "string" || key.length === 0) {
+            throw new TypeError("A missed question must have a non-empty string key.");
+        }
+        missedQuestionKeys.add(key);
+    }
+
+    function getMissedQuestionKeys() {
+        return [...missedQuestionKeys];
+    }
+
+    function resetMissedQuestions() {
+        missedQuestionKeys.clear();
+        const button = document.getElementById("repeat-mistakes-study");
+        if (button) button.style.display = "none";
     }
 
     function pickRandomKey(queue) {
@@ -146,6 +179,10 @@
         setText("char-box", "Koniec! 🎉");
         const repeatButton = document.getElementById("repeat-study");
         if (repeatButton && repeatAction) repeatButton.style.display = "inline-block";
+        const repeatMistakesButton = document.getElementById("repeat-mistakes-study");
+        if (repeatMistakesButton && repeatMistakesAction && missedQuestionKeys.size > 0) {
+            repeatMistakesButton.style.display = "inline-block";
+        }
     }
 
     function hideContinueButton() {
@@ -162,18 +199,22 @@
         const panel = document.getElementById("selection-panel");
         const app = document.getElementById("app");
         const repeatButton = document.getElementById("repeat-study");
+        const repeatMistakesButton = document.getElementById("repeat-mistakes-study");
         if (panel) panel.style.display = "block";
         if (app) app.style.display = "none";
         if (repeatButton) repeatButton.style.display = "none";
+        if (repeatMistakesButton) repeatMistakesButton.style.display = "none";
     }
 
     function showStudyApp() {
         const panel = document.getElementById("selection-panel");
         const app = document.getElementById("app");
         const repeatButton = document.getElementById("repeat-study");
+        const repeatMistakesButton = document.getElementById("repeat-mistakes-study");
         if (panel) panel.style.display = "none";
         if (app) app.style.display = "block";
         if (repeatButton) repeatButton.style.display = "none";
+        if (repeatMistakesButton) repeatMistakesButton.style.display = "none";
     }
 
     function handleEnterKey(event, submitAnswer) {
@@ -278,6 +319,10 @@
         pickRandomKey,
         setText,
         setupRepeatButton,
+        setupRepeatMistakesButton,
+        recordMissedQuestion,
+        getMissedQuestionKeys,
+        resetMissedQuestions,
         showQueueFinished,
         hideContinueButton,
         showContinueButton,

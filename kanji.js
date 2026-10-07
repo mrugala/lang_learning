@@ -11,6 +11,10 @@ const {
     pickRandomKey,
     setText,
     setupRepeatButton,
+    setupRepeatMistakesButton,
+    recordMissedQuestion,
+    getMissedQuestionKeys,
+    resetMissedQuestions,
     showQueueFinished,
     hideContinueButton,
     showContinueButton,
@@ -692,6 +696,7 @@ function submitKanjiChoice(answer, selectedButton) {
     }
 
     queue[currentKey].reps += WRONG_ANSWER_PENALTY;
+    recordMissedQuestion(currentKey);
     const selectedItem = kanjiByText.get(answer);
     const selectedDetails = selectedItem
         ? `Zaznaczone kanji: ${answer} — ${selectedItem.romaji}, ${selectedItem.meaning}.`
@@ -760,10 +765,12 @@ document.getElementById("start").onclick = () => {
     const keys = [...chars];
     if (startStudy(keys)) {
         studySet = keys;
+        resetMissedQuestions();
     }
 };
 
 setupRepeatButton(() => startStudy(studySet));
+setupRepeatMistakesButton(() => startStudy(getMissedQuestionKeys()));
 
 function submitAnswer() {
     if (!currentKey || !queue[currentKey]) return;
@@ -803,6 +810,7 @@ function submitAnswer() {
         clearAnswerInputs();
         pickChar();
     } else {
+        recordMissedQuestion(currentKey);
         queue[currentKey].reps += WRONG_ANSWER_PENALTY;
         setText("feedback", `Źle! Poprawne: ${expected}`);
         showContinueButton();
