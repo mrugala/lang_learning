@@ -95,7 +95,7 @@ function populateQuestionOptions() {
     const allowed = {
         kanji: ["hiragana", "romaji", "polski"],
         polski: ["kanji", "romaji", "hiragana"],
-        hiragana: ["kanji", "polski"],
+        hiragana: ["kanji", "romaji", "polski"],
         romaji: ["polski", "kanji"]
     };
 
