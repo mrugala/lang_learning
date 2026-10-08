@@ -8,95 +8,161 @@ const {
     setGroupSelection
 } = window.LangCommon;
 
-const hiragana = {
-    "あ": "a", "い": "i", "う": "u", "え": "e", "お": "o",
-    "か": "ka", "き": "ki", "く": "ku", "け": "ke", "こ": "ko",
-    "さ": "sa", "し": "shi", "す": "su", "せ": "se", "そ": "so",
-    "た": "ta", "ち": "chi", "つ": "tsu", "て": "te", "と": "to",
-    "な": "na", "に": "ni", "ぬ": "nu", "ね": "ne", "の": "no",
-    "は": "ha", "ひ": "hi", "ふ": "fu", "へ": "he", "ほ": "ho",
-    "ま": "ma", "み": "mi", "む": "mu", "め": "me", "も": "mo",
-    "や": "ya", "ゆ": "yu", "よ": "yo",
-    "ら": "ra", "り": "ri", "る": "ru", "れ": "re", "ろ": "ro",
-    "わ": "wa", "を": "wo",
-    "ん": "n"
-};
+const { hiragana, katakana, rowsDefMap, supplementalRows, dakuonAlternativeSpellings, readingStories } = window.KanaData;
 
-const katakana = {
-    "ア": "a", "イ": "i", "ウ": "u", "エ": "e", "オ": "o",
-    "カ": "ka", "キ": "ki", "ク": "ku", "ケ": "ke", "コ": "ko",
-    "サ": "sa", "シ": "shi", "ス": "su", "セ": "se", "ソ": "so",
-    "タ": "ta", "チ": "chi", "ツ": "tsu", "テ": "te", "ト": "to",
-    "ナ": "na", "ニ": "ni", "ヌ": "nu", "ネ": "ne", "ノ": "no",
-    "ハ": "ha", "ヒ": "hi", "フ": "fu", "ヘ": "he", "ホ": "ho",
-    "マ": "ma", "ミ": "mi", "ム": "mu", "メ": "me", "モ": "mo",
-    "ヤ": "ya", "ユ": "yu", "ヨ": "yo",
-    "ラ": "ra", "リ": "ri", "ル": "ru", "レ": "re", "ロ": "ro",
-    "ワ": "wa", "ヲ": "wo",
-    "ン": "n"
-};
+let activeReadingStory = null;
+let activeReadingChapter = null;
+const nextChapterIndexByStory = new Map();
+let readingLineIndex = 0;
+let readingAnswers = [];
 
-const rowsDefMap = {
-    hiragana: [
-        { key: "a", label: "", chars: ["あ", "い", "う", "え", "お"], translit: ["a", "i", "u", "e", "o"] },
-        { key: "k", label: "k", chars: ["か", "き", "く", "け", "こ"], translit: ["ka", "ki", "ku", "ke", "ko"] },
-        { key: "s", label: "s", chars: ["さ", "し", "す", "せ", "そ"], translit: ["sa", "shi", "su", "se", "so"] },
-        { key: "t", label: "t", chars: ["た", "ち", "つ", "て", "と"], translit: ["ta", "chi", "tsu", "te", "to"] },
-        { key: "n", label: "n", chars: ["な", "に", "ぬ", "ね", "の"], translit: ["na", "ni", "nu", "ne", "no"] },
-        { key: "h", label: "h", chars: ["は", "ひ", "ふ", "へ", "ほ"], translit: ["ha", "hi", "fu", "he", "ho"] },
-        { key: "m", label: "m", chars: ["ま", "み", "む", "め", "も"], translit: ["ma", "mi", "mu", "me", "mo"] },
-        { key: "y", label: "y", chars: ["や", "", "ゆ", "", "よ"], translit: ["ya", "", "yu", "", "yo"] },
-        { key: "r", label: "r", chars: ["ら", "り", "る", "れ", "ろ"], translit: ["ra", "ri", "ru", "re", "ro"] },
-        { key: "w", label: "w", chars: ["わ", "", "", "", "を"], translit: ["wa", "", "", "", "wo"] },
-        { key: "n2", label: "", chars: ["ん"], translit: ["n"] }
-    ],
-    katakana: [
-        { key: "a", label: "", chars: ["ア", "イ", "ウ", "エ", "オ"], translit: ["a", "i", "u", "e", "o"] },
-        { key: "k", label: "k", chars: ["カ", "キ", "ク", "ケ", "コ"], translit: ["ka", "ki", "ku", "ke", "ko"] },
-        { key: "s", label: "s", chars: ["サ", "シ", "ス", "セ", "ソ"], translit: ["sa", "shi", "su", "se", "so"] },
-        { key: "t", label: "t", chars: ["タ", "チ", "ツ", "テ", "ト"], translit: ["ta", "chi", "tsu", "te", "to"] },
-        { key: "n", label: "n", chars: ["ナ", "ニ", "ヌ", "ネ", "ノ"], translit: ["na", "ni", "nu", "ne", "no"] },
-        { key: "h", label: "h", chars: ["ハ", "ヒ", "フ", "ヘ", "ホ"], translit: ["ha", "hi", "fu", "he", "ho"] },
-        { key: "m", label: "m", chars: ["マ", "ミ", "ム", "メ", "モ"], translit: ["ma", "mi", "mu", "me", "mo"] },
-        { key: "y", label: "y", chars: ["ヤ", "", "ユ", "", "ヨ"], translit: ["ya", "", "yu", "", "yo"] },
-        { key: "r", label: "r", chars: ["ラ", "リ", "ル", "レ", "ロ"], translit: ["ra", "ri", "ru", "re", "ro"] },
-        { key: "w", label: "w", chars: ["ワ", "", "", "", "ヲ"], translit: ["wa", "", "", "", "wo"] },
-        { key: "n2", label: "", chars: ["ン"], translit: ["n"] }
-    ]
-};
+function appendReadingLine(container, parts) {
+    container.replaceChildren();
+    parts.forEach(part => {
+        const node = part.particle ? document.createElement("strong") : document.createTextNode(part.text);
+        if (part.particle) node.textContent = part.text;
+        container.appendChild(node);
+    });
+}
 
-const supplementalRows = {
-    dakuon: [
-        { key: "g", label: "g", baseKey: "k", chars: ["が", "ぎ", "ぐ", "げ", "ご"], translit: ["ga", "gi", "gu", "ge", "go"] },
-        { key: "z", label: "z", baseKey: "s", chars: ["ざ", "じ", "ず", "ぜ", "ぞ"], translit: ["za", "ji", "zu", "ze", "zo"] },
-        { key: "d", label: "d", baseKey: "t", chars: ["だ", "ぢ", "づ", "で", "ど"], translit: ["da", "ji", "zu", "de", "do"] },
-        { key: "b", label: "b", baseKey: "h", chars: ["ば", "び", "ぶ", "べ", "ぼ"], translit: ["ba", "bi", "bu", "be", "bo"] },
-        { key: "p", label: "p", baseKey: "y", chars: ["ぱ", "ぴ", "ぷ", "ぺ", "ぽ"], translit: ["pa", "pi", "pu", "pe", "po"], group: "handakuon" }
-    ],
-    youon: [
-        { key: "ky", label: "ky", baseKey: "k", chars: ["きゃ", "きゅ", "きょ"], translit: ["kya", "kyu", "kyo"] },
-        { key: "gy", label: "gy", baseKey: "k", voicing: "dakuten", chars: ["ぎゃ", "ぎゅ", "ぎょ"], translit: ["gya", "gyu", "gyo"] },
-        { key: "sh", label: "sh", baseKey: "s", chars: ["しゃ", "しゅ", "しょ"], translit: ["sha", "shu", "sho"] },
-        { key: "j", label: "j", baseKey: "s", voicing: "dakuten", chars: ["じゃ", "じゅ", "じょ"], translit: ["ja", "ju", "jo"] },
-        { key: "ch", label: "ch", baseKey: "t", chars: ["ちゃ", "ちゅ", "ちょ"], translit: ["cha", "chu", "cho"] },
-        { key: "j2", label: "j", baseKey: "t", voicing: "dakuten", chars: ["ぢゃ", "ぢゅ", "ぢょ"], translit: ["ja", "ju", "jo"] },
-        { key: "ny", label: "ny", baseKey: "n", chars: ["にゃ", "にゅ", "にょ"], translit: ["nya", "nyu", "nyo"] },
-        { key: "hy", label: "hy", baseKey: "h", chars: ["ひゃ", "ひゅ", "ひょ"], translit: ["hya", "hyu", "hyo"] },
-        { key: "by", label: "by", baseKey: "h", voicing: "dakuten", chars: ["びゃ", "びゅ", "びょ"], translit: ["bya", "byu", "byo"] },
-        { key: "py", label: "py", baseKey: "y", voicing: "handakuten", chars: ["ぴゃ", "ぴゅ", "ぴょ"], translit: ["pya", "pyu", "pyo"] },
-        { key: "my", label: "my", baseKey: "m", chars: ["みゃ", "みゅ", "みょ"], translit: ["mya", "myu", "myo"] },
-        { key: "ry", label: "ry", baseKey: "y", chars: ["りゃ", "りゅ", "りょ"], translit: ["rya", "ryu", "ryo"] }
-    ]
-};
+function normalizeReadingAnswer(value) {
+    return String(value || "")
+        .toLowerCase()
+        .replace(/[\s、。,.!?！？]/g, "");
+}
 
-const dakuonAlternativeSpellings = {
-    "じ": ["zi"],
-    "ぢ": ["di"],
-    "づ": ["du"],
-    "ジ": ["zi"],
-    "ヂ": ["di"],
-    "ヅ": ["du"]
-};
+function readingEditDistance(left, right) {
+    const previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+    for (let leftIndex = 1; leftIndex <= left.length; leftIndex++) {
+        const current = [leftIndex];
+        for (let rightIndex = 1; rightIndex <= right.length; rightIndex++) {
+            current[rightIndex] = Math.min(
+                current[rightIndex - 1] + 1,
+                previous[rightIndex] + 1,
+                previous[rightIndex - 1] + (left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1)
+            );
+        }
+        previous.splice(0, previous.length, ...current);
+    }
+    return previous[right.length];
+}
+
+function alignReadingAnswer(parts, entered) {
+    const answer = normalizeReadingAnswer(entered);
+    const expected = parts.map(part => normalizeReadingAnswer(part.reading));
+    const costs = Array.from({ length: expected.length + 1 }, () =>
+        Array(answer.length + 1).fill(Infinity)
+    );
+    const previousPositions = Array.from({ length: expected.length + 1 }, () =>
+        Array(answer.length + 1).fill(null)
+    );
+    costs[0][0] = 0;
+
+    expected.forEach((word, wordIndex) => {
+        for (let start = 0; start <= answer.length; start++) {
+            if (!Number.isFinite(costs[wordIndex][start])) continue;
+            for (let end = start; end <= answer.length; end++) {
+                const typed = answer.slice(start, end);
+                const lengthPenalty = Math.abs(typed.length - word.length) * 0.01;
+                const cost = costs[wordIndex][start] + readingEditDistance(typed, word) + lengthPenalty;
+                if (cost < costs[wordIndex + 1][end]) {
+                    costs[wordIndex + 1][end] = cost;
+                    previousPositions[wordIndex + 1][end] = start;
+                }
+            }
+        }
+    });
+
+    const aligned = Array(expected.length);
+    let end = answer.length;
+    for (let wordIndex = expected.length; wordIndex > 0; wordIndex--) {
+        const start = previousPositions[wordIndex][end];
+        if (start === null) {
+            throw new Error("Unable to align a reading answer with its kana fragments.");
+        }
+        aligned[wordIndex - 1] = {
+            entered: answer.slice(start, end),
+            correct: answer.slice(start, end) === expected[wordIndex - 1]
+        };
+        end = start;
+    }
+    return aligned;
+}
+
+function renderReadingPrompt() {
+    const parts = activeReadingChapter.verses[readingLineIndex];
+    document.getElementById("reading-title").textContent =
+        `Czytanie: ${activeReadingChapter.title}`;
+    document.getElementById("reading-progress").textContent =
+        `Rozdział ${activeReadingChapter.chapterNumber}, werset ${readingLineIndex + 1} z ${activeReadingChapter.verses.length}`;
+    appendReadingLine(document.getElementById("reading-line"), parts);
+    document.getElementById("reading-answer").value = "";
+    document.getElementById("reading-feedback").textContent = "";
+    document.getElementById("reading-submit").textContent =
+        readingLineIndex === activeReadingChapter.verses.length - 1 ? "Pokaż cały tekst" : "Dalej";
+    document.getElementById("reading-answer").focus();
+}
+
+function showReadingResults() {
+    document.getElementById("reading-active").hidden = true;
+    const results = document.getElementById("reading-results");
+    const linesHost = document.getElementById("reading-result-lines");
+    const correctCount = readingAnswers.filter(answer => answer.correct).length;
+    document.getElementById("reading-score").textContent =
+        `Poprawnie: ${correctCount} z ${activeReadingChapter.verses.length} wersetów.`;
+    document.getElementById("reading-results-title").textContent =
+        `Rozdział ${activeReadingChapter.chapterNumber}: ${activeReadingChapter.title}`;
+    linesHost.replaceChildren();
+
+    activeReadingChapter.verses.forEach((parts, index) => {
+        const resultLine = document.createElement("section");
+        resultLine.className = `reading-result-line${readingAnswers[index].correct ? "" : " has-error"}`;
+        const verseNumber = document.createElement("span");
+        verseNumber.className = "reading-verse-number";
+        verseNumber.textContent = `${activeReadingChapter.chapterNumber}:${index + 1}`;
+        const hiraganaLine = document.createElement("div");
+        hiraganaLine.className = "reading-result-hiragana";
+        const partResults = readingAnswers[index].parts;
+        parts.forEach((part, partIndex) => {
+            const content = document.createElement(part.particle ? "strong" : "span");
+            content.textContent = part.text;
+            if (!partResults[partIndex].correct) {
+                content.classList.add("is-incorrect");
+                content.title = "Niepoprawny odczyt";
+            }
+            hiraganaLine.appendChild(content);
+        });
+
+        const answerLine = document.createElement("p");
+        answerLine.className = "reading-result-answer";
+        answerLine.textContent = readingAnswers[index].entered;
+        if (!readingAnswers[index].correct) {
+            const correction = document.createElement("p");
+            correction.className = "reading-correction";
+            correction.textContent = `Poprawnie: ${parts
+                .filter((part, partIndex) => !partResults[partIndex].correct)
+                .map(part => `${part.text.trim()} — ${part.reading.trim()}`)
+                .join("; ")}`;
+            resultLine.append(verseNumber, hiraganaLine, answerLine, correction);
+        } else {
+            resultLine.append(verseNumber, hiraganaLine, answerLine);
+        }
+        linesHost.appendChild(resultLine);
+    });
+
+    document.getElementById("reading-source").textContent = activeReadingStory.source;
+    document.getElementById("reading-translation").textContent =
+        activeReadingChapter.translation;
+    results.hidden = false;
+}
+
+function closeReadingPractice() {
+    document.getElementById("reading-practice").hidden = true;
+    document.getElementById("reading-divider").hidden = true;
+    document.getElementById("selection-panel").hidden = false;
+    document.getElementById("reading-active").hidden = false;
+    document.getElementById("reading-results").hidden = true;
+}
 
 function getKanaDisplayTransliteration(kana, transliteration) {
     const alternatives = dakuonAlternativeSpellings[kana];
@@ -227,6 +293,8 @@ function switchAlphabet(alphabetName) {
     Object.keys(alphabetMap[alphabetName]).forEach(char => selectedCells.add(char));
     saveUiState();
     updateTitle();
+    document.getElementById("start-reading-practice").hidden = alphabetName !== "hiragana";
+    document.getElementById("reading-story-picker").hidden = alphabetName !== "hiragana";
     renderTable();
     renderSupplementalTables();
     syncSelectionHighlights();
@@ -825,3 +893,86 @@ document.getElementById("start").onclick = () => {
 
     alphabetStudy.startStudy([...chars], { resetMistakes: true, rememberStudySet: true });
 };
+
+function startNextReadingChapter() {
+    const nextChapterIndex = nextChapterIndexByStory.get(activeReadingStory.key) || 0;
+    activeReadingChapter = activeReadingStory.chapters[nextChapterIndex];
+    nextChapterIndexByStory.set(
+        activeReadingStory.key,
+        (nextChapterIndex + 1) % activeReadingStory.chapters.length
+    );
+    startCurrentReadingChapter();
+}
+
+function startCurrentReadingChapter() {
+    readingLineIndex = 0;
+    readingAnswers = [];
+    document.getElementById("reading-active").hidden = false;
+    document.getElementById("reading-results").hidden = true;
+    renderReadingPrompt();
+}
+
+const readingStorySelect = document.getElementById("reading-story");
+readingStories.forEach(story => {
+    const option = document.createElement("option");
+    option.value = story.key;
+    option.textContent = story.title;
+    readingStorySelect.appendChild(option);
+});
+
+readingStorySelect.addEventListener("change", () => {
+    nextChapterIndexByStory.set(readingStorySelect.value, 0);
+});
+
+const readingPracticeButton = document.getElementById("start-reading-practice");
+readingPracticeButton.addEventListener("click", () => {
+    activeReadingStory = readingStories.find(story => story.key === readingStorySelect.value);
+    if (!activeReadingStory) {
+        throw new Error(`Unknown reading story: ${readingStorySelect.value}`);
+    }
+    document.getElementById("selection-panel").hidden = true;
+    document.getElementById("reading-practice").hidden = false;
+    document.getElementById("reading-divider").hidden = false;
+    startNextReadingChapter();
+});
+
+document.getElementById("reading-next-chapter").addEventListener("click", startNextReadingChapter);
+document.getElementById("reading-repeat-chapter").addEventListener("click", startCurrentReadingChapter);
+
+document.getElementById("reading-submit").addEventListener("click", () => {
+    const input = document.getElementById("reading-answer");
+    const entered = input.value.trim();
+    if (!entered) {
+        document.getElementById("reading-feedback").textContent = "Wpisz rōmaji, zanim przejdziesz dalej.";
+        input.focus();
+        return;
+    }
+
+    const parts = activeReadingChapter.verses[readingLineIndex];
+    const expected = parts.map(part => part.reading).join("");
+    const partResults = alignReadingAnswer(parts, entered);
+    readingAnswers.push({
+        entered,
+        parts: partResults,
+        correct: normalizeReadingAnswer(entered) === normalizeReadingAnswer(expected)
+    });
+
+    readingLineIndex++;
+    if (readingLineIndex === activeReadingChapter.verses.length) {
+        showReadingResults();
+    } else {
+        renderReadingPrompt();
+    }
+});
+
+document.getElementById("reading-cancel").addEventListener("click", closeReadingPractice);
+document.getElementById("reading-back").addEventListener("click", closeReadingPractice);
+document.getElementById("reading-answer").addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        document.getElementById("reading-submit").click();
+    }
+});
+
+readingPracticeButton.hidden = currentAlphabet !== "hiragana";
+document.getElementById("reading-story-picker").hidden = currentAlphabet !== "hiragana";

@@ -641,6 +641,125 @@ button:active {
     margin: 20px;
 }
 
+.reading-practice {
+    width: min(720px, 90vw);
+    margin: 0 auto 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    border: 1px solid #d6e0ef;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.reading-practice h2,
+.reading-practice h3 {
+    margin: 8px 0 14px;
+}
+
+.reading-disclaimer {
+    max-width: 620px;
+    margin: 0 auto 20px;
+    color: #414b5b;
+}
+
+.reading-practice-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.reading-story-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px;
+    font-weight: 600;
+}
+
+.reading-story-picker select {
+    padding: 7px 10px;
+    border: 1px solid #c8d6ea;
+    border-radius: 6px;
+    background: #fff;
+    font-family: var(--input-font);
+    font-size: 16px;
+}
+
+.reading-line {
+    min-height: 2.2em;
+    margin: 18px auto;
+    font-family: var(--hiragana-font);
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+#reading-answer {
+    display: block;
+    width: min(420px, 80vw);
+    margin: 8px auto 12px;
+    padding: 10px 12px;
+    border: 1px solid #c8d6ea;
+    border-radius: 8px;
+    font-family: var(--input-font);
+    font-size: 18px;
+}
+
+#reading-feedback {
+    min-height: 1.4em;
+    margin: 8px;
+    color: #9b2c2c;
+}
+
+.reading-result-line {
+    margin: 14px 0;
+    padding: 12px;
+    border-radius: 8px;
+    background: #f5f7fb;
+    text-align: left;
+}
+
+.reading-result-hiragana {
+    font-family: var(--hiragana-font);
+    font-size: 24px;
+    line-height: 1.5;
+}
+
+.reading-verse-number {
+    display: inline-block;
+    margin-right: 8px;
+    color: #52627a;
+    font-family: var(--input-font);
+    font-size: 14px;
+    font-weight: 700;
+    vertical-align: middle;
+}
+
+.reading-source {
+    color: #5b6472;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.reading-result-answer,
+.reading-correction {
+    margin: 6px 0 0;
+    font-family: var(--input-font);
+    font-size: 17px;
+    overflow-wrap: anywhere;
+}
+
+.reading-correction {
+    color: #b42318;
+}
+
+.reading-result-hiragana .is-incorrect {
+    color: #b42318;
+    text-decoration: underline wavy #b42318;
+}
+
 /* Kurrent script: the glyphs sit on the baseline and need generous line
    height, otherwise the descenders/long connecting strokes get clipped. */
 .kurrent-text {

@@ -19,9 +19,50 @@
             </div>
 
             <button id="start">Rozpocznij naukę</button>
+            <div class="reading-practice-controls">
+                <button id="start-reading-practice" type="button">Ćwicz czytanie tekstu</button>
+                <div id="reading-story-picker" class="reading-story-picker">
+                    <label for="reading-story">Historia:</label>
+                    <select id="reading-story"></select>
+                </div>
+            </div>
         </div>
 
         <hr>
+
+        <section id="reading-practice" class="reading-practice" aria-labelledby="reading-title" hidden>
+            <h2 id="reading-title">Czytanie: Momotarō</h2>
+            <p class="reading-disclaimer">
+                Pamiętaj: は jako partykuła czyta się „wa”, へ — „e”, a を — „o”.
+                Partykuły są pogrubione w tekście.
+            </p>
+
+            <div id="reading-active">
+                <p id="reading-progress" aria-live="polite"></p>
+                <div id="reading-line" class="reading-line" lang="ja"></div>
+                <label for="reading-answer">Wpisz rōmaji tej linijki:</label>
+                <input id="reading-answer" autocomplete="off" spellcheck="false">
+                <p id="reading-feedback" role="status" aria-live="polite"></p>
+                <button id="reading-submit" type="button">Dalej</button>
+                <button id="reading-cancel" type="button">Zakończ czytanie</button>
+            </div>
+
+            <div id="reading-results" hidden>
+                <h3 id="reading-results-title">Cały tekst</h3>
+                <p id="reading-score"></p>
+                <div id="reading-result-lines" lang="ja"></div>
+                <p id="reading-source" class="reading-source"></p>
+                <section class="reading-translation" aria-labelledby="reading-translation-title">
+                    <h3 id="reading-translation-title">Tłumaczenie na polski</h3>
+                    <p id="reading-translation" lang="pl"></p>
+                </section>
+                <button id="reading-repeat-chapter" type="button">Powtórz rozdział</button>
+                <button id="reading-next-chapter" type="button">Przeczytaj następny rozdział</button>
+                <button id="reading-back" type="button">Wróć do tabeli</button>
+            </div>
+        </section>
+
+        <hr id="reading-divider" hidden>
 
         <div id="app" style="display:none;">
             <div id="char-box"></div>
@@ -71,6 +112,7 @@
 
     <script src="common.js"></script>
     <script src="alphabets-common.js"></script>
+    <script src="kana-data.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
