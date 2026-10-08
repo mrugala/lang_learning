@@ -727,6 +727,10 @@ button:active {
     line-height: 1.5;
 }
 
+.reading-result-hiragana .has-reading-meaning {
+    cursor: help;
+}
+
 .reading-verse-number {
     display: inline-block;
     margin-right: 8px;

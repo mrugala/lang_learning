@@ -302,7 +302,8 @@ const readingStories = [
                         { text: " おさめる", reading: " osameru" },
                         { text: " おう", reading: " ou" },
                         { text: "に", reading: "ni", particle: true },
-                        { text: " なってほしい", reading: " nattehoshii" },
+                        { text: " なって", reading: " natte" },
+                        { text: " ほしい", reading: " hoshii" },
                         { text: "と", reading: "to", particle: true },
                         { text: " いいました。", reading: " iimashita" }
                     ],

@@ -126,9 +126,15 @@ function showReadingResults() {
         parts.forEach((part, partIndex) => {
             const content = document.createElement(part.particle ? "strong" : "span");
             content.textContent = part.text;
+            const vocabulary = findReadingVocabulary(part.reading);
+            if (vocabulary) {
+                content.title = `${vocabulary.kanji} — ${vocabulary.meaning}`;
+                content.setAttribute("aria-label", `${part.text.trim()}: ${vocabulary.kanji}, ${vocabulary.meaning}`);
+                content.classList.add("has-reading-meaning");
+            }
             if (!partResults[partIndex].correct) {
                 content.classList.add("is-incorrect");
-                content.title = "Niepoprawny odczyt";
+                content.title = `${content.title ? `${content.title}. ` : ""}Niepoprawny odczyt`;
             }
             hiraganaLine.appendChild(content);
         });
@@ -154,6 +160,16 @@ function showReadingResults() {
     document.getElementById("reading-translation").textContent =
         activeReadingChapter.translation;
     results.hidden = false;
+}
+
+const readingVocabularyByAlias = new Map(
+    (window.readingVocabulary || []).flatMap(entry =>
+        entry.aliases.map(alias => [normalizeReadingAnswer(alias), entry])
+    )
+);
+
+function findReadingVocabulary(reading) {
+    return readingVocabularyByAlias.get(normalizeReadingAnswer(reading)) || null;
 }
 
 function closeReadingPractice() {

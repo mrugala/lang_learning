@@ -1,6 +1,7 @@
 const createKanjiDecks = require("../kanji-decks.js");
 
 global.window = {};
+require("../reading-vocabulary-data.js");
 require("../kanji-data.js");
 const categories = window.kanjiCategories;
 const errors = [];
@@ -21,7 +22,11 @@ categories.forEach(category => {
 });
 
 const nonChurchCategories = categories.filter(
-    category => !category.key.startsWith("church-")
+    category => !category.key.startsWith("church-") &&
+        !category.key.startsWith("reading-stories-")
+);
+const readingStoryCategories = categories.filter(
+    category => category.key.startsWith("reading-stories-")
 );
 const churchCategories = categories.filter(
     category => category.key.startsWith("church-")
@@ -31,6 +36,11 @@ const expectedDecks = [];
 for (let index = 0; index < nonChurchCategories.length; index += 10) {
     expectedDecks.push(
         nonChurchCategories.slice(index, index + 10).map(category => category.key)
+    );
+}
+for (let index = 0; index < readingStoryCategories.length; index += 10) {
+    expectedDecks.push(
+        readingStoryCategories.slice(index, index + 10).map(category => category.key)
     );
 }
 
@@ -46,8 +56,15 @@ if (churchCategories.length === 0) {
 expectedDecks.forEach((categoryKeys, index) => {
     const deck = decks[index];
     if (!deck) return;
-    if (deck.key !== `deck-${index + 1}` || deck.label !== `Zestaw ${index + 1}`) {
-        errors.push(`nieprawidłowy klucz lub numer zestawu ${index + 1}`);
+    const isReadingStoryDeck = categoryKeys.some(key => key.startsWith("reading-stories-"));
+    const expectedKey = isReadingStoryDeck
+        ? `deck-reading-stories-${index + 1}`
+        : `deck-${index + 1}`;
+    const expectedLabel = isReadingStoryDeck
+        ? `Zestaw ${index + 1} — Opowiadania`
+        : `Zestaw ${index + 1}`;
+    if (deck.key !== expectedKey || deck.label !== expectedLabel) {
+        errors.push(`nieprawidłowy klucz lub nazwa zestawu ${index + 1}`);
     }
     if (JSON.stringify(deck.categoryKeys) !== JSON.stringify(categoryKeys)) {
         errors.push(`zestaw ${index + 1} nie odpowiada kolejnym 10 kategoriom`);
@@ -86,6 +103,13 @@ decks.forEach(deck => {
     if (!deck.key.startsWith("deck-church") && deck.categoryKeys.length > 10) {
         errors.push(`${deck.label} zawiera więcej niż 10 kategorii`);
     }
+    if (deck.key.startsWith("deck-reading-stories")) {
+        const itemCount = deck.categoryKeys.reduce(
+            (total, key) => total + (categoryByKey.get(key)?.items.length || 0),
+            0
+        );
+        if (itemCount > 100) errors.push(`${deck.label} zawiera więcej niż 100 wpisów`);
+    }
 });
 
 const owners = new Map();
@@ -96,19 +120,44 @@ categories.forEach(category => {
         return;
     }
 
+    if (category.key.startsWith("reading-stories-") && category.items.length > 10) {
+        errors.push(`${category.key} zawiera więcej niż 10 wpisów`);
+    }
+
     category.items.forEach(item => {
         ["kanji", "romaji", "meaning"].forEach(field => {
             if (!item[field]) errors.push(`${category.key}/${item.kanji || "(bez kanji)"}: brak ${field}`);
         });
         if (!owners.has(item.kanji)) owners.set(item.kanji, []);
-        owners.get(item.kanji).push(category.key);
+        owners.get(item.kanji).push({ categoryKey: category.key, item });
         (item.distractors || []).forEach(distractor => distractors.add(distractor));
     });
 });
 
-owners.forEach((categoryKeys, kanji) => {
-    if (categoryKeys.length > 1) {
-        errors.push(`kanji ${kanji} występuje w wielu kategoriach: ${categoryKeys.join(", ")}`);
+owners.forEach((entries, kanji) => {
+    const sharedWithStoryDeck = entries.length > 1 &&
+        entries.every(entry => entry.item === entries[0].item) &&
+        entries.some(entry => entry.categoryKey.startsWith("reading-stories-"));
+    if (entries.length > 1 && !sharedWithStoryDeck) {
+        errors.push(`kanji ${kanji} występuje w wielu kategoriach: ${entries.map(entry => entry.categoryKey).join(", ")}`);
+    }
+});
+
+const storyItems = categories
+    .filter(category => category.key.startsWith("reading-stories-"))
+    .flatMap(category => category.items);
+const storyKanji = new Set(storyItems.map(item => item.kanji));
+const existingItems = categories
+    .filter(category => !category.key.startsWith("reading-stories-"))
+    .flatMap(category => category.items);
+window.readingVocabulary.forEach(item => {
+    const existingKanji = item.existingKanji || item.kanji;
+    const duplicate = existingItems.some(existing => existing.kanji === existingKanji);
+    const includedInStoryDeck = storyKanji.has(item.kanji);
+    if (duplicate === includedInStoryDeck) {
+        errors.push(
+            `${duplicate ? "powielony" : "pominięty"} wpis słownictwa opowiadań: ${item.kanji} (${item.hiragana})`
+        );
     }
 });
 distractors.forEach(kanji => {

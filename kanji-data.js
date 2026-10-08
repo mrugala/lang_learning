@@ -1438,3 +1438,35 @@ window.kanjiCategories = [
         ]
     }
 ];
+
+if (Array.isArray(window.readingVocabulary)) {
+    const existingItems = window.kanjiCategories
+        .filter(category => !category.key.startsWith("reading-stories-"))
+        .flatMap(category => category.items);
+    const existingKanji = new Set(existingItems.map(item => item.kanji));
+    const readingItems = [...new Map(
+        window.readingVocabulary
+            .filter(item =>
+                !existingKanji.has(item.kanji) &&
+                (!item.existingKanji || !existingKanji.has(item.existingKanji))
+            )
+            .map(item => [item.kanji, item])
+    ).values()];
+    const readingStoryCategories = [];
+    for (let index = 0; index < readingItems.length; index += 10) {
+        const categoryNumber = readingStoryCategories.length + 1;
+        readingStoryCategories.push({
+            key: `reading-stories-${categoryNumber}`,
+            label: `Opowiadania ${categoryNumber}`,
+            items: readingItems.slice(index, index + 10)
+        });
+    }
+    const firstChurchCategory = window.kanjiCategories.findIndex(category =>
+        category.key.startsWith("church-")
+    );
+    if (firstChurchCategory === -1) {
+        window.kanjiCategories.push(...readingStoryCategories);
+    } else {
+        window.kanjiCategories.splice(firstChurchCategory, 0, ...readingStoryCategories);
+    }
+}

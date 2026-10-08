@@ -23,6 +23,7 @@ jsFiles.forEach(file => {
 
 global.window = {};
 [
+    ["reading-vocabulary-data.js", "readingVocabulary"],
     ["kanji-data.js", "kanjiCategories"],
     ["german-vocabulary-data.js", "germanVocabularyCategories"],
     ["kurrent-data.js", "kurrentLetters"]

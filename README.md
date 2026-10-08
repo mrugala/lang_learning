@@ -19,9 +19,9 @@ można uruchomić lokalny serwer za pomocą `node tools/serve.js`.
 
 | Strona | Funkcje |
 |---|---|
-| [`index.html`](index.html) | Nauka hiragany lub katakany. Tabele kana zawierają podstawowe znaki oraz osobne, zwijane tabele dakuon/handakuon i yōon. Quiz dakuon akceptuje też warianty `zi`, `di` i `du` tam, gdzie pasują do znaku. Znaki wybiera się komórkami, grupami albo całościowo. Tryb czytania pozwala wybrać historię (obecnie Momotarō lub krótkie, autorskie streszczenie *Księcia z Kiusiu* — *The Queen's Nephew*), zaczyna od jej pierwszego rozdziału, a po każdym rozdziale oferuje następny (po ostatnim wraca do pierwszego). Wyniki zaznaczają błędnie odczytane fragmenty, pokazują poprawną wersję i polskie tłumaczenie, a rozdział można powtórzyć. |
+| [`index.html`](index.html) | Nauka hiragany lub katakany. Tabele kana zawierają podstawowe znaki oraz osobne, zwijane tabele dakuon/handakuon i yōon. Quiz dakuon akceptuje też warianty `zi`, `di` i `du` tam, gdzie pasują do znaku. Znaki wybiera się komórkami, grupami albo całościowo. Tryb czytania pozwala wybrać historię (obecnie Momotarō lub krótkie, autorskie streszczenie *Księcia z Kiusiu* — *The Queen's Nephew*), zaczyna od jej pierwszego rozdziału, a po każdym rozdziale oferuje następny (po ostatnim wraca do pierwszego). W wynikach można najechać na słowa hiragany, by zobaczyć ich zapis kanji i polskie znaczenie; błędnie odczytane fragmenty są wyróżnione, a rozdział można powtórzyć. |
 | [`other-alphabets.html`](other-alphabets.html) | Nauka cyrylicy cerkiewnosłowiańskiej i głagolicy (małe i wielkie litery wyświetlane parami, wybierane do quizu osobno). Głagolica obła i kanciasta używają tych samych znaków, ale różnych wariantów fontu. Podczas quizu dostępne są przyciski znaków specjalnych transliteracji z przełącznikiem wielkości liter. |
-| [`kanji.html`](kanji.html) | Nauka kanji z kategorii podzielonych automatycznie na kolejne zestawy po maksymalnie 10 kategorii; zestaw „Kościół katolicki” jest zawsze ostatni. Można ustawić, co jest wyświetlane i o co pyta quiz. Przy odpowiedzi kanji dostępny jest quiz wyboru z dystraktorami. |
+| [`kanji.html`](kanji.html) | Nauka kanji z kategorii podzielonych automatycznie na kolejne zestawy po maksymalnie 10 kategorii; słownictwo z opowiadań ma osobny zestaw (kolejne zestawy po maksymalnie 100 wpisów, w kategoriach po maksymalnie 10 słów), a zestaw „Kościół katolicki” pozostaje ostatni. Można ustawić, co jest wyświetlane i o co pyta quiz. Przy odpowiedzi kanji dostępny jest quiz wyboru z dystraktorami. |
 | [`german.html`](german.html) | Niemieckie słownictwo w kategoriach tematycznych. Kierunki nauki: niemiecki → polski, polski → niemiecki lub oba wymieszane. Wpisy mogą ćwiczyć osobno liczbę pojedynczą i mnogą; dostępne są przyciski dla ä, ö, ü i ß. |
 | [`kurrent.html`](kurrent.html) | Nauka małych i wielkich liter pisma Kurrent albo odczytywanie losowych niemieckich słów. Tryb słów korzysta ze wspólnej bazy słownictwa niemieckiego. |
 
@@ -36,6 +36,7 @@ tylko znaki lub słowa, przy których podczas bieżącej sesji popełniono błą
 | Plik | Zawartość |
 |---|---|
 | [`kanji-data.js`](kanji-data.js) | Kategorie i wpisy kanji, znaczenia, odczyty oraz dystraktory używane przez quiz wyboru. |
+| [`reading-vocabulary-data.js`](reading-vocabulary-data.js) | Słownictwo z opowiadań do czytania, używane w podpowiedziach po najechaniu i dodawane do zestawów kanji. |
 | [`kana-data.js`](kana-data.js) | Znaki i transliteracje hiragany oraz katakany, układy tabel, warianty zapisu i rozdziały do ćwiczeń czytania. |
 | [`german-vocabulary-data.js`](german-vocabulary-data.js) | Niemieckie słowa, tłumaczenia, części mowy, liczby mnogie oraz opcjonalne zapisy Kurrent. |
 | [`kurrent-data.js`](kurrent-data.js) | Zestawy liter Kurrent, w tym umlauty i ß. |
