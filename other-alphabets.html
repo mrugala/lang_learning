@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Inne alfabety</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="font-style-default">
+    <div class="page-shell">
+        <h1>Азъ <span>(Cyrylica cerkiewnosłowiańska)</span></h1>
+
+        <div id="selection-panel">
+            <div id="table" aria-label="Tabela liter alfabetu"></div>
+
+            <div class="table-actions">
+                <button id="select-all" type="button">Zaznacz wszystko</button>
+                <button id="clear-all" type="button">Wyczyść wszystko</button>
+            </div>
+
+            <button id="start" type="button">Rozpocznij naukę</button>
+        </div>
+
+        <hr>
+
+        <div id="app" style="display:none;">
+            <div id="char-box"></div>
+
+            <input id="answer" placeholder="Podaj transliterację" autocomplete="off" spellcheck="false">
+            <div id="transliteration-tools" class="alphabet-answer-tools" style="display:none;">
+                <button id="transliteration-case" type="button" aria-pressed="false">Małe litery</button>
+                <div id="transliteration-characters" class="character-buttons" aria-label="Znaki transliteracji"></div>
+            </div>
+            <button id="submit" type="button">Sprawdź</button>
+            <button id="end-study" type="button">Zakończ naukę</button>
+            <button id="repeat-study" type="button" style="display:none;">Powtórz</button>
+            <button id="repeat-mistakes-study" type="button" style="display:none;">Powtórz tylko pomyłki</button>
+
+            <div id="feedback"></div>
+
+            <button id="continue" type="button" style="display:none;">Dalej</button>
+
+            <hr>
+
+            <button id="save" type="button">Zapisz postęp</button>
+            <button id="load" type="button">Wczytaj postęp</button>
+            <input type="file" id="fileInput" style="display:none;">
+        </div>
+
+        <div class="font-picker alphabet-picker">
+            <label for="alphabet-type">Alfabet</label>
+            <select id="alphabet-type">
+                <option value="churchSlavonicCyrillic">Cyrylica cerkiewnosłowiańska</option>
+                <option value="glagoliticRound">Głagolica obła</option>
+                <option value="glagoliticAngular">Głagolica kanciasta</option>
+            </select>
+        </div>
+
+        <div class="font-picker">
+            <a href="index.html" class="nav-link">Hiragana i katakana</a>
+            <a href="kanji.html" class="nav-link">Trening Kanji</a>
+            <a href="kurrent.html" class="nav-link">Trening Kurrent</a>
+            <a href="german.html" class="nav-link">Niemieckie słownictwo</a>
+        </div>
+    </div>
+
+    <script src="common.js"></script>
+    <script src="alphabets-common.js"></script>
+    <script src="other-alphabets.js"></script>
+</body>
+</html>

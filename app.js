@@ -1,27 +1,11 @@
 const {
-    BASE_REPS,
-    STREAK_BONUS_THRESHOLD,
-    WRONG_ANSWER_PENALTY,
     applyFontStyle: applyCommonFontStyle,
     readStoredFontStyle,
     storeFontStyle,
     createToggleLabel,
     isGroupFullySelected: areAllSelected,
     checkedValues,
-    setGroupSelection,
-    pickRandomKey,
-    setText,
-    setupRepeatButton,
-    setupRepeatMistakesButton,
-    recordMissedQuestion,
-    getMissedQuestionKeys,
-    resetMissedQuestions,
-    showQueueFinished,
-    hideContinueButton,
-    showContinueButton,
-    showSelectionPanel,
-    showStudyApp,
-    handleEnterKey
+    setGroupSelection
 } = window.LangCommon;
 
 const hiragana = {
@@ -105,6 +89,20 @@ const supplementalRows = {
     ]
 };
 
+const dakuonAlternativeSpellings = {
+    "じ": ["zi"],
+    "ぢ": ["di"],
+    "づ": ["du"],
+    "ジ": ["zi"],
+    "ヂ": ["di"],
+    "ヅ": ["du"]
+};
+
+function getKanaDisplayTransliteration(kana, transliteration) {
+    const alternatives = dakuonAlternativeSpellings[kana];
+    return alternatives ? `${transliteration}/${alternatives.join("/")}` : transliteration;
+}
+
 function getSupplementalDisplayRows(tableType) {
     if (tableType === "dakuon") {
         return colsDef.map((key, index) => ({ key, label: key, index }));
@@ -133,7 +131,10 @@ function getSupplementalRows(tableType, alphabetName = currentAlphabet) {
     }));
 }
 
-const alphabetMap = { hiragana, katakana };
+const alphabetMap = {
+    hiragana,
+    katakana
+};
 Object.keys(alphabetMap).forEach(alphabetName => {
     ["dakuon", "youon"].forEach(tableType => {
         getSupplementalRows(tableType, alphabetName).forEach(row => {
@@ -203,10 +204,14 @@ function getVisibleKana() {
 
 function updateTitle() {
     const titleEl = document.querySelector("h1");
-    const romanized = currentAlphabet === "hiragana" ? "Hiragana" : "Katakana";
-    const label = currentAlphabet === "hiragana" ? "ひらがな" : "カタカナ";
+    const titles = {
+        hiragana: ["Hiragana", "ひらがな"],
+        katakana: ["Katakana", "カタカナ"]
+    };
+    const [romanized, label] = titles[currentAlphabet];
 
     document.title = romanized;
+    document.getElementById("answer").placeholder = "Podaj rōmaji";
 
     if (titleEl) {
         titleEl.innerHTML = `${label} <span>(${romanized})</span>`;
@@ -358,7 +363,6 @@ updateTitle();
 
 function getGroupCells(groupType, groupKey) {
     const cells = [];
-
     if (groupType === "row") {
         const index = colsDef.indexOf(groupKey);
         rowsDef.forEach(row => {
@@ -593,7 +597,10 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
                 kanaEl.textContent = kana;
                 const translitEl = document.createElement("div");
                 translitEl.className = "kana-translit";
-                translitEl.textContent = group.translit[rowIndex];
+                translitEl.textContent = getKanaDisplayTransliteration(
+                    kana,
+                    group.translit[rowIndex]
+                );
                 stack.append(kanaEl, translitEl);
                 cell.appendChild(stack);
             });
@@ -608,6 +615,7 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
 
 function renderSupplementalTables() {
     const host = document.getElementById("supplemental-tables");
+    host.style.display = "";
     host.replaceChildren(
         renderSupplementalTable("dakuon", "Dakuon・Handakuon", "濁音・半濁音"),
         renderSupplementalTable("youon", "Yō-on", "拗音")
@@ -775,30 +783,19 @@ document.getElementById("clear-all").addEventListener("click", () => setAllCheck
 syncSelectionHighlights();
 saveUiState();
 
-let queue = {};
-let studySet = [];
-let currentChar = null;
-let consecutiveCorrectChar = null;
-let consecutiveCorrectCount = 0;
-
-function startStudy(chars) {
-    queue = {};
-    chars.forEach(ch => queue[ch] = BASE_REPS);
-    currentChar = null;
-    consecutiveCorrectChar = null;
-    consecutiveCorrectCount = 0;
-    document.getElementById("answer").value = "";
-    setText("feedback", "");
-    hideContinueButton();
-    showStudyApp();
-    pickChar();
-}
+const alphabetStudy = window.AlphabetsCommon.createAlphabetStudy(
+    character => alphabetMap[currentAlphabet][character],
+    "postep_hiragana.json",
+    {
+        getAcceptedAnswers: (answer, character) =>
+            [answer, ...(dakuonAlternativeSpellings[character] || [])]
+    }
+);
 
 document.getElementById("start").onclick = () => {
+    const chars = new Set();
     const selectedRows = getSelectedRows();
     const selectedCols = getSelectedCols();
-
-    let chars = new Set();
 
     selectedRows.forEach(vowel => {
         rowsDef.forEach(row => {
@@ -811,7 +808,9 @@ document.getElementById("start").onclick = () => {
     selectedCols.forEach(group => {
         const row = rowsDef.find(item => item.key === group);
         if (!row) return;
-        row.chars.forEach(ch => chars.add(ch));
+        row.chars.forEach(ch => {
+            if (ch) chars.add(ch);
+        });
     });
 
     const visibleKana = new Set(getVisibleKana());
@@ -824,118 +823,5 @@ document.getElementById("start").onclick = () => {
         return;
     }
 
-    studySet = [...chars];
-    resetMissedQuestions();
-    startStudy(studySet);
-};
-
-function endStudySession() {
-    queue = {};
-    currentChar = null;
-    setText("feedback", "");
-    document.getElementById("answer").value = "";
-    hideContinueButton();
-    showSelectionPanel();
-}
-
-document.getElementById("end-study").onclick = endStudySession;
-setupRepeatButton(() => startStudy(studySet));
-setupRepeatMistakesButton(() => startStudy(getMissedQuestionKeys()));
-
-function pickChar() {
-    const key = pickRandomKey(queue);
-    if (key === null) {
-        showQueueFinished();
-        return;
-    }
-    currentChar = key;
-    setText("char-box", currentChar);
-}
-
-function submitAnswer() {
-    const ans = document.getElementById("answer").value.trim().toLowerCase();
-    const correct = alphabetMap[currentAlphabet][currentChar];
-
-    if (ans === correct) {
-        if (currentChar === consecutiveCorrectChar) {
-            consecutiveCorrectCount++;
-        } else {
-            consecutiveCorrectChar = currentChar;
-            consecutiveCorrectCount = 1;
-        }
-
-        queue[currentChar]--;
-        setText("feedback", "Dobrze!");
-
-        if (queue[currentChar] <= 0) {
-            delete queue[currentChar];
-        }
-
-        if (consecutiveCorrectCount >= STREAK_BONUS_THRESHOLD) {
-            delete queue[currentChar];
-            consecutiveCorrectChar = null;
-            consecutiveCorrectCount = 0;
-        }
-
-        document.getElementById("answer").value = "";
-        pickChar();
-    } else {
-        recordMissedQuestion(currentChar);
-        consecutiveCorrectChar = null;
-        consecutiveCorrectCount = 0;
-        queue[currentChar] += WRONG_ANSWER_PENALTY;
-        setText("feedback", `Źle! Poprawna odpowiedź: ${correct}`);
-        showContinueButton();
-    }
-}
-
-document.getElementById("submit").onclick = submitAnswer;
-
-document.getElementById("continue").onclick = () => {
-    hideContinueButton();
-    setText("feedback", "");
-    document.getElementById("answer").value = "";
-    pickChar();
-};
-
-const answerInput = document.getElementById("answer");
-answerInput.addEventListener("keydown", (event) => {
-    if (event.key === " ") {
-        event.preventDefault();
-        return;
-    }
-
-    handleEnterKey(event, submitAnswer);
-});
-
-answerInput.addEventListener("input", () => {
-    answerInput.value = answerInput.value.replace(/\s/g, "");
-});
-
-// ZAPIS DO PLIKU
-document.getElementById("save").onclick = () => {
-    const blob = new Blob([JSON.stringify(queue)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "postep_hiragana.json";
-    a.click();
-};
-
-// WCZYTANIE PLIKU
-document.getElementById("load").onclick = () => {
-    document.getElementById("fileInput").click();
-};
-
-document.getElementById("fileInput").onchange = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-        queue = JSON.parse(reader.result);
-        pickChar();
-    };
-
-    reader.readAsText(file);
+    alphabetStudy.startStudy([...chars], { resetMistakes: true, rememberStudySet: true });
 };

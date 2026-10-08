@@ -10,6 +10,14 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: "Shafarik";
+    src: url("fonts/Shafarik-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --page-font: "Segoe UI", "Hiragino Sans", "Yu Gothic", "Yu Mincho", Arial, sans-serif;
     --heading-font: "Hiragino Mincho Pro", "Yu Mincho", "MS Mincho", serif;
@@ -293,6 +301,101 @@ h1 span {
 .hiragana-table {
     border-collapse: collapse;
     table-layout: fixed;
+}
+
+.linear-alphabet-table {
+    margin: 0 auto;
+}
+
+.linear-alphabet-table .linear-position-header {
+    width: 72px;
+    background: #f2f1e8;
+    font-family: var(--label-font);
+}
+
+.linear-alphabet-table .row-header {
+    width: 82px;
+}
+
+.linear-alphabet-table .kana-symbol {
+    font-size: 34px;
+}
+
+.alphabet-character-pair {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    height: 100%;
+}
+
+.alphabet-character {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+    height: 100%;
+    margin: 0;
+    padding: 2px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.alphabet-character:hover,
+.alphabet-character.character-selected {
+    background: #dff6ff;
+}
+
+.alphabet-character .kana-symbol {
+    font-size: 28px;
+    line-height: 1.1;
+}
+
+.alphabet-character .kana-translit {
+    font-size: 9px;
+}
+
+.alphabet-answer-tools {
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px auto;
+}
+
+.alphabet-answer-tools .character-buttons {
+    flex-wrap: wrap;
+}
+
+.alphabet-answer-tools .character-buttons button {
+    min-width: 34px;
+    padding: 6px 9px;
+}
+
+body.alphabet-church-slavonic .hiragana-cell,
+body.alphabet-glagolitic-round .hiragana-cell,
+body.alphabet-glagolitic-angular .hiragana-cell {
+    font-family: "Noto Serif", "Noto Sans", "Segoe UI Symbol", serif;
+}
+
+body.alphabet-glagolitic-round .kana-symbol,
+body.alphabet-glagolitic-round #char-box,
+body.alphabet-glagolitic-round h1 {
+    font-family: "Shafarik", serif;
+}
+
+body.alphabet-glagolitic-angular .kana-symbol,
+body.alphabet-glagolitic-angular #char-box,
+body.alphabet-glagolitic-angular h1 {
+    font-family: "Shafarik", serif;
+    font-feature-settings: "ss03" 1;
 }
 
 .hiragana-table th,
