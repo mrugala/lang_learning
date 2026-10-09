@@ -38,6 +38,7 @@ function saveReadingState() {
         readingLineIndex,
         readingAnswers,
         nextChapterIndex: nextChapterIndexByStory.get(activeReadingStory.key) || 0,
+        foreignNameScript: document.getElementById("reading-foreign-name-script").value,
         view: document.getElementById("reading-results").hidden ? "active" : "results",
         answer: document.getElementById("reading-answer").value
     });
@@ -46,10 +47,24 @@ function saveReadingState() {
 function appendReadingLine(container, parts) {
     container.replaceChildren();
     parts.forEach(part => {
-        const node = part.particle ? document.createElement("strong") : document.createTextNode(part.text);
-        if (part.particle) node.textContent = part.text;
+        const text = getReadingPartText(part);
+        const node = part.particle ? document.createElement("strong") : document.createTextNode(text);
+        if (part.particle) node.textContent = text;
         container.appendChild(node);
     });
+}
+
+function getReadingPartText(part) {
+    const foreignNameScript = document.getElementById("reading-foreign-name-script").value;
+    if (foreignNameScript !== "katakana" || !part.foreignName) {
+        return part.text;
+    }
+    return Array.from(part.text, character => {
+        const codePoint = character.codePointAt(0);
+        return codePoint >= 0x3041 && codePoint <= 0x3096
+            ? String.fromCodePoint(codePoint + 0x60)
+            : character;
+    }).join("");
 }
 
 function normalizeReadingAnswer(value) {
@@ -153,11 +168,12 @@ function showReadingResults() {
         const partResults = readingAnswers[index].parts;
         parts.forEach((part, partIndex) => {
             const content = document.createElement(part.particle ? "strong" : "span");
-            content.textContent = part.text;
+            content.textContent = getReadingPartText(part);
             if (part.particle) {
-                const particleMeaning = readingParticleMeanings[part.text.trim()];
+                const particle = part.text.trim().replace(/[、。,.!?！？]/g, "");
+                const particleMeaning = readingParticleMeanings[particle];
                 if (!particleMeaning) {
-                    throw new Error(`Missing reading-practice particle meaning for: ${part.text.trim()}`);
+                    throw new Error(`Missing reading-practice particle meaning for: ${particle}`);
                 }
                 content.title = `${part.text.trim()} — partykuła: ${particleMeaning}`;
                 content.setAttribute("aria-label", `${part.text.trim()}: partykuła — ${particleMeaning}`);
@@ -192,7 +208,7 @@ function showReadingResults() {
             correction.className = "reading-correction";
             correction.textContent = `Poprawnie: ${parts
                 .filter((part, partIndex) => !partResults[partIndex].correct)
-                .map(part => `${part.text.trim()} — ${part.reading.trim()}`)
+                .map(part => `${getReadingPartText(part).trim()} — ${part.reading.trim()}`)
                 .join("; ")}`;
             resultLine.append(verseNumber, hiraganaLine, answerLine, correction);
         } else {
@@ -978,6 +994,29 @@ function startCurrentReadingChapter() {
 }
 
 const readingStorySelect = document.getElementById("reading-story");
+const foreignNamesPicker = document.getElementById("reading-foreign-names-picker");
+const foreignNameScriptSelect = document.getElementById("reading-foreign-name-script");
+
+function setForeignNameScript(script) {
+    if (!Array.from(foreignNameScriptSelect.options).some(option => option.value === script)) {
+        throw new Error(`Unknown foreign-name script: ${script}`);
+    }
+    foreignNameScriptSelect.value = script;
+}
+
+function storyHasForeignNames(story) {
+    return story.chapters.some(chapter =>
+        chapter.verses.some(verse => verse.some(part => part.foreignName))
+    );
+}
+
+function updateForeignNamesPicker(story) {
+    foreignNamesPicker.hidden = !storyHasForeignNames(story);
+    if (foreignNamesPicker.hidden) {
+        setForeignNameScript("hiragana");
+    }
+}
+
 readingStories.forEach(story => {
     const option = document.createElement("option");
     option.value = story.key;
@@ -987,7 +1026,14 @@ readingStories.forEach(story => {
 
 readingStorySelect.addEventListener("change", () => {
     nextChapterIndexByStory.set(readingStorySelect.value, 0);
+    const selectedStory = readingStories.find(story => story.key === readingStorySelect.value);
+    if (!selectedStory) {
+        throw new Error(`Unknown reading story: ${readingStorySelect.value}`);
+    }
+    setForeignNameScript("hiragana");
+    updateForeignNamesPicker(selectedStory);
 });
+updateForeignNamesPicker(readingStories[0]);
 
 const readingPracticeButton = document.getElementById("start-reading-practice");
 readingPracticeButton.addEventListener("click", () => {
@@ -1045,7 +1091,10 @@ document.getElementById("reading-story-picker").hidden = currentAlphabet !== "hi
 
 const restoredReadingState = window.LangCommon.readReloadState(READING_STATE_KEY);
 if (restoredReadingState?.active) {
-    const restoredStory = readingStories.find(story => story.key === restoredReadingState.storyKey);
+    const wasLegacyKatakanaStory = restoredReadingState.storyKey === "queens-nephew-katakana";
+    const restoredStory = readingStories.find(story =>
+        story.key === (wasLegacyKatakanaStory ? "queens-nephew" : restoredReadingState.storyKey)
+    );
     const restoredChapter = restoredStory?.chapters[restoredReadingState.chapterIndex];
     const hasValidProgress = Number.isInteger(restoredReadingState.readingLineIndex) &&
         restoredReadingState.readingLineIndex >= 0 &&
@@ -1056,6 +1105,14 @@ if (restoredReadingState?.active) {
         activeReadingStory = restoredStory;
         activeReadingChapter = restoredChapter;
         readingStorySelect.value = restoredStory.key;
+        updateForeignNamesPicker(restoredStory);
+        const restoredForeignNameScript = wasLegacyKatakanaStory ||
+            restoredReadingState.foreignNameScript === "katakana"
+            ? "katakana"
+            : "hiragana";
+        setForeignNameScript(
+            storyHasForeignNames(restoredStory) ? restoredForeignNameScript : "hiragana"
+        );
         nextChapterIndexByStory.set(
             restoredStory.key,
             Number.isInteger(restoredReadingState.nextChapterIndex)

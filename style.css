@@ -678,6 +678,11 @@ button:active {
     font-weight: 600;
 }
 
+.reading-story-picker[hidden],
+.reading-foreign-names-picker[hidden] {
+    display: none;
+}
+
 .reading-story-picker select {
     padding: 7px 10px;
     border: 1px solid #c8d6ea;
@@ -685,6 +690,19 @@ button:active {
     background: #fff;
     font-family: var(--input-font);
     font-size: 16px;
+}
+
+.reading-foreign-names-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.reading-foreign-names-picker label {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-weight: 400;
 }
 
 .reading-line {

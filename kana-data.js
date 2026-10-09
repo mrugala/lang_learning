@@ -110,8 +110,12 @@ const readingCharacterNames = {
     "momotaroutachi": "Momotarō i jego towarzysze",
     "shiwan": "Siwan",
     "shikatora": "Sikatora",
-    "sebasuchan": "Sebastian",
-    "sutefan": "Stefan"
+    "shikatondono": "Sikatondono",
+    "sebasutian": "Sebastian",
+    "sutefan": "Stefan",
+    "tobiasu": "Tobiasz",
+    "furanshisu": "Franciszek",
+    "shimon": "Szymon"
 };
 
 const readingStories = [
@@ -273,12 +277,12 @@ const readingStories = [
     {
         key: "queens-nephew",
         title: "Siostrzeniec królowej",
-        source: "Autorskie, krótkie streszczenie na podstawie The Queen's Nephew (1896), Joseph Spillmann",
+        source: "Autorskie streszczenie na podstawie The Queen's Nephew: An Historical Narration from the Early Japanese Mission (1896), ks. Joseph Spillmann",
         chapters: [
             {
                 chapterNumber: 1,
-                title: "Wybór Sikatory",
-                translation: "W Bungo na Kiusiu żył król Siwan. Jego siostrzeniec Sikatora dorastał na dworze królewskim. Poznał księcia Sebastiana i młodego Stefana, którzy wierzyli w chrześcijaństwo. Ciotka chciała, by Sikatora został potężnym władcą, ale on wybrał swoją wiarę. Stefan nie wyrzekł się wiary mimo cierpienia, a Sebastian stanął w jego obronie. Król wybrał Sikatorę na następcę, a Sikatora przyjął chrzest. Później także król przyjął chrześcijaństwo i nastał czas pokoju.",
+                title: "Początek historii Sikatory",
+                translation: "W Bungo na Kiusiu panował król Siwan. Jego siostrzeniec Sikatora dorastał na dworze królewskim i został adoptowany przez brata królowej, Sikatondona. Królowa miała nadzieję, że Sikatora zostanie potężnym władcą. Rozmowy z Sebastianem obudziły w nim zainteresowanie chrześcijaństwem.",
                 verses: [
                     [
                         { text: "むかし、", reading: "mukashi" },
@@ -295,60 +299,155 @@ const readingStories = [
                     [
                         { text: "おう", reading: "ou" },
                         { text: "の", reading: "no", particle: true },
-                        { text: " おい、", reading: " oi" },
+                        { text: " おい", reading: " oi" },
                         { text: " しかとら", reading: " shikatora" },
                         { text: "は", reading: "wa", particle: true },
                         { text: " おば", reading: " oba" },
                         { text: "の", reading: "no", particle: true },
-                        { text: " もと", reading: " moto" },
-                        { text: "で", reading: "de", particle: true },
-                        { text: " そだちました。", reading: " sodachimashita" }
+                        { text: " おとうと", reading: " otouto" },
+                        { text: " しかとんどの", reading: " shikatondono" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " ようし", reading: " youshi" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " なりました。", reading: " narimashita" }
                     ],
                     [
-                        { text: "おうじ", reading: "ouji" },
-                        { text: " せばすちゃん", reading: " sebasuchan" },
-                        { text: "と", reading: "to", particle: true },
-                        { text: " しょうねん", reading: " shounen" },
-                        { text: " すてふぁん", reading: " sutefan" },
-                        { text: "は", reading: "wa", particle: true },
-                        { text: " きりすときょう", reading: " kirisutokyou" },
-                        { text: "を", reading: "o", particle: true },
-                        { text: " しんじていました。", reading: " shinjiteimashita" }
-                    ],
-                    [
-                        { text: "おば", reading: "oba" },
+                        { text: "おうひ", reading: "ouhi" },
                         { text: "は", reading: "wa", particle: true },
                         { text: " しかとら", reading: " shikatora" },
-                        { text: "に", reading: "ni", particle: true },
-                        { text: " くに", reading: " kuni" },
-                        { text: "を", reading: "o", particle: true },
-                        { text: " おさめる", reading: " osameru" },
+                        { text: "が", reading: "ga", particle: true },
+                        { text: " つよい", reading: " tsuyoi" },
                         { text: " おう", reading: " ou" },
                         { text: "に", reading: "ni", particle: true },
-                        { text: " なって", reading: " natte" },
-                        { text: " ほしい", reading: " hoshii" },
-                        { text: "と", reading: "to", particle: true },
-                        { text: " いいました。", reading: " iimashita" }
+                        { text: " なる", reading: " naru" },
+                        { text: "こと", reading: "koto" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " のぞみました。", reading: " nozomimashita" }
                     ],
                     [
-                        { text: "しかし、", reading: "shikashi" },
+                        { text: "せばすてぃあん", reading: "sebasutian", foreignName: true },
+                        { text: "は", reading: "wa", particle: true },
                         { text: " しかとら", reading: " shikatora" },
-                        { text: "は", reading: "wa", particle: true },
-                        { text: " しんこう", reading: " shinkou" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " きりすときょう", reading: " kirisutokyou" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " おしえ", reading: " oshie" },
                         { text: "を", reading: "o", particle: true },
-                        { text: " えらびました。", reading: " erabimashita" }
+                        { text: " はなしました。", reading: " hanashimashita" }
+                    ]
+                ]
+            },
+            {
+                chapterNumber: 2,
+                title: "Paziem był Stefan",
+                translation: "Sikatora spotkał królewskiego pazia Stefana. Chłopiec był chrześcijaninem od dzieciństwa. Sikatora poznał też niewidomego Tobiasza i jego młodego przewodnika Franciszka. Usłyszał o wierze, która uczy miłości i przebaczenia. Królowa zauważyła, że Sikatora zaczyna interesować się chrześcijaństwem, i poprosiła brata o pomoc.",
+                verses: [
+                    [
+                        { text: "しかとら", reading: "shikatora" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " おう", reading: " ou" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " こもの", reading: " komono" },
+                        { text: " すてふぁん", reading: " sutefan", foreignName: true },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " あいました。", reading: " aimashita" }
                     ],
                     [
-                        { text: "すてふぁん", reading: "sutefan" },
+                        { text: "すてふぁん", reading: "sutefan", foreignName: true },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " こども", reading: " kodomo" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " ころ", reading: " koro" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " せんれい", reading: " senrei" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " うけた", reading: " uketa" },
+                        { text: " きりすと", reading: " kirisuto" },
+                        { text: "でした。", reading: " deshita" }
+                    ],
+                    [
+                        { text: "とびあす", reading: "tobiasu", foreignName: true },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " め", reading: " me" },
+                        { text: "が", reading: "ga", particle: true },
+                        { text: " みえず、", reading: " miezu" },
+                        { text: " わかい", reading: " wakai" },
+                        { text: " ふらんしす", reading: " furanshisu", foreignName: true },
+                        { text: "が", reading: "ga", particle: true },
+                        { text: " みちびきました。", reading: " michibikimashita" }
+                    ],
+                    [
+                        { text: "ふたり", reading: "futari" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " あい", reading: " ai" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: " ゆるし", reading: " yurushi" },
+                        { text: "について", reading: "nitsuite" },
+                        { text: " はなしました。", reading: " hanashimashita" }
+                    ],
+                    [
+                        { text: "おうひ", reading: "ouhi" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " しかとら", reading: " shikatora" },
+                        { text: "が", reading: "ga", particle: true },
+                        { text: " しんこう", reading: " shinkou" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " きょうみ", reading: " kyoumi" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " もった", reading: " motta" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: " しりました。", reading: " shirimashita" }
+                    ]
+                ]
+            },
+            {
+                chapterNumber: 3,
+                title: "Próba Stefana",
+                translation: "Królowa i Sikatondono naciskali na Sikatorę, by porzucił nową wiarę. Tymczasem Stefan odmówił wyrzeczenia się chrześcijaństwa i został surowo ukarany. Królowa chciała skazać go na śmierć. Sebastian błagał o jego ocalenie. Gdy król Siwan wrócił, odsunął niegodnego następcę, wybrał Sikatorę na dziedzica i uwolnił Stefana. Sikatora postanowił podążyć za chrześcijaństwem.",
+                verses: [
+                    [
+                        { text: "しかとんどの", reading: "shikatondono" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " しかとら", reading: " shikatora" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " しんこう", reading: " shinkou" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " すてる", reading: " suteru" },
+                        { text: "よう", reading: "you" },
+                        { text: " おどしました。", reading: " odoshimashita" }
+                    ],
+                    [
+                        { text: "すてふぁん", reading: "sutefan", foreignName: true },
                         { text: "は", reading: "wa", particle: true },
                         { text: " しんこう", reading: " shinkou" },
                         { text: "を", reading: "o", particle: true },
-                        { text: " すてず、", reading: " sutezu" },
-                        { text: " せばすちゃん", reading: " sebasuchan" },
-                        { text: "も", reading: "mo", particle: true },
-                        { text: " かれ", reading: " kare" },
+                        { text: " すてる", reading: " suteru" },
+                        { text: "こと", reading: "koto" },
                         { text: "を", reading: "o", particle: true },
-                        { text: " まもりました。", reading: " mamorimashita" }
+                        { text: " ことわりました。", reading: " kotowarimashita" }
+                    ],
+                    [
+                        { text: "おうひ", reading: "ouhi" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " すてふぁん", reading: " sutefan", foreignName: true },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " うたせ、", reading: " utase" },
+                        { text: " しけい", reading: " shikei" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " しよう", reading: " shiyou" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: "しました。", reading: " shimashita" }
+                    ],
+                    [
+                        { text: "せばすてぃあん", reading: "sebasutian", foreignName: true },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " おう", reading: " ou" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " すてふぁん", reading: " sutefan", foreignName: true },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " すくう", reading: " sukuu" },
+                        { text: "よう", reading: "you" },
+                        { text: " たのみました。", reading: " tanomimashita" }
                     ],
                     [
                         { text: "おう", reading: "ou" },
@@ -357,32 +456,98 @@ const readingStories = [
                         { text: "を", reading: "o", particle: true },
                         { text: " あとつぎ", reading: " atotsugi" },
                         { text: "に", reading: "ni", particle: true },
-                        { text: " えらびました。", reading: " erabimashita" },
-                        { text: " しかとら", reading: " shikatora" },
+                        { text: " えらび、", reading: " erabi" },
+                        { text: " すてふぁん", reading: " sutefan", foreignName: true },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " じゆう", reading: " jiyuu" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: "しました。", reading: " shimashita" }
+                    ],
+                    [
+                        { text: "しかとら", reading: "shikatora" },
                         { text: "は", reading: "wa", particle: true },
-                        { text: " せんきょうし", reading: " senkyoushi" },
+                        { text: " きりすときょう", reading: " kirisutokyou" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " したがう", reading: " shitagau" },
+                        { text: "こと", reading: "koto" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " きめました。", reading: " kimemashita" }
+                    ]
+                ]
+            },
+            {
+                chapterNumber: 4,
+                title: "Wierność Szymona",
+                translation: "Szymon, przybrany syn Sikatondona, również był chrześcijaninem. Za odmowę wyrzeczenia się wiary trafił do więzienia, gdzie pozostał wierny przez dwa lata. Po uwolnieniu stanął do walki, by ocalić przybranego ojca i jego wojsko. Szymon zginął, ratując innych. Jego odwaga poruszyła króla Siwana, który przyjął chrzest i imię Franciszek.",
+                verses: [
+                    [
+                        { text: "しもん", reading: "shimon", foreignName: true },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " しかとんどの", reading: " shikatondono" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " ようし", reading: " youshi" },
+                        { text: "で、", reading: "de", particle: true },
+                        { text: " きりすときょう", reading: " kirisutokyou" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " しんじていました。", reading: " shinjiteimashita" }
+                    ],
+                    [
+                        { text: "しもん", reading: "shimon", foreignName: true },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " しんこう", reading: " shinkou" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " すてず、", reading: " sutezu" },
+                        { text: " ろうや", reading: " rouya" },
+                        { text: "で", reading: "de", particle: true },
+                        { text: " ふたとせ", reading: " futatose" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " すごしました。", reading: " sugoshimashita" }
+                    ],
+                    [
+                        { text: "おう", reading: "ou" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " しもん", reading: " shimon", foreignName: true },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " ろうや", reading: " rouya" },
                         { text: "から", reading: "kara", particle: true },
+                        { text: " よびもどしました。", reading: " yobimodoshimashita" }
+                    ],
+                    [
+                        { text: "たたかい", reading: "tatakai" },
+                        { text: "で", reading: "de", particle: true },
+                        { text: " しかとんどの", reading: " shikatondono" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " ぐん", reading: " gun" },
+                        { text: "が", reading: "ga", particle: true },
+                        { text: " きけん", reading: " kiken" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " なり、", reading: " nari" },
+                        { text: " しもん", reading: " shimon", foreignName: true },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " ちち", reading: " chichi" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " すくいました。", reading: " sukuimashita" }
+                    ],
+                    [
+                        { text: "しもん", reading: "shimon", foreignName: true },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " いのち", reading: " inochi" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " おとしましたが、", reading: " otoshimashitaga" },
+                        { text: " しわん", reading: " shiwan" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " ふらんしす", reading: " furanshisu", foreignName: true },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " な", reading: " na" },
+                        { text: "で", reading: "de", particle: true },
                         { text: " せんれい", reading: " senrei" },
                         { text: "を", reading: "o", particle: true },
                         { text: " うけました。", reading: " ukemashita" }
-                    ],
-                    [
-                        { text: "のちに、", reading: "nochini" },
-                        { text: " しわん", reading: " shiwan" },
-                        { text: "も", reading: "mo", particle: true },
-                        { text: " きりすときょう", reading: " kirisutokyou" },
-                        { text: "を", reading: "o", particle: true },
-                        { text: " うけいれました。", reading: " ukeiremashita" },
-                        { text: " くに", reading: " kuni" },
-                        { text: "は", reading: "wa", particle: true },
-                        { text: " へいわ", reading: " heiwa" },
-                        { text: "に", reading: "ni", particle: true },
-                        { text: " なりました。", reading: " narimashita" }
                     ]
                 ]
             }
         ]
-    }
+    },
 ];
 
 global.KanaData = {
