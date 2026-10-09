@@ -282,6 +282,10 @@ const alphabetMap = {
     hiragana,
     katakana
 };
+const extendedKanaByAlphabet = {
+    hiragana: ["ゐ", "ゑ"],
+    katakana: ["ヰ", "ヱ"]
+};
 Object.keys(alphabetMap).forEach(alphabetName => {
     ["dakuon", "youon"].forEach(tableType => {
         getSupplementalRows(tableType, alphabetName).forEach(row => {
@@ -313,12 +317,35 @@ function readSavedUiState() {
 
 const restoredUiState = readSavedUiState();
 let currentAlphabet = restoredUiState?.alphabet || "hiragana";
-let rowsDef = rowsDefMap[currentAlphabet];
+let extendedKanaEnabled = restoredUiState?.extendedKanaEnabled === true;
+function getRowsForAlphabet(alphabetName) {
+    if (!extendedKanaEnabled) return rowsDefMap[alphabetName];
+    return rowsDefMap[alphabetName].map(row => {
+        if (row.key !== "w") return row;
+        const extendedKana = extendedKanaByAlphabet[alphabetName];
+        const extendedTransliterations = ["wi", "we"];
+        const chars = [...row.chars];
+        const translit = [...row.translit];
+        [1, 3].forEach((index, extendedIndex) => {
+            chars[index] = extendedKana[extendedIndex];
+            translit[index] = extendedTransliterations[extendedIndex];
+        });
+        return { ...row, chars, translit };
+    });
+}
+
+let rowsDef = getRowsForAlphabet(currentAlphabet);
 const supplementalExpanded = {
     dakuon: restoredUiState?.expanded?.dakuon === true,
     youon: restoredUiState?.expanded?.youon === true
 };
-const kanaForCurrentAlphabet = new Set(Object.keys(alphabetMap[currentAlphabet]));
+function getAvailableKana(alphabetName = currentAlphabet) {
+    return Object.keys(alphabetMap[alphabetName]).filter(char =>
+        extendedKanaEnabled || !extendedKanaByAlphabet[alphabetName].includes(char)
+    );
+}
+
+const kanaForCurrentAlphabet = new Set(getAvailableKana());
 const selectedCells = new Set(
     Array.isArray(restoredUiState?.selected)
         ? restoredUiState.selected.filter(char => kanaForCurrentAlphabet.has(char))
@@ -330,6 +357,7 @@ function saveUiState() {
         sessionStorage.setItem(UI_STATE_KEY, JSON.stringify({
             alphabet: currentAlphabet,
             selected: [...selectedCells],
+            extendedKanaEnabled,
             expanded: { ...supplementalExpanded }
         }));
     } catch (error) {
@@ -338,7 +366,7 @@ function saveUiState() {
 }
 
 function getVisibleKana() {
-    const visibleKana = new Set(Object.keys(alphabetMap[currentAlphabet]));
+    const visibleKana = new Set(getAvailableKana());
     ["dakuon", "youon"].forEach(tableType => {
         if (!supplementalExpanded[tableType]) {
             getSupplementalRows(tableType).forEach(row => {
@@ -355,10 +383,15 @@ function updateTitle() {
         hiragana: ["Hiragana", "ひらがな"],
         katakana: ["Katakana", "カタカナ"]
     };
+    const extendedKanaLabels = {
+        hiragana: "Kana rozszerzone (ゐ wi, ゑ we)",
+        katakana: "Kana rozszerzone (ヰ wi, ヱ we)"
+    };
     const [romanized, label] = titles[currentAlphabet];
 
     document.title = romanized;
     document.getElementById("answer").placeholder = "Podaj rōmaji";
+    document.getElementById("extended-kana-label").textContent = extendedKanaLabels[currentAlphabet];
 
     if (titleEl) {
         titleEl.innerHTML = `${label} <span>(${romanized})</span>`;
@@ -369,9 +402,9 @@ function switchAlphabet(alphabetName) {
     if (!alphabetMap[alphabetName]) return;
 
     currentAlphabet = alphabetName;
-    rowsDef = rowsDefMap[alphabetName];
+    rowsDef = getRowsForAlphabet(alphabetName);
     selectedCells.clear();
-    Object.keys(alphabetMap[alphabetName]).forEach(char => selectedCells.add(char));
+    getAvailableKana(alphabetName).forEach(char => selectedCells.add(char));
     saveUiState();
     updateTitle();
     document.getElementById("start-reading-practice").hidden = alphabetName !== "hiragana";
@@ -506,6 +539,24 @@ if (alphabetTypeSelect) {
         switchAlphabet(event.target.value);
     });
 }
+
+const extendedKanaCheckbox = document.getElementById("extended-kana");
+extendedKanaCheckbox.checked = extendedKanaEnabled;
+extendedKanaCheckbox.addEventListener("change", () => {
+    extendedKanaEnabled = extendedKanaCheckbox.checked;
+    rowsDef = getRowsForAlphabet(currentAlphabet);
+    extendedKanaByAlphabet[currentAlphabet].forEach(char => {
+        if (extendedKanaEnabled) {
+            selectedCells.add(char);
+        } else {
+            selectedCells.delete(char);
+        }
+    });
+    saveUiState();
+    renderTable();
+    renderSupplementalTables();
+    syncSelectionHighlights();
+});
 
 applyFontStyle(savedFontStyle || "default");
 updateTitle();
