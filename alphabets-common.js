@@ -5,6 +5,8 @@
         BASE_REPS,
         STREAK_BONUS_THRESHOLD,
         WRONG_ANSWER_PENALTY,
+        readReloadState,
+        storeSessionState,
         pickRandomKey,
         setText,
         setupRepeatButton,
@@ -33,16 +35,39 @@
         let currentCharacter = null;
         let consecutiveCorrectCharacter = null;
         let consecutiveCorrectCount = 0;
+        let awaitingContinue = false;
+        let activeStudy = false;
+        const studyStateKey = `alphabetStudyState:${downloadName}`;
         const answerInput = document.getElementById("answer");
+
+        function saveStudyState() {
+            if (!activeStudy) return;
+            storeSessionState(studyStateKey, {
+                active: true,
+                queue,
+                studySet,
+                currentCharacter,
+                consecutiveCorrectCharacter,
+                consecutiveCorrectCount,
+                awaitingContinue,
+                missedQuestionKeys: getMissedQuestionKeys(),
+                answer: answerInput.value,
+                feedback: document.getElementById("feedback").textContent
+            });
+        }
 
         function pickCharacter() {
             const key = pickRandomKey(queue);
             if (key === null) {
+                currentCharacter = null;
+                awaitingContinue = false;
+                saveStudyState();
                 showQueueFinished();
                 return;
             }
             currentCharacter = key;
             setText("char-box", currentCharacter);
+            saveStudyState();
         }
 
         function startStudy(
@@ -61,6 +86,8 @@
             }
 
             if (resetMistakes) resetMissedQuestions();
+            activeStudy = true;
+            awaitingContinue = false;
             queue = {};
             characters.forEach(character => {
                 queue[character] = BASE_REPS;
@@ -73,6 +100,7 @@
             setText("feedback", "");
             hideContinueButton();
             showStudyApp();
+            saveStudyState();
             pickCharacter();
         }
 
@@ -102,6 +130,7 @@
                 }
 
                 answerInput.value = "";
+                awaitingContinue = false;
                 pickCharacter();
                 return;
             }
@@ -111,12 +140,16 @@
             consecutiveCorrectCount = 0;
             queue[currentCharacter] += WRONG_ANSWER_PENALTY;
             setText("feedback", `Źle! Poprawna odpowiedź: ${correctAnswer}`);
+            awaitingContinue = true;
             showContinueButton();
+            saveStudyState();
         }
-
         document.getElementById("end-study").addEventListener("click", () => {
+            activeStudy = false;
+            storeSessionState(studyStateKey, null);
             queue = {};
             currentCharacter = null;
+            awaitingContinue = false;
             setText("feedback", "");
             answerInput.value = "";
             hideContinueButton();
@@ -127,6 +160,7 @@
             hideContinueButton();
             setText("feedback", "");
             answerInput.value = "";
+            awaitingContinue = false;
             pickCharacter();
         });
 
@@ -139,6 +173,7 @@
         });
         answerInput.addEventListener("input", () => {
             answerInput.value = answerInput.value.replace(/\s/g, "");
+            saveStudyState();
         });
 
         setupRepeatButton(() => startStudy(studySet));
@@ -176,6 +211,8 @@
                         }
                         queue = restoredQueue;
                         studySet = Object.keys(queue);
+                        activeStudy = true;
+                        awaitingContinue = false;
                         consecutiveCorrectCharacter = null;
                         consecutiveCorrectCount = 0;
                         answerInput.value = "";
@@ -191,6 +228,60 @@
                 reader.readAsText(file);
                 fileInput.value = "";
             });
+        }
+
+        const restoredStudyState = readReloadState(studyStateKey);
+        if (restoredStudyState?.active) {
+            const restoredQueue = restoredStudyState.queue;
+            const isValidQueue = restoredQueue &&
+                !Array.isArray(restoredQueue) &&
+                typeof restoredQueue === "object" &&
+                Object.entries(restoredQueue).every(([character, reps]) =>
+                    typeof getAnswer(character) === "string" &&
+                    Number.isFinite(reps) &&
+                    reps > 0
+                );
+            const restoredCurrentCharacter = restoredStudyState.currentCharacter;
+            if (isValidQueue && (
+                restoredCurrentCharacter === null ||
+                Object.prototype.hasOwnProperty.call(restoredQueue, restoredCurrentCharacter)
+            )) {
+                queue = restoredQueue;
+                studySet = Array.isArray(restoredStudyState.studySet)
+                    ? restoredStudyState.studySet.filter(character =>
+                        typeof getAnswer(character) === "string"
+                    )
+                    : Object.keys(restoredQueue);
+                currentCharacter = restoredCurrentCharacter;
+                consecutiveCorrectCharacter = restoredStudyState.consecutiveCorrectCharacter;
+                consecutiveCorrectCount = Number.isFinite(restoredStudyState.consecutiveCorrectCount)
+                    ? restoredStudyState.consecutiveCorrectCount
+                    : 0;
+                awaitingContinue = restoredStudyState.awaitingContinue === true;
+                activeStudy = true;
+                resetMissedQuestions();
+                if (Array.isArray(restoredStudyState.missedQuestionKeys)) {
+                    restoredStudyState.missedQuestionKeys
+                        .filter(character => typeof getAnswer(character) === "string")
+                        .forEach(recordMissedQuestion);
+                }
+                answerInput.value = typeof restoredStudyState.answer === "string"
+                    ? restoredStudyState.answer
+                    : "";
+                setText("feedback", restoredStudyState.feedback || "");
+                showStudyApp();
+                if (currentCharacter === null) {
+                    showQueueFinished();
+                } else {
+                    setText("char-box", currentCharacter);
+                    if (awaitingContinue) {
+                        setText("feedback", `Źle! Poprawna odpowiedź: ${getAnswer(currentCharacter)}`);
+                        showContinueButton();
+                    } else {
+                        hideContinueButton();
+                    }
+                }
+            }
         }
 
         return { startStudy };

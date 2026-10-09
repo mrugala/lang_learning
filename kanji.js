@@ -29,7 +29,9 @@ const {
 
 const categories = window.kanjiCategories || [];
 const UI_STATE_KEY = "kanjiSelectionUiState";
+const STUDY_STATE_KEY = "kanjiStudyState";
 const restoredUiState = readReloadState(UI_STATE_KEY);
+const restoredStudyState = readReloadState(STUDY_STATE_KEY);
 
 const MIN_ROWS = 10;
 const selectedCells = new Set();
@@ -153,6 +155,29 @@ selectVisibleDeckItems();
 let currentKey = null;
 let queue = {};
 let studySet = [];
+let awaitingContinue = false;
+
+function saveStudyState() {
+    if (document.getElementById("app").style.display === "none") return;
+    storeSessionState(STUDY_STATE_KEY, {
+        active: true,
+        queue,
+        studySet,
+        currentKey,
+        studyMode: currentStudyMode,
+        awaitingContinue,
+        missedQuestionKeys: getMissedQuestionKeys(),
+        choiceOptions: [...document.querySelectorAll(".kanji-choice-button")]
+            .map(button => button.textContent),
+        wrongChoice: document.querySelector(".kanji-choice-button.choice-wrong")?.textContent || null,
+        answers: {
+            romaji: document.getElementById("romaji-answer").value,
+            hiragana: document.getElementById("hiragana-answer").value,
+            meaning: document.getElementById("meaning-answer").value
+        },
+        feedback: document.getElementById("feedback").textContent
+    });
+}
 
 function getCellKey(categoryKey, rowIndex) {
     return `${categoryKey}:${rowIndex}`;
@@ -594,6 +619,8 @@ document.getElementById("clear-all").addEventListener("click", () => setAllCheck
 function pickChar() {
     const key = pickRandomKey(queue);
     if (key === null) {
+        currentKey = null;
+        saveStudyState();
         showQueueFinished();
         return;
     }
@@ -616,6 +643,7 @@ function pickChar() {
     // the previous answer stays visible while the next question is shown. It is
     // cleared by endStudySession and by the continue button instead.
     clearAnswerInputs();
+    saveStudyState();
 }
 
 function getKanjiChoiceOptions(item) {
@@ -657,14 +685,18 @@ function getKanjiChoiceOptions(item) {
     return [candidates[0] || "", candidates[1] || "", correct];
 }
 
-function renderKanjiChoiceButtons(item) {
+function renderKanjiChoiceButtons(item, savedOptions = null) {
     const host = document.getElementById("kanji-choice-buttons");
     host.replaceChildren();
 
-    const options = getKanjiChoiceOptions(item);
-    for (let index = options.length - 1; index > 0; index--) {
-        const swapIndex = Math.floor(Math.random() * (index + 1));
-        [options[index], options[swapIndex]] = [options[swapIndex], options[index]];
+    const options = Array.isArray(savedOptions)
+        ? [...savedOptions]
+        : getKanjiChoiceOptions(item);
+    if (!Array.isArray(savedOptions)) {
+        for (let index = options.length - 1; index > 0; index--) {
+            const swapIndex = Math.floor(Math.random() * (index + 1));
+            [options[index], options[swapIndex]] = [options[swapIndex], options[index]];
+        }
     }
 
     options.forEach(value => {
@@ -673,6 +705,11 @@ function renderKanjiChoiceButtons(item) {
         button.className = "kanji-choice-button";
         button.textContent = value;
         button.disabled = !value;
+        if (awaitingContinue) {
+            button.disabled = true;
+            if (value === item.kanji) button.classList.add("choice-correct");
+            if (value === restoredStudyState?.wrongChoice) button.classList.add("choice-wrong");
+        }
         button.addEventListener("click", () => submitKanjiChoice(value, button));
         host.appendChild(button);
     });
@@ -702,12 +739,14 @@ function submitKanjiChoice(answer, selectedButton) {
         ? `Zaznaczone kanji: ${answer} — ${selectedItem.romaji}, ${selectedItem.meaning}.`
         : `Zaznaczone kanji: ${answer}. Brak romaji i znaczenia w danych.`;
     setText("feedback", `Źle! Poprawna odpowiedź: ${expected}. ${selectedDetails}`);
+    awaitingContinue = true;
     document.querySelectorAll(".kanji-choice-button").forEach(button => {
         button.disabled = true;
         if (button.textContent === expected) button.classList.add("choice-correct");
     });
     selectedButton.classList.add("choice-wrong");
     showContinueButton();
+    saveStudyState();
 }
 
 function clearAnswerInputs() {
@@ -718,7 +757,10 @@ function clearAnswerInputs() {
 
 function endStudySession() {
     queue = {};
+    studySet = [];
     currentKey = null;
+    awaitingContinue = false;
+    storeSessionState(STUDY_STATE_KEY, null);
     clearAnswerInputs();
     setText("feedback", "");
     hideContinueButton();
@@ -728,6 +770,7 @@ function endStudySession() {
 function startStudy(keys) {
     queue = {};
     currentKey = null;
+    awaitingContinue = false;
     setText("feedback", "");
     hideContinueButton();
     clearAnswerInputs();
@@ -766,6 +809,7 @@ document.getElementById("start").onclick = () => {
     if (startStudy(keys)) {
         studySet = keys;
         resetMissedQuestions();
+        saveStudyState();
     }
 };
 
@@ -813,7 +857,9 @@ function submitAnswer() {
         recordMissedQuestion(currentKey);
         queue[currentKey].reps += WRONG_ANSWER_PENALTY;
         setText("feedback", `Źle! Poprawne: ${expected}`);
+        awaitingContinue = true;
         showContinueButton();
+        saveStudyState();
     }
 }
 
@@ -822,6 +868,7 @@ document.getElementById("end-study").onclick = endStudySession;
 
 document.getElementById("continue").onclick = () => {
     hideContinueButton();
+    awaitingContinue = false;
     setText("feedback", "");
     clearAnswerInputs();
     pickChar();
@@ -895,3 +942,79 @@ answerRomaji.addEventListener("keydown", event => handleEnterKey(event, submitAn
 answerHiragana.addEventListener("keydown", event => handleEnterKey(event, submitAnswer));
 
 answerMeaning.addEventListener("keydown", event => handleEnterKey(event, submitAnswer));
+
+[answerRomaji, answerHiragana, answerMeaning].forEach(input => {
+    input.addEventListener("input", saveStudyState);
+});
+
+if (restoredStudyState?.active) {
+    const restoredQueue = restoredStudyState.queue;
+    const validQueue = restoredQueue &&
+        !Array.isArray(restoredQueue) &&
+        typeof restoredQueue === "object" &&
+        Object.entries(restoredQueue).every(([key, item]) => {
+            const [categoryKey, rowValue] = key.split(":");
+            const category = categories.find(candidate => candidate.key === categoryKey);
+            return category &&
+                Number.isInteger(Number(rowValue)) &&
+                category.items[Number(rowValue)] &&
+                item &&
+                typeof item === "object" &&
+                Number.isFinite(item.reps) &&
+                item.reps > 0;
+        });
+    const validCurrentKey = restoredStudyState.currentKey === null ||
+        Object.prototype.hasOwnProperty.call(restoredQueue || {}, restoredStudyState.currentKey);
+    const savedChoiceOptions = Array.isArray(restoredStudyState.choiceOptions) &&
+        restoredStudyState.choiceOptions.every(option => typeof option === "string")
+        ? restoredStudyState.choiceOptions
+        : null;
+
+    if (validQueue && validCurrentKey) {
+        queue = restoredQueue;
+        studySet = Array.isArray(restoredStudyState.studySet)
+            ? restoredStudyState.studySet.filter(key => {
+                if (typeof key !== "string") return false;
+                const [categoryKey, rowValue] = key.split(":");
+                return categories.some(category =>
+                    category.key === categoryKey && category.items[Number(rowValue)]
+                );
+            })
+            : Object.keys(restoredQueue);
+        currentKey = restoredStudyState.currentKey;
+        awaitingContinue = restoredStudyState.awaitingContinue === true;
+        currentStudyMode = normalizeModeKey(restoredStudyState.studyMode);
+        resetMissedQuestions();
+        if (Array.isArray(restoredStudyState.missedQuestionKeys)) {
+            restoredStudyState.missedQuestionKeys
+                .filter(key => studySet.includes(key))
+                .forEach(recordMissedQuestion);
+        }
+
+        showStudyApp();
+        if (currentKey === null) {
+            showQueueFinished();
+        } else {
+            const item = queue[currentKey];
+            const mode = studyModes[normalizeModeKey(currentStudyMode)] ||
+                studyModes["romaji-polski"];
+            const promptValue = getDisplayValue(item, mode.prompt);
+            const showKanjiHint =
+                (mode.prompt === "romaji" || mode.prompt === "hiragana") &&
+                mode.answer === "polski";
+            document.getElementById("char-box").innerHTML = showKanjiHint
+                ? `<div class="prompt-main">${promptValue}</div><div class="prompt-kanji">${item.kanji}</div>`
+                : `<div class="prompt-main">${promptValue}</div>`;
+            if (mode.answer === "kanji") {
+                renderKanjiChoiceButtons(item, savedChoiceOptions);
+            }
+            const answers = restoredStudyState.answers || {};
+            answerRomaji.value = typeof answers.romaji === "string" ? answers.romaji : "";
+            answerHiragana.value = typeof answers.hiragana === "string" ? answers.hiragana : "";
+            answerMeaning.value = typeof answers.meaning === "string" ? answers.meaning : "";
+            setText("feedback", restoredStudyState.feedback || "");
+            if (awaitingContinue) showContinueButton();
+            else hideContinueButton();
+        }
+    }
+}

@@ -44,7 +44,9 @@ const decks = (window.germanVocabularyCategories || []).map(category => ({
 
 let currentMode = "letters";
 const UI_STATE_KEY = "kurrentSelectionUiState";
+const STUDY_STATE_KEY = "kurrentStudyState";
 const restoredUiState = readReloadState(UI_STATE_KEY);
+const restoredStudyState = readReloadState(STUDY_STATE_KEY);
 const validModes = ["letters", "words"];
 if (validModes.includes(restoredUiState?.mode)) {
     currentMode = restoredUiState.mode;
@@ -289,6 +291,25 @@ let studySet = [];
 let currentItem = null;
 let consecutiveCorrectKey = null;
 let consecutiveCorrectCount = 0;
+let awaitingContinue = false;
+const answerInput = document.getElementById("kurrent-answer");
+
+function saveStudyState() {
+    if (document.getElementById("app").style.display === "none") return;
+    storeSessionState(STUDY_STATE_KEY, {
+        active: true,
+        mode: currentMode,
+        queue,
+        studySet,
+        currentKey: currentItem ? itemKey(currentItem) : null,
+        consecutiveCorrectKey,
+        consecutiveCorrectCount,
+        awaitingContinue,
+        missedQuestionKeys: getMissedQuestionKeys(),
+        answer: answerInput.value,
+        feedback: document.getElementById("feedback").textContent
+    });
+}
 
 // Wszystkie zapisy uznawane za poprawną odpowiedź na glifę.
 // Dla zwykłych liter odpowiedzią jest wyłącznie tożsamość litery - jej
@@ -417,6 +438,8 @@ function startStudy(items = currentItems(), isNewSession = false) {
 function pickItem() {
     const key = pickRandomKey(queue);
     if (key === null) {
+        currentItem = null;
+        saveStudyState();
         showQueueFinished();
         return;
     }
@@ -430,6 +453,7 @@ function pickItem() {
 
     currentItem = item;
     renderPrompt(item);
+    saveStudyState();
 }
 
 // Glif jest już zapisany kurrentowo, więc podmiana na długie s dotyczy
@@ -517,6 +541,7 @@ function submitAnswer() {
 
         setText("feedback", "Dobrze!");
         input.value = "";
+        awaitingContinue = false;
         pickItem();
     } else {
         recordMissedQuestion(key);
@@ -524,7 +549,9 @@ function submitAnswer() {
         consecutiveCorrectCount = 0;
         queue[key] = queue[key] + WRONG_ANSWER_PENALTY;
         setText("feedback", `Źle! Poprawna odpowiedź: ${currentItem.answers.join(" / ")}`);
+        awaitingContinue = true;
         showContinueButton();
+        saveStudyState();
     }
 }
 
@@ -533,6 +560,8 @@ function endStudy() {
     currentItem = null;
     consecutiveCorrectKey = null;
     consecutiveCorrectCount = 0;
+    awaitingContinue = false;
+    storeSessionState(STUDY_STATE_KEY, null);
     setText("feedback", "");
     document.getElementById("kurrent-answer").value = "";
     hideContinueButton();
@@ -582,6 +611,7 @@ document.getElementById("end-study").onclick = endStudy;
 
 document.getElementById("continue").onclick = () => {
     hideContinueButton();
+    awaitingContinue = false;
     setText("feedback", "");
     document.getElementById("kurrent-answer").value = "";
     pickItem();
@@ -593,9 +623,66 @@ document.getElementById("kurrent-mode").addEventListener("change", event => swit
 document.getElementById("kurrent-answer").addEventListener("keydown", event => {
     handleEnterKey(event, submitAnswer);
 });
+answerInput.addEventListener("input", saveStudyState);
 
 renderLetterTable();
 renderDecks();
 syncLetterHighlights();
 switchMode(currentMode);
 saveUiState();
+
+if (restoredStudyState?.active && validModes.includes(restoredStudyState.mode)) {
+    currentMode = restoredStudyState.mode;
+    document.getElementById("kurrent-mode").value = currentMode;
+    switchMode(currentMode);
+    const restoredSet = restoredStudyState.studySet;
+    const restoredQueue = restoredStudyState.queue;
+    const validStudySet = Array.isArray(restoredSet) &&
+        restoredSet.every(item =>
+            item &&
+            typeof item.glyph === "string" &&
+            Array.isArray(item.answers) &&
+            item.answers.every(answer => typeof answer === "string") &&
+            typeof item.answer === "string"
+        );
+    const validQueue = restoredQueue &&
+        !Array.isArray(restoredQueue) &&
+        typeof restoredQueue === "object" &&
+        Object.entries(restoredQueue).every(([key, reps]) =>
+            restoredSet?.some(item => itemKey(item) === key) &&
+            Number.isFinite(reps) &&
+            reps > 0
+        );
+    const currentKey = restoredStudyState.currentKey;
+    const validCurrentKey = currentKey === null ||
+        Object.prototype.hasOwnProperty.call(restoredQueue || {}, currentKey);
+
+    if (validStudySet && validQueue && validCurrentKey) {
+        studySet = restoredSet;
+        queue = restoredQueue;
+        currentItem = currentKey === null
+            ? null
+            : studySet.find(item => itemKey(item) === currentKey) || null;
+        consecutiveCorrectKey = restoredStudyState.consecutiveCorrectKey || null;
+        consecutiveCorrectCount = Number.isFinite(restoredStudyState.consecutiveCorrectCount)
+            ? restoredStudyState.consecutiveCorrectCount
+            : 0;
+        awaitingContinue = restoredStudyState.awaitingContinue === true;
+        resetMissedQuestions();
+        if (Array.isArray(restoredStudyState.missedQuestionKeys)) {
+            restoredStudyState.missedQuestionKeys
+                .filter(key => studySet.some(item => itemKey(item) === key))
+                .forEach(recordMissedQuestion);
+        }
+
+        showStudyApp();
+        if (currentItem) renderPrompt(currentItem);
+        else showQueueFinished();
+        answerInput.value = typeof restoredStudyState.answer === "string"
+            ? restoredStudyState.answer
+            : "";
+        setText("feedback", restoredStudyState.feedback || "");
+        if (awaitingContinue) showContinueButton();
+        else hideContinueButton();
+    }
+}

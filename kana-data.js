@@ -91,6 +91,29 @@ const dakuonAlternativeSpellings = {
     "ヅ": ["du"]
 };
 
+const readingParticleMeanings = {
+    "が": "oznacza podmiot zdania; wskazuje, kto lub co wykonuje czynność albo jest opisywane",
+    "から": "od; z — wskazuje początek, źródło lub punkt wyjścia",
+    "で": "w; za pomocą — wskazuje miejsce czynności albo sposób jej wykonania",
+    "と": "i; z — łączy rzeczowniki lub wskazuje towarzysza; może też wprowadzać cytat",
+    "に": "do; w; o — wskazuje cel, miejsce, czas lub odbiorcę",
+    "の": "wskazuje przynależność lub związek; często odpowiada polskiemu „-a/-ego” albo „z”",
+    "は": "wskazuje temat zdania; czytane jako „wa”",
+    "へ": "w kierunku; do — wskazuje kierunek ruchu, czytane jako „e”",
+    "も": "też; również",
+    "を": "oznacza dopełnienie czynności; czytane jako „o”",
+    "という": "zwrot wprowadzający nazwę lub określenie: „zwany”, „o nazwie”"
+};
+
+const readingCharacterNames = {
+    "momotarou": "Momotarō",
+    "momotaroutachi": "Momotarō i jego towarzysze",
+    "shiwan": "Siwan",
+    "shikatora": "Sikatora",
+    "sebasuchan": "Sebastian",
+    "sutefan": "Stefan"
+};
+
 const readingStories = [
     {
         key: "momotaro",
@@ -362,5 +385,14 @@ const readingStories = [
     }
 ];
 
-global.KanaData = { hiragana, katakana, rowsDefMap, supplementalRows, dakuonAlternativeSpellings, readingStories };
+global.KanaData = {
+    hiragana,
+    katakana,
+    rowsDefMap,
+    supplementalRows,
+    dakuonAlternativeSpellings,
+    readingParticleMeanings,
+    readingCharacterNames,
+    readingStories
+};
 })(window);

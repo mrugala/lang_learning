@@ -20,7 +20,9 @@ const {
 
 const categories = window.germanVocabularyCategories;
 const UI_STATE_KEY = "germanVocabularySelectionUiState";
+const STUDY_STATE_KEY = "germanVocabularyStudyState";
 const restoredUiState = readReloadState(UI_STATE_KEY);
+const restoredStudyState = readReloadState(STUDY_STATE_KEY);
 const categoryKeys = new Set(categories.map(category => category.key));
 const selectedCategories = new Set(
     Array.isArray(restoredUiState?.selectedCategories)
@@ -39,6 +41,22 @@ function saveUiState() {
 let queue = {};
 let studySet = {};
 let currentKey = null;
+let awaitingContinue = false;
+const answerInput = document.getElementById("vocabulary-answer");
+
+function saveStudyState() {
+    if (document.getElementById("app").style.display === "none") return;
+    storeSessionState(STUDY_STATE_KEY, {
+        active: true,
+        queue,
+        studySet,
+        currentKey,
+        awaitingContinue,
+        missedQuestionKeys: getMissedQuestionKeys(),
+        answer: answerInput.value,
+        feedback: document.getElementById("feedback").textContent
+    });
+}
 
 function cloneQueue(sourceQueue) {
     return Object.fromEntries(
@@ -152,6 +170,7 @@ function startStudy() {
 function beginStudy(items) {
     queue = cloneQueue(items);
     currentKey = null;
+    awaitingContinue = false;
     setText("feedback", "");
     document.getElementById("vocabulary-answer").value = "";
     hideContinueButton();
@@ -159,9 +178,10 @@ function beginStudy(items) {
     pickWord();
 }
 
-function pickWord() {
-    currentKey = pickRandomKey(queue);
+function pickWord(key = pickRandomKey(queue)) {
+    currentKey = key;
     if (currentKey === null) {
+        saveStudyState();
         showQueueFinished();
         return;
     }
@@ -200,6 +220,7 @@ function pickWord() {
     // Przyciski znaków niemieckich są potrzebne tylko tam, gdzie pisze się
     // po niemiecku. Przy tłumaczeniu na polski tylko przeszkadzają.
     document.getElementById("german-characters").style.display = germanToPolish ? "none" : "flex";
+    saveStudyState();
 }
 
 // Porównanie luźne - dla tłumaczenia na polski, gdzie wielkość liter
@@ -266,12 +287,16 @@ function submitAnswer() {
     item.reps += WRONG_ANSWER_PENALTY;
     recordMissedQuestion(currentKey);
     setText("feedback", `Niepoprawnie. Poprawna odpowiedź: ${accepted.join(" / ")}`);
+    awaitingContinue = true;
     showContinueButton();
+    saveStudyState();
 }
 
 function endStudy() {
     queue = {};
     currentKey = null;
+    awaitingContinue = false;
+    storeSessionState(STUDY_STATE_KEY, null);
     document.getElementById("vocabulary-answer").value = "";
     setText("feedback", "");
     hideContinueButton();
@@ -294,6 +319,7 @@ document.getElementById("submit").onclick = submitAnswer;
 document.getElementById("end-study").onclick = endStudy;
 document.getElementById("continue").onclick = () => {
     hideContinueButton();
+    awaitingContinue = false;
     setText("feedback", "");
     document.getElementById("vocabulary-answer").value = "";
     pickWord();
@@ -301,6 +327,7 @@ document.getElementById("continue").onclick = () => {
 document.getElementById("vocabulary-answer").addEventListener("keydown", event => {
     handleEnterKey(event, submitAnswer);
 });
+answerInput.addEventListener("input", saveStudyState);
 
 const directionSelect = document.getElementById("translation-direction");
 if (directions.includes(restoredUiState?.direction)) {
@@ -320,3 +347,57 @@ document.querySelectorAll("[data-character]").forEach(button => {
 
 renderCategories();
 saveUiState();
+
+if (restoredStudyState?.active) {
+    const restoredQueue = restoredStudyState.queue;
+    const restoredSet = restoredStudyState.studySet;
+    const validQueue = restoredQueue &&
+        !Array.isArray(restoredQueue) &&
+        typeof restoredQueue === "object" &&
+        Object.values(restoredQueue).every(item =>
+            item &&
+            typeof item === "object" &&
+            directions.includes(item.direction) &&
+            (item.form === "singular" || item.form === "plural") &&
+            Number.isFinite(item.reps) &&
+            item.reps > 0
+        );
+    const validStudySet = restoredSet &&
+        !Array.isArray(restoredSet) &&
+        typeof restoredSet === "object" &&
+        Object.values(restoredSet).every(item =>
+            item &&
+            typeof item === "object" &&
+            directions.includes(item.direction) &&
+            (item.form === "singular" || item.form === "plural")
+        );
+    const validCurrentKey = restoredStudyState.currentKey === null ||
+        Object.prototype.hasOwnProperty.call(restoredQueue || {}, restoredStudyState.currentKey);
+
+    if (validQueue && validStudySet && validCurrentKey) {
+        queue = cloneQueue(restoredQueue);
+        studySet = cloneQueue(restoredSet);
+        currentKey = restoredStudyState.currentKey;
+        awaitingContinue = restoredStudyState.awaitingContinue === true;
+        resetMissedQuestions();
+        if (Array.isArray(restoredStudyState.missedQuestionKeys)) {
+            restoredStudyState.missedQuestionKeys
+                .filter(key => Object.prototype.hasOwnProperty.call(studySet, key))
+                .forEach(recordMissedQuestion);
+        }
+
+        showStudyApp();
+        if (currentKey === null) {
+            showQueueFinished();
+        } else {
+            pickWord(currentKey);
+            answerInput.value = typeof restoredStudyState.answer === "string"
+                ? restoredStudyState.answer
+                : "";
+            setText("feedback", restoredStudyState.feedback || "");
+            if (awaitingContinue) showContinueButton();
+            else hideContinueButton();
+            saveStudyState();
+        }
+    }
+}

@@ -8,13 +8,40 @@ const {
     setGroupSelection
 } = window.LangCommon;
 
-const { hiragana, katakana, rowsDefMap, supplementalRows, dakuonAlternativeSpellings, readingStories } = window.KanaData;
+const {
+    hiragana,
+    katakana,
+    rowsDefMap,
+    supplementalRows,
+    dakuonAlternativeSpellings,
+    readingParticleMeanings,
+    readingCharacterNames,
+    readingStories
+} = window.KanaData;
 
 let activeReadingStory = null;
 let activeReadingChapter = null;
 const nextChapterIndexByStory = new Map();
 let readingLineIndex = 0;
 let readingAnswers = [];
+const READING_STATE_KEY = "kanaReadingPracticeState";
+
+function saveReadingState() {
+    if (!activeReadingStory || !activeReadingChapter) {
+        window.LangCommon.storeSessionState(READING_STATE_KEY, null);
+        return;
+    }
+    window.LangCommon.storeSessionState(READING_STATE_KEY, {
+        active: true,
+        storyKey: activeReadingStory.key,
+        chapterIndex: activeReadingStory.chapters.indexOf(activeReadingChapter),
+        readingLineIndex,
+        readingAnswers,
+        nextChapterIndex: nextChapterIndexByStory.get(activeReadingStory.key) || 0,
+        view: document.getElementById("reading-results").hidden ? "active" : "results",
+        answer: document.getElementById("reading-answer").value
+    });
+}
 
 function appendReadingLine(container, parts) {
     container.replaceChildren();
@@ -101,6 +128,7 @@ function renderReadingPrompt() {
     document.getElementById("reading-submit").textContent =
         readingLineIndex === activeReadingChapter.verses.length - 1 ? "Pokaż cały tekst" : "Dalej";
     document.getElementById("reading-answer").focus();
+    saveReadingState();
 }
 
 function showReadingResults() {
@@ -126,11 +154,28 @@ function showReadingResults() {
         parts.forEach((part, partIndex) => {
             const content = document.createElement(part.particle ? "strong" : "span");
             content.textContent = part.text;
-            const vocabulary = findReadingVocabulary(part.reading);
-            if (vocabulary) {
-                content.title = `${vocabulary.kanji} — ${vocabulary.meaning}`;
-                content.setAttribute("aria-label", `${part.text.trim()}: ${vocabulary.kanji}, ${vocabulary.meaning}`);
+            if (part.particle) {
+                const particleMeaning = readingParticleMeanings[part.text.trim()];
+                if (!particleMeaning) {
+                    throw new Error(`Missing reading-practice particle meaning for: ${part.text.trim()}`);
+                }
+                content.title = `${part.text.trim()} — partykuła: ${particleMeaning}`;
+                content.setAttribute("aria-label", `${part.text.trim()}: partykuła — ${particleMeaning}`);
                 content.classList.add("has-reading-meaning");
+            } else {
+                const characterName = readingCharacterNames[normalizeReadingAnswer(part.reading)];
+                if (characterName) {
+                    content.title = characterName;
+                    content.setAttribute("aria-label", `${part.text.trim()}: ${characterName}`);
+                    content.classList.add("has-reading-meaning");
+                } else {
+                    const vocabulary = findReadingVocabulary(part.reading);
+                    if (vocabulary) {
+                        content.title = `${vocabulary.kanji} — ${vocabulary.meaning}`;
+                        content.setAttribute("aria-label", `${part.text.trim()}: ${vocabulary.kanji}, ${vocabulary.meaning}`);
+                        content.classList.add("has-reading-meaning");
+                    }
+                }
             }
             if (!partResults[partIndex].correct) {
                 content.classList.add("is-incorrect");
@@ -160,6 +205,7 @@ function showReadingResults() {
     document.getElementById("reading-translation").textContent =
         activeReadingChapter.translation;
     results.hidden = false;
+    saveReadingState();
 }
 
 const readingVocabularyByAlias = new Map(
@@ -173,6 +219,9 @@ function findReadingVocabulary(reading) {
 }
 
 function closeReadingPractice() {
+    activeReadingStory = null;
+    activeReadingChapter = null;
+    window.LangCommon.storeSessionState(READING_STATE_KEY, null);
     document.getElementById("reading-practice").hidden = true;
     document.getElementById("reading-divider").hidden = true;
     document.getElementById("selection-panel").hidden = false;
@@ -981,6 +1030,7 @@ document.getElementById("reading-submit").addEventListener("click", () => {
     }
 });
 
+document.getElementById("reading-answer").addEventListener("input", saveReadingState);
 document.getElementById("reading-cancel").addEventListener("click", closeReadingPractice);
 document.getElementById("reading-back").addEventListener("click", closeReadingPractice);
 document.getElementById("reading-answer").addEventListener("keydown", event => {
@@ -992,3 +1042,50 @@ document.getElementById("reading-answer").addEventListener("keydown", event => {
 
 readingPracticeButton.hidden = currentAlphabet !== "hiragana";
 document.getElementById("reading-story-picker").hidden = currentAlphabet !== "hiragana";
+
+const restoredReadingState = window.LangCommon.readReloadState(READING_STATE_KEY);
+if (restoredReadingState?.active) {
+    const restoredStory = readingStories.find(story => story.key === restoredReadingState.storyKey);
+    const restoredChapter = restoredStory?.chapters[restoredReadingState.chapterIndex];
+    const hasValidProgress = Number.isInteger(restoredReadingState.readingLineIndex) &&
+        restoredReadingState.readingLineIndex >= 0 &&
+        restoredReadingState.readingLineIndex <= (restoredChapter?.verses.length || 0) &&
+        Array.isArray(restoredReadingState.readingAnswers) &&
+        restoredReadingState.readingAnswers.length === restoredReadingState.readingLineIndex;
+    if (restoredStory && restoredChapter && hasValidProgress) {
+        activeReadingStory = restoredStory;
+        activeReadingChapter = restoredChapter;
+        readingStorySelect.value = restoredStory.key;
+        nextChapterIndexByStory.set(
+            restoredStory.key,
+            Number.isInteger(restoredReadingState.nextChapterIndex)
+                ? restoredReadingState.nextChapterIndex
+                : 0
+        );
+        readingLineIndex = restoredReadingState.readingLineIndex;
+        readingAnswers = restoredReadingState.readingAnswers;
+        document.getElementById("selection-panel").hidden = true;
+        document.getElementById("reading-practice").hidden = false;
+        document.getElementById("reading-divider").hidden = false;
+
+        if (restoredReadingState.view === "results" &&
+            readingLineIndex === activeReadingChapter.verses.length) {
+            showReadingResults();
+        } else if (readingLineIndex < activeReadingChapter.verses.length) {
+            document.getElementById("reading-active").hidden = false;
+            document.getElementById("reading-results").hidden = true;
+            renderReadingPrompt();
+            document.getElementById("reading-answer").value =
+                typeof restoredReadingState.answer === "string"
+                    ? restoredReadingState.answer
+                    : "";
+        } else {
+            activeReadingStory = null;
+            activeReadingChapter = null;
+            window.LangCommon.storeSessionState(READING_STATE_KEY, null);
+            document.getElementById("selection-panel").hidden = false;
+            document.getElementById("reading-practice").hidden = true;
+            document.getElementById("reading-divider").hidden = true;
+        }
+    }
+}
