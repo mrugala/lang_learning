@@ -163,6 +163,16 @@ function showReadingResults() {
         const verseNumber = document.createElement("span");
         verseNumber.className = "reading-verse-number";
         verseNumber.textContent = `${activeReadingChapter.chapterNumber}:${index + 1}`;
+        const translation = activeReadingChapter.verseTranslations[index];
+        if (typeof translation !== "string" || !translation.trim()) {
+            throw new Error(
+                `Missing translation for chapter ${activeReadingChapter.chapterNumber}, verse ${index + 1}.`
+            );
+        }
+        const translationLine = document.createElement("p");
+        translationLine.className = "reading-verse-translation";
+        translationLine.lang = "pl";
+        translationLine.textContent = translation;
         const hiraganaLine = document.createElement("div");
         hiraganaLine.className = "reading-result-hiragana";
         const partResults = readingAnswers[index].parts;
@@ -210,16 +220,14 @@ function showReadingResults() {
                 .filter((part, partIndex) => !partResults[partIndex].correct)
                 .map(part => `${getReadingPartText(part).trim()} — ${part.reading.trim()}`)
                 .join("; ")}`;
-            resultLine.append(verseNumber, hiraganaLine, answerLine, correction);
+            resultLine.append(verseNumber, hiraganaLine, answerLine, correction, translationLine);
         } else {
-            resultLine.append(verseNumber, hiraganaLine, answerLine);
+            resultLine.append(verseNumber, hiraganaLine, answerLine, translationLine);
         }
         linesHost.appendChild(resultLine);
     });
 
     document.getElementById("reading-source").textContent = activeReadingStory.source;
-    document.getElementById("reading-translation").textContent =
-        activeReadingChapter.translation;
     results.hidden = false;
     saveReadingState();
 }

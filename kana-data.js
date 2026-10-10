@@ -127,7 +127,12 @@ const readingStories = [
             {
                 chapterNumber: 1,
                 title: "Brzoskwinia i Momotarō",
-                translation: "Dawno, dawno temu, niedaleko gór mieszkali starszy pan i starsza pani. Pewnego dnia starsza pani znalazła w rzece wielką brzoskwinię. Z brzoskwini narodził się zdrowy chłopiec. Starsza para nazwała go Momotarō.",
+                verseTranslations: [
+                    "Dawno, dawno temu starszy pan i starsza pani mieszkali niedaleko gór.",
+                    "Pewnego dnia starsza pani znalazła w rzece wielką brzoskwinię.",
+                    "Z brzoskwini urodził się zdrowy chłopiec.",
+                    "Starsza para nazwała dziecko Momotarō."
+                ],
                 verses: [
             [
                 { text: "むかしむかし、", reading: "mukashimukashi" },
@@ -174,7 +179,12 @@ const readingStories = [
             {
                 chapterNumber: 2,
                 title: "Wyprawa Momotarō",
-                translation: "Gdy Momotarō dorósł, postanowił wyruszyć na wyspę demonów. Starsza pani przygotowała dla niego kuleczki z prosa. Po drodze spotkał psa, małpę i bażanta. Każde z nich dostało kuleczkę i dołączyło do jego drużyny.",
+                verseTranslations: [
+                    "Gdy Momotarō dorósł, postanowił wyruszyć na Wyspę Demonów.",
+                    "Starsza pani przygotowała kuleczki z prosa i dała je Momotarō.",
+                    "Po drodze spotkał psa, małpę i bażanta.",
+                    "Wszyscy dostali kuleczki z prosa i zostali jego towarzyszami."
+                ],
                 verses: [
             [
                 { text: "おおきくなった", reading: "ookikunatta" },
@@ -222,7 +232,13 @@ const readingStories = [
             {
                 chapterNumber: 3,
                 title: "Na wyspie demonów",
-                translation: "Wszyscy wsiedli na łódź i popłynęli na wyspę demonów. Kiedy dotarli na wyspę, pojawiły się demony. Momotarō i jego przyjaciele połączyli siły i zwyciężyli. Zabrali skarby i wrócili do wioski, gdzie mieszkańcy serdecznie ich powitali.",
+                verseTranslations: [
+                    "Wszyscy wsiedli na łódź i popłynęli na Wyspę Demonów.",
+                    "Gdy dotarli na wyspę, pojawiły się demony.",
+                    "Momotarō i jego towarzysze połączyli siły i pokonali demony.",
+                    "Zabrali skarby i wrócili do wioski.",
+                    "Mieszkańcy wioski serdecznie ich powitali."
+                ],
                 verses: [
             [
                 { text: "みんな", reading: "minna" },
@@ -282,7 +298,12 @@ const readingStories = [
             {
                 chapterNumber: 1,
                 title: "Początek historii Sikatory",
-                translation: "W Bungo na Kiusiu panował król Siwan. Jego siostrzeniec Sikatora dorastał na dworze królewskim i został adoptowany przez brata królowej, Sikatondona. Królowa miała nadzieję, że Sikatora zostanie potężnym władcą. Rozmowy z Sebastianem obudziły w nim zainteresowanie chrześcijaństwem.",
+                verseTranslations: [
+                    "Dawno temu w Bungo na Kiusiu panował król Siwan.",
+                    "Jego siostrzeniec Sikatora został adoptowanym synem Sikatondona, brata królowej.",
+                    "Królowa pragnęła, by Sikatora został potężnym władcą.",
+                    "Sebastian opowiedział Sikatorze o nauce chrześcijańskiej."
+                ],
                 verses: [
                     [
                         { text: "むかし、", reading: "mukashi" },
@@ -340,7 +361,13 @@ const readingStories = [
             {
                 chapterNumber: 2,
                 title: "Paziem był Stefan",
-                translation: "Sikatora spotkał królewskiego pazia Stefana. Chłopiec był chrześcijaninem od dzieciństwa. Sikatora poznał też niewidomego Tobiasza i jego młodego przewodnika Franciszka. Usłyszał o wierze, która uczy miłości i przebaczenia. Królowa zauważyła, że Sikatora zaczyna interesować się chrześcijaństwem, i poprosiła brata o pomoc.",
+                verseTranslations: [
+                    "Sikatora spotkał Stefana, pazia na królewskim dworze.",
+                    "Stefan był chrześcijaninem od dzieciństwa i przyjął chrzest jako dziecko.",
+                    "Niewidomego Tobiasza prowadził młody Franciszek.",
+                    "Obaj rozmawiali o miłości i przebaczeniu.",
+                    "Królowa dowiedziała się, że Sikatora zainteresował się chrześcijaństwem."
+                ],
                 verses: [
                     [
                         { text: "しかとら", reading: "shikatora" },
@@ -403,7 +430,14 @@ const readingStories = [
             {
                 chapterNumber: 3,
                 title: "Próba Stefana",
-                translation: "Królowa i Sikatondono naciskali na Sikatorę, by porzucił nową wiarę. Tymczasem Stefan odmówił wyrzeczenia się chrześcijaństwa i został surowo ukarany. Królowa chciała skazać go na śmierć. Sebastian błagał o jego ocalenie. Gdy król Siwan wrócił, odsunął niegodnego następcę, wybrał Sikatorę na dziedzica i uwolnił Stefana. Sikatora postanowił podążyć za chrześcijaństwem.",
+                verseTranslations: [
+                    "Sikatondono groził Sikatorze, by ten porzucił wiarę.",
+                    "Stefan odmówił wyrzeczenia się chrześcijaństwa.",
+                    "Królowa kazała go wychłostać i chciała skazać na śmierć.",
+                    "Sebastian poprosił króla, by ocalił Stefana.",
+                    "Król wybrał Sikatorem na następcę i uwolnił Stefana.",
+                    "Sikatora postanowił przyjąć chrześcijaństwo."
+                ],
                 verses: [
                     [
                         { text: "しかとんどの", reading: "shikatondono" },
@@ -478,7 +512,13 @@ const readingStories = [
             {
                 chapterNumber: 4,
                 title: "Wierność Szymona",
-                translation: "Szymon, przybrany syn Sikatondona, również był chrześcijaninem. Za odmowę wyrzeczenia się wiary trafił do więzienia, gdzie pozostał wierny przez dwa lata. Po uwolnieniu stanął do walki, by ocalić przybranego ojca i jego wojsko. Szymon zginął, ratując innych. Jego odwaga poruszyła króla Siwana, który przyjął chrzest i imię Franciszek.",
+                verseTranslations: [
+                    "Szymon, przybrany syn Sikatondona, był chrześcijaninem.",
+                    "Nie wyrzekł się wiary i spędził dwa lata w więzieniu.",
+                    "Król wezwał Szymona z powrotem z więzienia.",
+                    "Gdy wojsko Sikatondona znalazło się w niebezpieczeństwie, Szymon ocalił przybranego ojca.",
+                    "Szymon oddał życie, a król Siwan przyjął chrzest i imię Franciszek."
+                ],
                 verses: [
                     [
                         { text: "しもん", reading: "shimon", foreignName: true },

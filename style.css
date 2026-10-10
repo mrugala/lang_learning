@@ -525,6 +525,10 @@ body.alphabet-glagolitic-angular h1 {
     font-family: var(--input-font);
 }
 
+#answer[hidden] {
+    display: none;
+}
+
 .study-mode-panel {
     display: flex;
     align-items: center;
@@ -771,6 +775,12 @@ button:active {
     font-family: var(--input-font);
     font-size: 17px;
     overflow-wrap: anywhere;
+}
+
+.reading-verse-translation {
+    margin: 8px 0 0;
+    color: #414b5b;
+    font-size: 1rem;
 }
 
 .reading-correction {

@@ -177,6 +177,8 @@
 
     function showQueueFinished() {
         setText("char-box", "Koniec! 🎉");
+        const answerInput = document.getElementById("answer");
+        if (answerInput) answerInput.hidden = true;
         const repeatButton = document.getElementById("repeat-study");
         if (repeatButton && repeatAction) repeatButton.style.display = "inline-block";
         const repeatMistakesButton = document.getElementById("repeat-mistakes-study");
@@ -209,10 +211,12 @@
     function showStudyApp() {
         const panel = document.getElementById("selection-panel");
         const app = document.getElementById("app");
+        const answerInput = document.getElementById("answer");
         const repeatButton = document.getElementById("repeat-study");
         const repeatMistakesButton = document.getElementById("repeat-mistakes-study");
         if (panel) panel.style.display = "none";
         if (app) app.style.display = "block";
+        if (answerInput) answerInput.hidden = false;
         if (repeatButton) repeatButton.style.display = "none";
         if (repeatMistakesButton) repeatMistakesButton.style.display = "none";
     }
