@@ -56,8 +56,14 @@ function appendReadingLine(container, parts) {
 
 function getReadingPartText(part) {
     const foreignNameScript = document.getElementById("reading-foreign-name-script").value;
-    if (foreignNameScript !== "katakana" || !part.foreignName) {
-        return part.text;
+    if (!part.foreignName && !part.foreignWord) return part.text;
+    if (foreignNameScript === "hiragana") {
+        return Array.from(part.text, character => {
+            const codePoint = character.codePointAt(0);
+            return codePoint >= 0x30a1 && codePoint <= 0x30f6
+                ? String.fromCodePoint(codePoint - 0x60)
+                : character;
+        }).join("");
     }
     return Array.from(part.text, character => {
         const codePoint = character.codePointAt(0);
@@ -138,12 +144,18 @@ function renderReadingPrompt() {
     document.getElementById("reading-progress").textContent =
         `Rozdział ${activeReadingChapter.chapterNumber}, werset ${readingLineIndex + 1} z ${activeReadingChapter.verses.length}`;
     appendReadingLine(document.getElementById("reading-line"), parts);
+    updateReadingLongVowelNote(parts);
     document.getElementById("reading-answer").value = "";
     document.getElementById("reading-feedback").textContent = "";
     document.getElementById("reading-submit").textContent =
         readingLineIndex === activeReadingChapter.verses.length - 1 ? "Pokaż cały tekst" : "Dalej";
     document.getElementById("reading-answer").focus();
     saveReadingState();
+}
+
+function updateReadingLongVowelNote(parts) {
+    document.getElementById("reading-long-vowel-note").hidden =
+        !parts.some(part => getReadingPartText(part).includes("ー"));
 }
 
 function showReadingResults() {
@@ -1063,14 +1075,16 @@ function setForeignNameScript(script) {
     foreignNameScriptSelect.value = script;
 }
 
-function storyHasForeignNames(story) {
+function storyHasForeignWords(story) {
     return story.chapters.some(chapter =>
-        chapter.verses.some(verse => verse.some(part => part.foreignName))
+        chapter.verses.some(verse =>
+            verse.some(part => part.foreignName || part.foreignWord)
+        )
     );
 }
 
 function updateForeignNamesPicker(story) {
-    foreignNamesPicker.hidden = !storyHasForeignNames(story);
+    foreignNamesPicker.hidden = !storyHasForeignWords(story);
     if (foreignNamesPicker.hidden) {
         setForeignNameScript("hiragana");
     }
@@ -1091,6 +1105,20 @@ readingStorySelect.addEventListener("change", () => {
     }
     setForeignNameScript("hiragana");
     updateForeignNamesPicker(selectedStory);
+});
+foreignNameScriptSelect.addEventListener("change", () => {
+    if (!activeReadingStory || !activeReadingChapter) return;
+    const readingActive = document.getElementById("reading-active");
+    if (!readingActive.hidden) {
+        appendReadingLine(
+            document.getElementById("reading-line"),
+            activeReadingChapter.verses[readingLineIndex]
+        );
+        updateReadingLongVowelNote(activeReadingChapter.verses[readingLineIndex]);
+    } else if (!document.getElementById("reading-results").hidden) {
+        showReadingResults();
+    }
+    saveReadingState();
 });
 updateForeignNamesPicker(readingStories[0]);
 
@@ -1170,7 +1198,7 @@ if (restoredReadingState?.active) {
             ? "katakana"
             : "hiragana";
         setForeignNameScript(
-            storyHasForeignNames(restoredStory) ? restoredForeignNameScript : "hiragana"
+            storyHasForeignWords(restoredStory) ? restoredForeignNameScript : "hiragana"
         );
         nextChapterIndexByStory.set(
             restoredStory.key,

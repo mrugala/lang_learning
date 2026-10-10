@@ -108,6 +108,8 @@ const readingParticleMeanings = {
 const readingCharacterNames = {
     "momotarou": "Momotarō",
     "momotaroutachi": "Momotarō i jego towarzysze",
+    "mika": "Mika",
+    "yuki": "Yuki",
     "shiwan": "Siwan",
     "shikatora": "Sikatora",
     "shikatondono": "Sikatondono",
@@ -286,6 +288,133 @@ const readingStories = [
                 { text: " あたたかく", reading: " atatakaku" },
                 { text: " むかえました。", reading: " mukaemashita" }
             ]
+                ]
+            }
+        ]
+    },
+    {
+        key: "mika-studies-japanese",
+        title: "Mika uczy się japońskiego",
+        source: "Oryginalna, autorska historia dla początkujących",
+        chapters: [
+            {
+                chapterNumber: 1,
+                title: "Codzienna nauka",
+                verseTranslations: [
+                    "Mika jest studentką.",
+                    "Codziennie uczy się języka japońskiego.",
+                    "Rano czyta książkę.",
+                    "Zapisuje nowe słowa w zeszycie."
+                ],
+                verses: [
+                    [
+                        { text: "みか", reading: "mika" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " がくせい", reading: " gakusei" },
+                        { text: "です。", reading: "desu" }
+                    ],
+                    [
+                        { text: "まいにち", reading: "mainichi" },
+                        { text: " にほんご", reading: " nihongo" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " べんきょう", reading: " benkyou" },
+                        { text: "します。", reading: " shimasu" }
+                    ],
+                    [
+                        { text: "あさ、", reading: "asa" },
+                        { text: " ほん", reading: " hon" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " よみます。", reading: " yomimasu" }
+                    ],
+                    [
+                        { text: "ノート", reading: "nooto", foreignWord: true },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " あたらしい", reading: " atarashii" },
+                        { text: " ことば", reading: " kotoba" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " かきます。", reading: " kakimasu" }
+                    ]
+                ]
+            },
+            {
+                chapterNumber: 2,
+                title: "W bibliotece",
+                verseTranslations: [
+                    "W sobotę idzie do biblioteki.",
+                    "Nauczyciel mówi powoli.",
+                    "Mika pyta o słowa, których nie rozumie.",
+                    "Uczy się razem z przyjaciółmi."
+                ],
+                verses: [
+                    [
+                        { text: "どようび", reading: "doyoubi" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " としょかん", reading: " toshokan" },
+                        { text: "へ", reading: "e", particle: true },
+                        { text: " いきます。", reading: " ikimasu" }
+                    ],
+                    [
+                        { text: "せんせい", reading: "sensei" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " ゆっくり", reading: " yukkuri" },
+                        { text: " はなします。", reading: " hanashimasu" }
+                    ],
+                    [
+                        { text: "みか", reading: "mika" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " わからない", reading: " wakaranai" },
+                        { text: " ことば", reading: " kotoba" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " ききます。", reading: " kikimasu" }
+                    ],
+                    [
+                        { text: "ともだち", reading: "tomodachi" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: " いっしょ", reading: " issho" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " べんきょう", reading: " benkyou" },
+                        { text: "します。", reading: " shimasu" }
+                    ]
+                ]
+            },
+            {
+                chapterNumber: 3,
+                title: "Pierwsza rozmowa",
+                verseTranslations: [
+                    "Mika mówi po japońsku.",
+                    "Yuki słucha.",
+                    "Mika próbuje powiedzieć to jeszcze raz.",
+                    "Mika cieszy się i postanawia uczyć się także jutro."
+                ],
+                verses: [
+                    [
+                        { text: "みか", reading: "mika" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " にほんご", reading: " nihongo" },
+                        { text: "で", reading: "de", particle: true },
+                        { text: " はなします。", reading: " hanashimasu" }
+                    ],
+                    [
+                        { text: "ゆき", reading: "yuki" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " ききます。", reading: " kikimasu" }
+                    ],
+                    [
+                        { text: "みか", reading: "mika" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " もういちど", reading: " mouichido" },
+                        { text: " いいます。", reading: " iimasu" }
+                    ],
+                    [
+                        { text: "みか", reading: "mika" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " うれしい", reading: " ureshii" },
+                        { text: "です。", reading: " desu" },
+                        { text: " あした", reading: " ashita" },
+                        { text: "も", reading: "mo", particle: true },
+                        { text: " べんきょう", reading: " benkyou" },
+                        { text: "します。", reading: " shimasu" }
+                    ]
                 ]
             }
         ]
