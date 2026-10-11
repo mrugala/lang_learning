@@ -445,10 +445,9 @@ function setMobileTableCellSize(table, availableWidth) {
     if (!columnCount) return;
 
     table.style.setProperty("--mobile-column-count", columnCount);
-    table.style.setProperty(
-        "--mobile-cell-size",
-        `${Math.floor(availableWidth / columnCount)}px`
-    );
+    const cellSize = Math.floor(availableWidth / columnCount);
+    table.style.setProperty("--mobile-cell-size", `${cellSize}px`);
+    table.style.setProperty("--mobile-kana-size", `${(cellSize * 0.75).toFixed(2)}px`);
 }
 
 function renderTable() {
@@ -791,12 +790,33 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
         cornerCell.className = "corner-cell";
         headRow.appendChild(cornerCell);
 
-        displayRows.forEach(({ label, key }) => {
+        displayRows.forEach(({ label, key, voicing }) => {
             const th = document.createElement("th");
             th.className = "column-header";
             th.dataset.col = key;
             th.dataset.groupType = "row";
             const { label: headerLabel } = createToggleLabel(key, label);
+            if (tableType === "youon") {
+                const headerLabelText = headerLabel.querySelector("span");
+                headerLabelText.replaceChildren();
+                if (voicing === "marked") {
+                    const dakuten = document.createElement("span");
+                    dakuten.className = "youon-mark youon-dakuten";
+                    dakuten.textContent = "゛";
+                    const handakuten = document.createElement("span");
+                    handakuten.className = "youon-mark youon-handakuten";
+                    handakuten.textContent = "゜";
+                    headerLabelText.append(dakuten, handakuten);
+                }
+                const smallKana = document.createElement("span");
+                smallKana.className = "youon-small-kana";
+                smallKana.textContent = label;
+                headerLabelText.appendChild(smallKana);
+                headerLabelText.classList.add("youon-row-label");
+                if (voicing === "marked") {
+                    smallKana.style.marginLeft = "-0.45em";
+                }
+            }
             th.appendChild(headerLabel);
             headRow.appendChild(th);
         });
@@ -820,11 +840,15 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
             rowEl.dataset.rowKey = columnKey;
             rowEl.dataset.groupType = "col";
 
+            const rowGroups = rows.filter(row => row.baseKey === columnKey);
             const rowHeader = document.createElement("th");
             rowHeader.className = "row-header";
             rowHeader.dataset.row = columnKey;
             rowHeader.dataset.groupType = "col";
-            const { label: headerLabel } = createToggleLabel(columnKey, columnKey);
+            const { label: headerLabel } = createToggleLabel(
+                columnKey,
+                rowGroups.map(row => row.label).join(" / ")
+            );
             rowHeader.appendChild(headerLabel);
             rowEl.appendChild(rowHeader);
 
@@ -850,7 +874,7 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
                     stack.setAttribute("role", "button");
                     stack.tabIndex = 0;
                     const kanaEl = document.createElement("div");
-                    kanaEl.className = "kana-symbol";
+                    kanaEl.className = kana.length > 1 ? "small-kana-symbol" : "kana-symbol";
                     kanaEl.textContent = kana;
                     const translitEl = document.createElement("div");
                     translitEl.className = "kana-translit";

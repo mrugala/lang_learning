@@ -1034,6 +1034,7 @@ input {
 
     .hiragana-table,
     .supplemental-table {
+        --mobile-kana-size: calc(var(--mobile-cell-size, 36px) * 0.75);
         width: 100%;
         min-width: 0;
         table-layout: fixed;
@@ -1065,12 +1066,27 @@ input {
     .supplemental-table .toggle {
         gap: 1px;
         padding: 1px;
-        font-size: 10px;
+        font-size: 13px;
     }
 
     .supplemental-table .toggle input {
         width: 14px;
         height: 14px;
+    }
+
+    /* Youon kana labels (ゃ・ゅ・ょ, and the marked ゛゜ゃ…) appear as both row
+       and column headers on mobile, so give them the same kana-font treatment
+       as the desktop row labels instead of the generic UI font. */
+    .supplemental-table[data-table-type="youon"] .column-header .youon-small-kana,
+    .supplemental-table[data-table-type="youon"] .row-header .youon-small-kana {
+        font-family: var(--hiragana-font);
+        line-height: 1.1;
+    }
+
+    .supplemental-table[data-table-type="youon"] .column-header .youon-mark,
+    .supplemental-table[data-table-type="youon"] .row-header .youon-mark {
+        font-family: var(--hiragana-font);
+        line-height: 1;
     }
 
     .hiragana-table .kana-stack {
@@ -1084,11 +1100,11 @@ input {
     }
 
     .hiragana-table .kana-symbol {
-        font-size: 30px;
+        font-size: var(--mobile-kana-size);
     }
 
     .supplemental-table .supplemental-cell-multiple .kana-symbol {
-        font-size: 16px;
+        font-size: calc(var(--mobile-kana-size) * 0.55);
     }
 
     .supplemental-table .supplemental-cell-multiple .kana-translit {
@@ -1096,7 +1112,11 @@ input {
     }
 
     .supplemental-table[data-table-type="youon"] .kana-symbol {
-        font-size: clamp(12px, 4vw, 18px);
+        font-size: calc(var(--mobile-kana-size));
+    }
+
+    .supplemental-table[data-table-type="youon"] .small-kana-symbol {
+        font-size: calc(var(--mobile-kana-size) * 0.55);
     }
 
     .supplemental-table[data-table-type="youon"] .kana-translit {
@@ -1115,6 +1135,12 @@ input {
 
     .supplemental-section {
         overflow: visible;
+    }
+
+    /* #supplemental-tables becomes display:block on mobile, which drops the
+       flex `gap`; re-create the desktop spacing between stacked sections. */
+    #supplemental-tables > .supplemental-section + .supplemental-section {
+        margin-top: 18px;
     }
 
     .supplemental-group-label {
