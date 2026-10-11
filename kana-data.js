@@ -564,8 +564,9 @@ const readingStories = [
                     "Stefan odmówił wyrzeczenia się chrześcijaństwa.",
                     "Królowa kazała go wychłostać i chciała skazać na śmierć.",
                     "Sebastian poprosił króla, by ocalił Stefana.",
-                    "Król wybrał Sikatorem na następcę i uwolnił Stefana.",
-                    "Sikatora postanowił przyjąć chrześcijaństwo."
+                    "Król wybrał Sikatorę na następcę i uwolnił Stefana.",
+                    "Sikatora postanowił przyjąć chrześcijaństwo.",
+                    "Sikatora przyjął chrzest i imię Szymon."
                 ],
                 verses: [
                     [
@@ -635,6 +636,18 @@ const readingStories = [
                         { text: "こと", reading: "koto" },
                         { text: "を", reading: "o", particle: true },
                         { text: " きめました。", reading: " kimemashita" }
+                    ],
+                    [
+                        { text: "しかとら", reading: "shikatora" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " せんれい", reading: " senrei" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " うけ、", reading: " uke" },
+                        { text: " しもん", reading: " shimon", foreignName: true },
+                        { text: "という", reading: "toiu" },
+                        { text: " なまえ", reading: " namae" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " もらいました。", reading: " moraimashita" }
                     ]
                 ]
             },
