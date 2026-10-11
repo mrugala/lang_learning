@@ -434,12 +434,30 @@ function switchAlphabet(alphabetName) {
     syncSelectionHighlights();
 }
 
+function isMobileLayout() {
+    return window.matchMedia("(max-width: 720px)").matches || window.innerWidth <= 720;
+}
+
+function setMobileTableCellSize(table, availableWidth) {
+    if (!isMobileLayout()) return;
+
+    const columnCount = table.querySelector("thead tr")?.children.length;
+    if (!columnCount) return;
+
+    table.style.setProperty("--mobile-column-count", columnCount);
+    table.style.setProperty(
+        "--mobile-cell-size",
+        `${Math.floor(availableWidth / columnCount)}px`
+    );
+}
+
 function renderTable() {
     const tableHost = document.getElementById("table");
     tableHost.innerHTML = "";
 
     const table = document.createElement("table");
     table.className = "hiragana-table";
+    const isMobile = isMobileLayout();
 
     const thead = document.createElement("thead");
     const headRow = document.createElement("tr");
@@ -447,13 +465,21 @@ function renderTable() {
     cornerCell.className = "corner-cell";
     headRow.appendChild(cornerCell);
 
-    rowsDef.forEach(row => {
+    const columnDefs = isMobile ? colsDef : rowsDef.map(row => row.key);
+    const rowDefs = isMobile ? rowsDef.map(row => row.key) : colsDef;
+    table.dataset.rowGroupType = isMobile ? "col" : "row";
+    table.dataset.columnGroupType = isMobile ? "row" : "col";
+
+    columnDefs.forEach((key, index) => {
         const th = document.createElement("th");
         th.className = "column-header";
-        th.dataset.col = row.key;
+        th.dataset.col = key;
+        th.dataset.groupType = isMobile ? "row" : "col";
 
-        const hasLabel = Boolean(row.label && row.label.trim());
-        const { label } = createToggleLabel(row.key, row.label, { placeholder: !hasLabel });
+        const columnKey = isMobile ? key : rowsDef[index].key;
+        const labelText = isMobile ? key : rowsDef[index].label || rowsDef[index].key;
+        const hasLabel = Boolean(labelText && labelText.trim());
+        const { label } = createToggleLabel(columnKey, labelText, { placeholder: !hasLabel });
 
         th.appendChild(label);
         headRow.appendChild(th);
@@ -464,69 +490,137 @@ function renderTable() {
 
     const tbody = document.createElement("tbody");
 
-    colsDef.forEach(vowel => {
+    rowDefs.forEach((rowKeyOrVowel) => {
         const rowEl = document.createElement("tr");
-        rowEl.dataset.rowKey = vowel;
-
         const rowHeader = document.createElement("th");
         rowHeader.className = "row-header";
-        rowHeader.dataset.row = vowel;
 
-        const { label } = createToggleLabel(vowel, vowel);
-        rowHeader.appendChild(label);
-        rowEl.appendChild(rowHeader);
+        if (isMobile) {
+            const rowDef = rowsDef.find(row => row.key === rowKeyOrVowel) || {
+                key: rowKeyOrVowel,
+                label: rowKeyOrVowel
+            };
+            rowEl.dataset.rowKey = rowDef.key;
+            rowEl.dataset.groupType = "col";
+            rowHeader.dataset.row = rowDef.key;
+            rowHeader.dataset.groupType = "col";
+            const hasLabel = Boolean(rowDef.label && rowDef.label.trim());
+            const { label } = createToggleLabel(rowDef.key, rowDef.label || rowDef.key, { placeholder: !hasLabel });
+            rowHeader.appendChild(label);
+            rowEl.appendChild(rowHeader);
 
-        rowsDef.forEach(row => {
-            const cell = document.createElement("td");
-            cell.className = "hiragana-cell";
-            cell.dataset.col = row.key;
-            cell.dataset.row = vowel;
+            colsDef.forEach(vowel => {
+                const cell = document.createElement("td");
+                cell.className = "hiragana-cell";
+                cell.dataset.col = vowel;
+                cell.dataset.row = rowDef.key;
 
-            const index = colsDef.indexOf(vowel);
-            const kana = row.chars[index] || "";
-            const translit = row.translit[index] || "";
-            cell.dataset.kana = kana;
+                const index = colsDef.indexOf(vowel);
+                const kana = rowDef.chars[index] || "";
+                const translit = rowDef.translit[index] || "";
+                cell.dataset.kana = kana;
 
-            if (!kana) {
-                cell.textContent = "";
-            } else {
-                const stack = document.createElement("div");
-                stack.className = "kana-stack";
+                if (!kana) {
+                    cell.textContent = "";
+                } else {
+                    const stack = document.createElement("div");
+                    stack.className = "kana-stack";
 
-                const kanaEl = document.createElement("div");
-                kanaEl.className = "kana-symbol";
-                kanaEl.textContent = kana;
+                    const kanaEl = document.createElement("div");
+                    kanaEl.className = "kana-symbol";
+                    kanaEl.textContent = kana;
 
-                const translitEl = document.createElement("div");
-                translitEl.className = "kana-translit";
-                translitEl.textContent = translit;
+                    const translitEl = document.createElement("div");
+                    translitEl.className = "kana-translit";
+                    translitEl.textContent = translit;
 
-                stack.appendChild(kanaEl);
-                stack.appendChild(translitEl);
-                cell.appendChild(stack);
+                    stack.appendChild(kanaEl);
+                    stack.appendChild(translitEl);
+                    cell.appendChild(stack);
 
-                cell.addEventListener("click", () => {
-                    if (!kana) return;
-                    if (selectedCells.has(kana)) {
-                        selectedCells.delete(kana);
-                        cell.classList.remove("cell-selected");
-                    } else {
-                        selectedCells.add(kana);
-                        cell.classList.add("cell-selected");
-                    }
-                    syncSelectionHighlights();
-                });
-            }
+                    cell.addEventListener("click", () => {
+                        if (!kana) return;
+                        if (selectedCells.has(kana)) {
+                            selectedCells.delete(kana);
+                            cell.classList.remove("cell-selected");
+                        } else {
+                            selectedCells.add(kana);
+                            cell.classList.add("cell-selected");
+                        }
+                        syncSelectionHighlights();
+                    });
+                }
 
-            rowEl.appendChild(cell);
-        });
+                rowEl.appendChild(cell);
+            });
+        } else {
+            rowEl.dataset.rowKey = rowKeyOrVowel;
+            rowEl.dataset.groupType = "row";
+            rowHeader.dataset.row = rowKeyOrVowel;
+            rowHeader.dataset.groupType = "row";
+            const { label } = createToggleLabel(rowKeyOrVowel, rowKeyOrVowel);
+            rowHeader.appendChild(label);
+            rowEl.appendChild(rowHeader);
+
+            rowsDef.forEach(row => {
+                const cell = document.createElement("td");
+                cell.className = "hiragana-cell";
+                cell.dataset.col = row.key;
+                cell.dataset.row = rowKeyOrVowel;
+
+                const index = colsDef.indexOf(rowKeyOrVowel);
+                const kana = row.chars[index] || "";
+                const translit = row.translit[index] || "";
+                cell.dataset.kana = kana;
+
+                if (!kana) {
+                    cell.textContent = "";
+                } else {
+                    const stack = document.createElement("div");
+                    stack.className = "kana-stack";
+
+                    const kanaEl = document.createElement("div");
+                    kanaEl.className = "kana-symbol";
+                    kanaEl.textContent = kana;
+
+                    const translitEl = document.createElement("div");
+                    translitEl.className = "kana-translit";
+                    translitEl.textContent = translit;
+
+                    stack.appendChild(kanaEl);
+                    stack.appendChild(translitEl);
+                    cell.appendChild(stack);
+
+                    cell.addEventListener("click", () => {
+                        if (!kana) return;
+                        if (selectedCells.has(kana)) {
+                            selectedCells.delete(kana);
+                            cell.classList.remove("cell-selected");
+                        } else {
+                            selectedCells.add(kana);
+                            cell.classList.add("cell-selected");
+                        }
+                        syncSelectionHighlights();
+                    });
+                }
+
+                rowEl.appendChild(cell);
+            });
+        }
 
         tbody.appendChild(rowEl);
     });
 
     table.appendChild(tbody);
     tableHost.appendChild(table);
+    setMobileTableCellSize(table, tableHost.clientWidth);
 }
+
+window.addEventListener("resize", () => {
+    renderTable();
+    renderSupplementalTables();
+    syncSelectionHighlights();
+});
 
 renderTable();
 
@@ -626,8 +720,14 @@ function getSupplementalGroupCells(tableType, groupType, groupKey) {
     return [];
 }
 
-function isGroupFullySelected(groupType, groupKey) {
-    return areAllSelected(getGroupCells(groupType, groupKey), selectedCells);
+function getSelectionGroupCells(table, groupType, groupKey) {
+    return table?.dataset.tableType
+        ? getSupplementalGroupCells(table.dataset.tableType, groupType, groupKey)
+        : getGroupCells(groupType, groupKey);
+}
+
+function isSelectionGroupFullySelected(table, groupType, groupKey) {
+    return areAllSelected(getSelectionGroupCells(table, groupType, groupKey), selectedCells);
 }
 
 function renderSupplementalTable(tableType, title, titleJapanese) {
@@ -635,13 +735,17 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
     section.className = "supplemental-section";
     const primaryHost = document.getElementById("table");
     const primaryTable = primaryHost.querySelector(".hiragana-table");
-    const primaryHeaderCells = primaryTable.querySelector("thead tr").children;
+    const primaryHeaderCells = primaryTable?.querySelector("thead tr")?.children || [];
     const rows = getSupplementalRows(tableType);
     const primaryColumnKeys = rowsDef.map(row => row.key);
     const lastColumnIndex = Math.max(...rows.map(row => primaryColumnKeys.indexOf(row.baseKey)));
-    const tableWidth = primaryHeaderCells[lastColumnIndex + 1].getBoundingClientRect().right -
-        primaryTable.getBoundingClientRect().left;
-    section.style.width = `${Math.ceil(tableWidth) + 6}px`;
+    const isMobileLayoutState = isMobileLayout();
+    const fallbackTableWidth = primaryTable ? primaryTable.getBoundingClientRect().width : 0;
+    const widthTarget = primaryHeaderCells[Math.min(lastColumnIndex + 1, primaryHeaderCells.length - 1)];
+    const tableWidth = widthTarget && primaryTable
+        ? widthTarget.getBoundingClientRect().right - primaryTable.getBoundingClientRect().left
+        : fallbackTableWidth;
+    section.style.width = isMobileLayoutState ? "100%" : `${Math.ceil(tableWidth) + 6}px`;
 
     const titleButton = document.createElement("button");
     titleButton.type = "button";
@@ -663,6 +767,110 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
     const table = document.createElement("table");
     table.className = "hiragana-table supplemental-table";
     table.dataset.tableType = tableType;
+    const isMobile = isMobileLayout();
+    table.dataset.rowGroupType = isMobile ? "col" : "row";
+    table.dataset.columnGroupType = isMobile ? "row" : "col";
+
+    if (isMobile) {
+        const tbody = document.createElement("tbody");
+        const displayRows = getSupplementalDisplayRows(tableType);
+        const visibleColumnKeys = primaryColumnKeys.filter(columnKey =>
+            (tableType === "dakuon" && columnKey === "m") ||
+            displayRows.some(({ index, voicing }) =>
+                rows.some(row =>
+                    row.baseKey === columnKey &&
+                    row.chars[index] &&
+                    (tableType === "dakuon" ||
+                        (voicing === "plain" ? !row.voicing : Boolean(row.voicing)))
+                )
+            )
+        );
+        const thead = document.createElement("thead");
+        const headRow = document.createElement("tr");
+        const cornerCell = document.createElement("th");
+        cornerCell.className = "corner-cell";
+        headRow.appendChild(cornerCell);
+
+        displayRows.forEach(({ label, key }) => {
+            const th = document.createElement("th");
+            th.className = "column-header";
+            th.dataset.col = key;
+            th.dataset.groupType = "row";
+            const { label: headerLabel } = createToggleLabel(key, label);
+            th.appendChild(headerLabel);
+            headRow.appendChild(th);
+        });
+        thead.appendChild(headRow);
+        table.appendChild(thead);
+
+        visibleColumnKeys.forEach(columnKey => {
+            const rowEl = document.createElement("tr");
+            if (tableType === "dakuon" && columnKey === "m") {
+                rowEl.className = "supplemental-group-heading";
+                const groupLabel = document.createElement("td");
+                groupLabel.className = "supplemental-group-label";
+                groupLabel.colSpan = displayRows.length + 1;
+                groupLabel.setAttribute("aria-label", "Handakuon");
+                groupLabel.textContent = "Handakuon";
+                rowEl.appendChild(groupLabel);
+                tbody.appendChild(rowEl);
+                return;
+            }
+
+            rowEl.dataset.rowKey = columnKey;
+            rowEl.dataset.groupType = "col";
+
+            const rowHeader = document.createElement("th");
+            rowHeader.className = "row-header";
+            rowHeader.dataset.row = columnKey;
+            rowHeader.dataset.groupType = "col";
+            const { label: headerLabel } = createToggleLabel(columnKey, columnKey);
+            rowHeader.appendChild(headerLabel);
+            rowEl.appendChild(rowHeader);
+
+            displayRows.forEach(({ key: displayKey, index: rowIndex, voicing }) => {
+                const groups = rows.filter(row =>
+                    row.baseKey === columnKey &&
+                    row.chars[rowIndex] &&
+                    (tableType === "dakuon" ||
+                        (voicing === "plain" ? !row.voicing : Boolean(row.voicing)))
+                );
+
+                const cell = document.createElement("td");
+                cell.className = `hiragana-cell supplemental-cell${groups.length > 1 ? " supplemental-cell-multiple" : ""}`;
+                cell.dataset.col = displayKey;
+                cell.dataset.row = columnKey;
+                groups.forEach(group => {
+                    const kana = group.chars[rowIndex];
+                    const stack = document.createElement("div");
+                    stack.className = "kana-stack supplemental-kana";
+                    stack.dataset.kana = kana;
+                    stack.dataset.col = displayKey;
+                    stack.dataset.group = group.key;
+                    stack.setAttribute("role", "button");
+                    stack.tabIndex = 0;
+                    const kanaEl = document.createElement("div");
+                    kanaEl.className = "kana-symbol";
+                    kanaEl.textContent = kana;
+                    const translitEl = document.createElement("div");
+                    translitEl.className = "kana-translit";
+                    translitEl.textContent = getKanaDisplayTransliteration(
+                        kana,
+                        group.translit[rowIndex]
+                    );
+                    stack.append(kanaEl, translitEl);
+                    cell.appendChild(stack);
+                });
+                rowEl.appendChild(cell);
+            });
+
+            tbody.appendChild(rowEl);
+        });
+
+        table.appendChild(tbody);
+        section.appendChild(table);
+        return section;
+    }
 
     const tableColumns = document.createElement("colgroup");
     table.style.width = `${tableWidth}px`;
@@ -700,6 +908,7 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
         const th = document.createElement("th");
         th.className = "column-header";
         th.dataset.col = key;
+        th.dataset.groupType = "col";
         const { label } = createToggleLabel(key, groups.map(row => row.label).join(" / "));
         th.appendChild(label);
         headRow.appendChild(th);
@@ -715,9 +924,11 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
     vowelRows.forEach(({ key, label: rowLabel, index: rowIndex, voicing }, displayRowIndex) => {
         const rowEl = document.createElement("tr");
         rowEl.dataset.rowKey = key;
+        rowEl.dataset.groupType = "row";
         const rowHeader = document.createElement("th");
         rowHeader.className = "row-header";
         rowHeader.dataset.row = key;
+        rowHeader.dataset.groupType = "row";
         const { label } = createToggleLabel(key, rowLabel);
         if (tableType === "youon") {
             const rowLabelText = label.querySelector("span");
@@ -813,8 +1024,12 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
                 stack.setAttribute("role", "button");
                 stack.tabIndex = 0;
                 const kanaEl = document.createElement("div");
-                kanaEl.className = "kana-symbol";
                 kanaEl.textContent = kana;
+                if (kanaEl.textContent.length > 1) {
+                    kanaEl.className = "small-kana-symbol";
+                } else {
+                    kanaEl.className = "kana-symbol";
+                }
                 const translitEl = document.createElement("div");
                 translitEl.className = "kana-translit";
                 translitEl.textContent = getKanaDisplayTransliteration(
@@ -840,6 +1055,9 @@ function renderSupplementalTables() {
         renderSupplementalTable("dakuon", "Dakuon・Handakuon", "濁音・半濁音"),
         renderSupplementalTable("youon", "Yō-on", "拗音")
     );
+    host.querySelectorAll(".supplemental-table").forEach(table => {
+        setMobileTableCellSize(table, table.parentElement.clientWidth);
+    });
     const leftOffset = document.getElementById("table").getBoundingClientRect().left -
         host.getBoundingClientRect().left;
     host.querySelectorAll(".supplemental-section").forEach(section => {
@@ -848,77 +1066,49 @@ function renderSupplementalTables() {
 }
 
 renderSupplementalTables();
-window.addEventListener("resize", () => {
-    renderSupplementalTables();
-    syncSelectionHighlights();
-});
 
 function syncGroupCheckboxes() {
-    document.querySelectorAll("#table .row-header input").forEach(input => {
-        input.checked = areAllSelected(getGroupCells("row", input.value), selectedCells);
-    });
-
-    document.querySelectorAll("#table .column-header input").forEach(input => {
-        input.checked = areAllSelected(getGroupCells("col", input.value), selectedCells);
-    });
-
-    document.querySelectorAll(".supplemental-table").forEach(table => {
-        const tableType = table.dataset.tableType;
-        table.querySelectorAll(".row-header input").forEach(input => {
-            input.checked = areAllSelected(getSupplementalGroupCells(tableType, "row", input.value), selectedCells);
-        });
-        table.querySelectorAll(".column-header input").forEach(input => {
-            input.checked = areAllSelected(getSupplementalGroupCells(tableType, "col", input.value), selectedCells);
-        });
+    document.querySelectorAll("#table th[data-group-type] input, .supplemental-table th[data-group-type] input").forEach(input => {
+        const header = input.closest("th");
+        const table = input.closest("table");
+        input.checked = isSelectionGroupFullySelected(table, header.dataset.groupType, input.value);
     });
 }
 
 function syncSelectionHighlights() {
-    document.querySelectorAll("#table tbody tr").forEach(row => {
-        const rowKey = row.dataset.rowKey;
-        const isRowChecked = isGroupFullySelected("row", rowKey);
-        row.classList.toggle("row-selected", isRowChecked);
-        row.querySelector(".row-header").classList.toggle("row-selected", isRowChecked);
+    document.querySelectorAll(".hiragana-table").forEach(table => {
+        const rowGroupType = table.dataset.rowGroupType;
+        const columnGroupType = table.dataset.columnGroupType;
 
-        row.querySelectorAll("td").forEach(cell => {
-            const isColChecked = isGroupFullySelected("col", cell.dataset.col);
-            const isCellSelected = selectedCells.has(cell.dataset.kana || "");
-            cell.classList.toggle("row-selected", isRowChecked);
-            cell.classList.toggle("col-selected", isColChecked);
-            cell.classList.toggle("cell-selected", isCellSelected);
-        });
-    });
-
-    document.querySelectorAll("#table .column-header").forEach(th => {
-        const col = th.dataset.col;
-        th.classList.toggle("col-selected", isGroupFullySelected("col", col));
-    });
-
-    document.querySelectorAll(".supplemental-table").forEach(table => {
-        const tableType = table.dataset.tableType;
         table.querySelectorAll("tbody tr[data-row-key]").forEach(row => {
-            const isRowChecked = areAllSelected(
-                getSupplementalGroupCells(tableType, "row", row.dataset.rowKey),
-                selectedCells
+            const isRowChecked = isSelectionGroupFullySelected(
+                table,
+                rowGroupType,
+                row.dataset.rowKey
             );
             row.classList.toggle("row-selected", isRowChecked);
             row.querySelector(".row-header").classList.toggle("row-selected", isRowChecked);
-            row.querySelectorAll(".supplemental-cell").forEach(cell => {
-                const isColChecked = areAllSelected(
-                    getSupplementalGroupCells(tableType, "col", cell.dataset.col),
-                    selectedCells
+
+            row.querySelectorAll("td").forEach(cell => {
+                const isColumnChecked = isSelectionGroupFullySelected(
+                    table,
+                    columnGroupType,
+                    cell.dataset.col
                 );
+                const isCellSelected = selectedCells.has(cell.dataset.kana || "");
                 cell.classList.toggle("row-selected", isRowChecked);
-                cell.classList.toggle("col-selected", isColChecked);
+                cell.classList.toggle("col-selected", isColumnChecked);
+                cell.classList.toggle("cell-selected", isCellSelected);
                 cell.querySelectorAll(".supplemental-kana").forEach(kana => {
                     kana.classList.toggle("cell-selected", selectedCells.has(kana.dataset.kana));
                 });
             });
         });
-        table.querySelectorAll(".column-header").forEach(th => {
-            th.classList.toggle(
+
+        table.querySelectorAll("th.column-header[data-group-type]").forEach(header => {
+            header.classList.toggle(
                 "col-selected",
-                areAllSelected(getSupplementalGroupCells(tableType, "col", th.dataset.col), selectedCells)
+                isSelectionGroupFullySelected(table, header.dataset.groupType, header.dataset.col)
             );
         });
     });
@@ -938,11 +1128,11 @@ function setAllCheckboxes(checked) {
 }
 
 function getSelectedRows() {
-    return checkedValues("#table .row-header input");
+    return checkedValues("#table th[data-group-type='row'] input");
 }
 
 function getSelectedCols() {
-    return checkedValues("#table .column-header input");
+    return checkedValues("#table th[data-group-type='col'] input");
 }
 
 function getSelectedCells() {
@@ -955,28 +1145,17 @@ document.addEventListener("change", event => {
     }
 
     const input = event.target;
-    const rowHeader = input.closest(".row-header");
-    const colHeader = input.closest(".column-header");
+    const header = input.closest("th[data-group-type]");
     const supplementalTable = input.closest(".supplemental-table");
 
-    if (rowHeader) {
-        const cells = supplementalTable
-            ? getSupplementalGroupCells(supplementalTable.dataset.tableType, "row", input.value)
-            : getGroupCells("row", input.value);
-        setGroupSelection(cells, selectedCells, input.checked);
-        saveUiState();
-        syncSelectionHighlights();
-        return;
-    }
-
-    if (colHeader) {
-        const cells = supplementalTable
-            ? getSupplementalGroupCells(supplementalTable.dataset.tableType, "col", input.value)
-            : getGroupCells("col", input.value);
-        setGroupSelection(cells, selectedCells, input.checked);
-        saveUiState();
-        syncSelectionHighlights();
-    }
+    if (!header) return;
+    setGroupSelection(
+        getSelectionGroupCells(supplementalTable || input.closest("#table table"), header.dataset.groupType, input.value),
+        selectedCells,
+        input.checked
+    );
+    saveUiState();
+    syncSelectionHighlights();
 });
 
 document.addEventListener("click", event => {

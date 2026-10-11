@@ -237,6 +237,10 @@ h1 span {
 }
 
 .supplemental-kana .kana-symbol {
+    font-size: 40px;
+}
+
+.supplemental-kana .small-kana-symbol {
     font-size: 26px;
 }
 
@@ -981,4 +985,208 @@ input {
     border-radius: 6px;
     background: #fff;
     font-family: var(--input-font);
+}
+
+@media (max-width: 720px) {
+    .page-shell {
+        display: block;
+        width: min(100%, 640px);
+        margin-top: 18px;
+        padding: 10px 8px 20px;
+        box-sizing: border-box;
+    }
+
+    .font-picker,
+    .study-mode-panel,
+    .reading-practice-controls,
+    .reading-story-picker,
+    .reading-foreign-names-picker {
+        flex-wrap: wrap;
+    }
+
+    .font-picker {
+        width: min(100%, 420px);
+        justify-content: center;
+    }
+
+    .reading-practice {
+        width: min(100%, 720px);
+        padding: 16px 12px;
+    }
+
+    #selection-panel {
+        width: 100%;
+    }
+
+    #table,
+    #supplemental-tables {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #table {
+        box-sizing: border-box;
+    }
+
+    .hiragana-table,
+    .supplemental-table {
+        width: 100%;
+        min-width: 0;
+        table-layout: fixed;
+        border-spacing: 0;
+    }
+
+    .hiragana-table th,
+    .hiragana-table td {
+        box-sizing: border-box;
+        width: calc(100% / var(--mobile-column-count));
+        min-width: 0;
+        height: var(--mobile-cell-size);
+    }
+
+    .supplemental-table .corner-cell,
+    .supplemental-table .row-header {
+        width: calc(100% / var(--mobile-column-count));
+        min-width: 0;
+    }
+
+    .supplemental-table .supplemental-cell-multiple {
+        display: table-cell;
+    }
+
+    .supplemental-table .supplemental-kana {
+        height: auto;
+    }
+
+    .supplemental-table .toggle {
+        gap: 1px;
+        padding: 1px;
+        font-size: 10px;
+    }
+
+    .supplemental-table .toggle input {
+        width: 14px;
+        height: 14px;
+    }
+
+    .hiragana-table .kana-stack {
+        height: auto;
+    }
+
+    .hiragana-table .column-header .toggle,
+    .hiragana-table .row-header .toggle {
+        height: auto;
+        min-height: 0;
+    }
+
+    .hiragana-table .kana-symbol {
+        font-size: 30px;
+    }
+
+    .supplemental-table .supplemental-cell-multiple .kana-symbol {
+        font-size: 16px;
+    }
+
+    .supplemental-table .supplemental-cell-multiple .kana-translit {
+        font-size: 8px;
+    }
+
+    .supplemental-table[data-table-type="youon"] .kana-symbol {
+        font-size: clamp(12px, 4vw, 18px);
+    }
+
+    .supplemental-table[data-table-type="youon"] .kana-translit {
+        font-size: clamp(7px, 2.2vw, 9px);
+    }
+
+    .column-header,
+    .row-header,
+    .corner-cell {
+        font-size: 14px;
+    }
+
+    .supplemental-title {
+        white-space: nowrap;
+    }
+
+    .supplemental-section {
+        overflow: visible;
+    }
+
+    .supplemental-group-label {
+        position: static;
+        transform: none;
+        writing-mode: horizontal-tb;
+        background: #f2f1e8;
+    }
+
+    .supplemental-group-heading .supplemental-group-label {
+        height: 40px;
+        font-family: var(--label-font);
+        font-size: 14px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .supplemental-group-label-text {
+        position: static;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        width: auto;
+        height: auto;
+        transform: none;
+    }
+
+    .study-mode-panel {
+        width: min(100%, 380px);
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: clamp(28px, 9vw, 38px);
+    }
+
+    h1 span {
+        display: block;
+        font-size: clamp(18px, 5vw, 26px);
+        margin-top: 4px;
+    }
+
+    button {
+        padding: 10px 14px;
+        margin: 8px;
+    }
+
+    .font-picker,
+    .reading-story-picker,
+    .reading-foreign-names-picker {
+        gap: 8px;
+        font-size: 14px;
+    }
+
+    #char-box {
+        min-height: 110px;
+        font-size: clamp(78px, 28vw, 110px);
+        margin: 12px 8px;
+    }
+
+    #romaji-answer,
+    #meaning-answer,
+    #answer,
+    #kurrent-answer,
+    #vocabulary-answer,
+    #reading-answer {
+        width: min(100%, 260px);
+    }
+
+    .reading-line {
+        font-size: clamp(24px, 8vw, 36px);
+    }
 }
