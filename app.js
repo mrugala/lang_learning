@@ -476,7 +476,9 @@ function renderTable() {
         th.dataset.groupType = isMobile ? "row" : "col";
 
         const columnKey = isMobile ? key : rowsDef[index].key;
-        const labelText = isMobile ? key : rowsDef[index].label || rowsDef[index].key;
+        // An empty label (e.g. the vowel row and the "n" row) stays empty so the
+        // column header renders as a hidden placeholder rather than the raw key.
+        const labelText = isMobile ? key : rowsDef[index].label ?? "";
         const hasLabel = Boolean(labelText && labelText.trim());
         const { label } = createToggleLabel(columnKey, labelText, { placeholder: !hasLabel });
 
