@@ -2,6 +2,7 @@ const {
     applyFontStyle: applyCommonFontStyle,
     readStoredFontStyle,
     storeFontStyle,
+    isPageReload,
     createToggleLabel,
     isGroupFullySelected: areAllSelected,
     checkedValues,
@@ -318,11 +319,6 @@ Object.keys(alphabetMap).forEach(alphabetName => {
 const colsDef = ["a", "i", "u", "e", "o"];
 const UI_STATE_KEY = "kanaSelectionUiState";
 
-function isPageReload() {
-    const navigationEntry = performance.getEntriesByType("navigation")[0];
-    return navigationEntry ? navigationEntry.type === "reload" : performance.navigation?.type === 1;
-}
-
 function readSavedUiState() {
     if (!isPageReload()) return null;
 
@@ -438,6 +434,47 @@ function isMobileLayout() {
     return window.matchMedia("(max-width: 720px)").matches || window.innerWidth <= 720;
 }
 
+function buildKanaCell(colKey, rowKey, kana, translit) {
+    const cell = document.createElement("td");
+    cell.className = "hiragana-cell";
+    cell.dataset.col = colKey;
+    cell.dataset.row = rowKey;
+    cell.dataset.kana = kana;
+
+    if (!kana) {
+        cell.textContent = "";
+        return cell;
+    }
+
+    const stack = document.createElement("div");
+    stack.className = "kana-stack";
+
+    const kanaEl = document.createElement("div");
+    kanaEl.className = "kana-symbol";
+    kanaEl.textContent = kana;
+
+    const translitEl = document.createElement("div");
+    translitEl.className = "kana-translit";
+    translitEl.textContent = translit;
+
+    stack.appendChild(kanaEl);
+    stack.appendChild(translitEl);
+    cell.appendChild(stack);
+
+    cell.addEventListener("click", () => {
+        if (selectedCells.has(kana)) {
+            selectedCells.delete(kana);
+            cell.classList.remove("cell-selected");
+        } else {
+            selectedCells.add(kana);
+            cell.classList.add("cell-selected");
+        }
+        syncSelectionHighlights();
+    });
+
+    return cell;
+}
+
 function setMobileTableCellSize(table, availableWidth) {
     if (!isMobileLayout()) return;
 
@@ -511,48 +548,10 @@ function renderTable() {
             rowEl.appendChild(rowHeader);
 
             colsDef.forEach(vowel => {
-                const cell = document.createElement("td");
-                cell.className = "hiragana-cell";
-                cell.dataset.col = vowel;
-                cell.dataset.row = rowDef.key;
-
                 const index = colsDef.indexOf(vowel);
                 const kana = rowDef.chars[index] || "";
                 const translit = rowDef.translit[index] || "";
-                cell.dataset.kana = kana;
-
-                if (!kana) {
-                    cell.textContent = "";
-                } else {
-                    const stack = document.createElement("div");
-                    stack.className = "kana-stack";
-
-                    const kanaEl = document.createElement("div");
-                    kanaEl.className = "kana-symbol";
-                    kanaEl.textContent = kana;
-
-                    const translitEl = document.createElement("div");
-                    translitEl.className = "kana-translit";
-                    translitEl.textContent = translit;
-
-                    stack.appendChild(kanaEl);
-                    stack.appendChild(translitEl);
-                    cell.appendChild(stack);
-
-                    cell.addEventListener("click", () => {
-                        if (!kana) return;
-                        if (selectedCells.has(kana)) {
-                            selectedCells.delete(kana);
-                            cell.classList.remove("cell-selected");
-                        } else {
-                            selectedCells.add(kana);
-                            cell.classList.add("cell-selected");
-                        }
-                        syncSelectionHighlights();
-                    });
-                }
-
-                rowEl.appendChild(cell);
+                rowEl.appendChild(buildKanaCell(vowel, rowDef.key, kana, translit));
             });
         } else {
             rowEl.dataset.rowKey = rowKeyOrVowel;
@@ -564,48 +563,10 @@ function renderTable() {
             rowEl.appendChild(rowHeader);
 
             rowsDef.forEach(row => {
-                const cell = document.createElement("td");
-                cell.className = "hiragana-cell";
-                cell.dataset.col = row.key;
-                cell.dataset.row = rowKeyOrVowel;
-
                 const index = colsDef.indexOf(rowKeyOrVowel);
                 const kana = row.chars[index] || "";
                 const translit = row.translit[index] || "";
-                cell.dataset.kana = kana;
-
-                if (!kana) {
-                    cell.textContent = "";
-                } else {
-                    const stack = document.createElement("div");
-                    stack.className = "kana-stack";
-
-                    const kanaEl = document.createElement("div");
-                    kanaEl.className = "kana-symbol";
-                    kanaEl.textContent = kana;
-
-                    const translitEl = document.createElement("div");
-                    translitEl.className = "kana-translit";
-                    translitEl.textContent = translit;
-
-                    stack.appendChild(kanaEl);
-                    stack.appendChild(translitEl);
-                    cell.appendChild(stack);
-
-                    cell.addEventListener("click", () => {
-                        if (!kana) return;
-                        if (selectedCells.has(kana)) {
-                            selectedCells.delete(kana);
-                            cell.classList.remove("cell-selected");
-                        } else {
-                            selectedCells.add(kana);
-                            cell.classList.add("cell-selected");
-                        }
-                        syncSelectionHighlights();
-                    });
-                }
-
-                rowEl.appendChild(cell);
+                rowEl.appendChild(buildKanaCell(row.key, rowKeyOrVowel, kana, translit));
             });
         }
 
@@ -854,13 +815,30 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
             rowHeader.appendChild(headerLabel);
             rowEl.appendChild(rowHeader);
 
-            displayRows.forEach(({ key: displayKey, index: rowIndex, voicing }) => {
-                const groups = rows.filter(row =>
-                    row.baseKey === columnKey &&
-                    row.chars[rowIndex] &&
-                    (tableType === "dakuon" ||
-                        (voicing === "plain" ? !row.voicing : Boolean(row.voicing)))
-                );
+            const groupsForDisplayRow = ({ index: rowIndex, voicing }) => rows.filter(row =>
+                row.baseKey === columnKey &&
+                row.chars[rowIndex] &&
+                (tableType === "dakuon" ||
+                    (voicing === "plain" ? !row.voicing : Boolean(row.voicing)))
+            );
+
+            for (let displayIndex = 0; displayIndex < displayRows.length; displayIndex++) {
+                const { key: displayKey, index: rowIndex } = displayRows[displayIndex];
+                const groups = groupsForDisplayRow(displayRows[displayIndex]);
+
+                if (groups.length === 0) {
+                    let span = 1;
+                    while (displayIndex + span < displayRows.length &&
+                        groupsForDisplayRow(displayRows[displayIndex + span]).length === 0) {
+                        span++;
+                    }
+                    const emptyCell = document.createElement("td");
+                    emptyCell.className = "supplemental-empty";
+                    emptyCell.colSpan = span;
+                    rowEl.appendChild(emptyCell);
+                    displayIndex += span - 1;
+                    continue;
+                }
 
                 const cell = document.createElement("td");
                 cell.className = `hiragana-cell supplemental-cell${groups.length > 1 ? " supplemental-cell-multiple" : ""}`;
@@ -888,7 +866,7 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
                     cell.appendChild(stack);
                 });
                 rowEl.appendChild(cell);
-            });
+            }
 
             tbody.appendChild(rowEl);
         });
@@ -1115,7 +1093,7 @@ function syncSelectionHighlights() {
             row.classList.toggle("row-selected", isRowChecked);
             row.querySelector(".row-header").classList.toggle("row-selected", isRowChecked);
 
-            row.querySelectorAll("td").forEach(cell => {
+            row.querySelectorAll("td.hiragana-cell").forEach(cell => {
                 const isColumnChecked = isSelectionGroupFullySelected(
                     table,
                     columnGroupType,

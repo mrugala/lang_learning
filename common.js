@@ -24,12 +24,15 @@
         }
     }
 
-    function readReloadState(key) {
+    function isPageReload() {
         const navigationEntry = performance.getEntriesByType("navigation")[0];
-        const isReload = navigationEntry
+        return navigationEntry
             ? navigationEntry.type === "reload"
-            : performance.navigation && performance.navigation.type === 1;
-        if (!isReload) return null;
+            : Boolean(performance.navigation && performance.navigation.type === 1);
+    }
+
+    function readReloadState(key) {
+        if (!isPageReload()) return null;
 
         try {
             const serialized = sessionStorage.getItem(key);
@@ -314,6 +317,7 @@
         applyFontStyle,
         readStoredFontStyle,
         storeFontStyle,
+        isPageReload,
         readReloadState,
         storeSessionState,
         createToggleLabel,
