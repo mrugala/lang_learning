@@ -276,15 +276,16 @@ function toHiraganaFromRomaji(value) {
             }
         }
 
-        // --- n: ん, or onset of the next syllable? ---
+        // --- n: ん, unless a vowel/"y" right after it opens the n-row ---
+        // (na, ni, nu, ne, no and nya, nyu, nyo are matched as syllables below;
+        //  that covers a whole string at once. While typing key-by-key the n is
+        //  already ん, and fixNRow rewrites that ん when the vowel arrives.)
         if (current[0] === "n") {
-            // A trailing n always syllabifies. Otherwise it syllabifies only
-            // before a vowel or "y" (na, ni, nya...), never before a consonant.
             const startsSyllable = nextChar !== "" &&
                 (VOWELS.includes(nextChar) || nextChar === "y");
             if (!startsSyllable) {
                 result += "ん";
-                index += 1;
+                index += nextChar === "n" ? 2 : 1;
                 continue;
             }
         }
@@ -929,17 +930,46 @@ const answerRomaji = document.getElementById("romaji-answer");
 const answerHiragana = document.getElementById("hiragana-answer");
 const answerMeaning = document.getElementById("meaning-answer");
 
-answerHiragana.addEventListener("input", event => {
+const answerHiraganaInput = answerHiragana;
+
+// “n” converts to ん, but a vowel (or や/ゆ/よ) typed right after it must turn
+// that ん into the matching n-row syllable:
+//   ん + あいうえお -> な に ぬ ね の,   ん + やゆよ -> にゃ にゅ にょ.
+// A preceding ん is left untouched, so a doubled n stays ん + syllable
+// ("おんんあ" -> おんな).
+const N_ROW_AFTER_N = {
+    "あ": "な", "い": "に", "う": "ぬ", "え": "ね", "お": "の",
+    "や": "にゃ", "ゆ": "にゅ", "よ": "にょ",
+    "ぁ": "な", "ぃ": "に", "ぅ": "ぬ", "ぇ": "ね", "ぉ": "の"
+};
+
+// The romaji converter turns “n” into ん immediately. One trailing correction
+// rewrites that ん once the following keystroke reveals the n opened the n-row:
+//   「んあ」 -> な   and likewise い/う/え/お, や/ゆ/よ (にゃ/にゅ/にょ).
+function fixNRow(value) {
+    const text = String(value || "");
+
+    // ん + vowel opens the n-row ("na" -> な, "nya" -> にゃ). A second ん in
+    // front is a real ん that stays ("konna" -> こんな).
+    const match = text.match(/ん([あいうえおやゆよぁぃぅぇぉ])$/);
+    if (!match) return text;
+    return text.slice(0, match.index) + N_ROW_AFTER_N[match[1]];
+}
+
+answerHiraganaInput.addEventListener("input", event => {
     const rawValue = event.target.value;
     const converted = toHiraganaFromRomaji(rawValue);
-    if (converted !== null && converted !== rawValue) {
-        event.target.value = converted;
+    const corrected = fixNRow(converted === null ? rawValue : converted);
+    if (corrected !== rawValue) {
+        event.target.value = corrected;
     }
 });
 
-answerRomaji.addEventListener("keydown", event => handleEnterKey(event, submitAnswer));
+answerHiraganaInput.addEventListener("keydown", event => {
+    handleEnterKey(event, submitAnswer);
+});
 
-answerHiragana.addEventListener("keydown", event => handleEnterKey(event, submitAnswer));
+answerRomaji.addEventListener("keydown", event => handleEnterKey(event, submitAnswer));
 
 answerMeaning.addEventListener("keydown", event => handleEnterKey(event, submitAnswer));
 
