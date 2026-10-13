@@ -3,8 +3,7 @@
 
     const {
         BASE_REPS,
-        STREAK_BONUS_THRESHOLD,
-        WRONG_ANSWER_PENALTY,
+        createRepsTracker,
         readReloadState,
         storeSessionState,
         pickRandomKey,
@@ -33,8 +32,7 @@
         let queue = {};
         let studySet = [];
         let currentCharacter = null;
-        let consecutiveCorrectCharacter = null;
-        let consecutiveCorrectCount = 0;
+        const repsTracker = createRepsTracker();
         let awaitingContinue = false;
         let activeStudy = false;
         const studyStateKey = `alphabetStudyState:${downloadName}`;
@@ -47,8 +45,7 @@
                 queue,
                 studySet,
                 currentCharacter,
-                consecutiveCorrectCharacter,
-                consecutiveCorrectCount,
+                ...repsTracker.getState(),
                 awaitingContinue,
                 missedQuestionKeys: getMissedQuestionKeys(),
                 answer: answerInput.value,
@@ -94,8 +91,7 @@
             });
             if (rememberStudySet) studySet = [...characters];
             currentCharacter = null;
-            consecutiveCorrectCharacter = null;
-            consecutiveCorrectCount = 0;
+            repsTracker.reset();
             answerInput.value = "";
             setText("feedback", "");
             hideContinueButton();
@@ -111,22 +107,11 @@
                 .map(normalizeAnswer);
 
             if (acceptedAnswers.includes(answer)) {
-                if (currentCharacter === consecutiveCorrectCharacter) {
-                    consecutiveCorrectCount++;
-                } else {
-                    consecutiveCorrectCharacter = currentCharacter;
-                    consecutiveCorrectCount = 1;
-                }
-
-                queue[currentCharacter]--;
+                const { reps, finished } = repsTracker.recordCorrect(currentCharacter, queue[currentCharacter]);
+                queue[currentCharacter] = reps;
                 setText("feedback", "Dobrze!");
-                if (queue[currentCharacter] <= 0 ||
-                    consecutiveCorrectCount >= STREAK_BONUS_THRESHOLD) {
+                if (finished) {
                     delete queue[currentCharacter];
-                }
-                if (consecutiveCorrectCount >= STREAK_BONUS_THRESHOLD) {
-                    consecutiveCorrectCharacter = null;
-                    consecutiveCorrectCount = 0;
                 }
 
                 answerInput.value = "";
@@ -136,9 +121,7 @@
             }
 
             recordMissedQuestion(currentCharacter);
-            consecutiveCorrectCharacter = null;
-            consecutiveCorrectCount = 0;
-            queue[currentCharacter] += WRONG_ANSWER_PENALTY;
+            queue[currentCharacter] = repsTracker.recordWrong(queue[currentCharacter]);
             setText("feedback", `Źle! Poprawna odpowiedź: ${correctAnswer}`);
             awaitingContinue = true;
             showContinueButton();
@@ -213,8 +196,7 @@
                         studySet = Object.keys(queue);
                         activeStudy = true;
                         awaitingContinue = false;
-                        consecutiveCorrectCharacter = null;
-                        consecutiveCorrectCount = 0;
+                        repsTracker.reset();
                         answerInput.value = "";
                         setText("feedback", "");
                         hideContinueButton();
@@ -253,10 +235,7 @@
                     )
                     : Object.keys(restoredQueue);
                 currentCharacter = restoredCurrentCharacter;
-                consecutiveCorrectCharacter = restoredStudyState.consecutiveCorrectCharacter;
-                consecutiveCorrectCount = Number.isFinite(restoredStudyState.consecutiveCorrectCount)
-                    ? restoredStudyState.consecutiveCorrectCount
-                    : 0;
+                repsTracker.restoreState(restoredStudyState);
                 awaitingContinue = restoredStudyState.awaitingContinue === true;
                 activeStudy = true;
                 resetMissedQuestions();

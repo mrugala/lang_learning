@@ -1099,6 +1099,50 @@ input {
         min-height: 0;
     }
 
+    /* Kanji category headers are multi-word Polish labels squeezed into
+       the same equal-width columns as kana glyphs, so the text needs to
+       shrink and break mid-word to stay inside its column. */
+    #kanji-table .toggle {
+        gap: 2px;
+        padding: 3px 1px;
+        font-size: 8px;
+        line-height: 1.15;
+    }
+
+    #kanji-table .toggle span {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        hyphens: auto;
+    }
+
+    #kanji-table .toggle input {
+        width: 12px;
+        height: 12px;
+    }
+
+    /* Romaji and meaning labels under each kanji are also too wide for
+       the equal-width mobile columns, so they shrink and break mid-word
+       the same way the category headers do. */
+    #kanji-table .kana-stack {
+        gap: 1px;
+    }
+
+    #kanji-table .kanji-symbol {
+        font-size: 20px;
+    }
+
+    #kanji-table .kana-translit,
+    #kanji-table .kanji-meaning {
+        font-size: 8px;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        hyphens: auto;
+    }
+
+    #kanji-table .kanji-meaning {
+        margin-top: 1px;
+    }
+
     .hiragana-table .kana-symbol {
         font-size: var(--mobile-kana-size);
     }

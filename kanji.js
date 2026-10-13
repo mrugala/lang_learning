@@ -1,6 +1,6 @@
 const {
     BASE_REPS,
-    WRONG_ANSWER_PENALTY,
+    createRepsTracker,
     applyFontStyle: applyCommonFontStyle,
     readReloadState,
     storeSessionState,
@@ -66,12 +66,7 @@ const studyModes = {
     "polski-romaji": { prompt: "polski", answer: "romaji" },
     "polski-hiragana": { prompt: "polski", answer: "hiragana" },
     "hiragana-romaji": { prompt: "hiragana", answer: "romaji" },
-    "hiragana-kanji": { prompt: "hiragana", answer: "kanji" },
-    "romaji-hiragana": { prompt: "romaji", answer: "hiragana" },
-    "romaji-kanji": { prompt: "romaji", answer: "kanji" },
-    "kanji-polski": { prompt: "kanji", answer: "polski" },
-    "kanji-hiragana": { prompt: "kanji", answer: "hiragana" },
-    "kanji-romaji": { prompt: "kanji", answer: "romaji" }
+    "romaji-hiragana": { prompt: "romaji", answer: "hiragana" }
 };
 
 function normalizeModeKey(modeKey) {
@@ -155,6 +150,7 @@ selectVisibleDeckItems();
 let currentKey = null;
 let queue = {};
 let studySet = [];
+const repsTracker = createRepsTracker();
 let awaitingContinue = false;
 
 function saveStudyState() {
@@ -165,6 +161,7 @@ function saveStudyState() {
         studySet,
         currentKey,
         studyMode: currentStudyMode,
+        ...repsTracker.getState(),
         awaitingContinue,
         missedQuestionKeys: getMissedQuestionKeys(),
         choiceOptions: [...document.querySelectorAll(".kanji-choice-button")]
@@ -187,10 +184,6 @@ function getCellData(categoryKey, rowIndex) {
     const category = categories.find(item => item.key === categoryKey);
     if (!category) return null;
     return category.items[rowIndex] || null;
-}
-
-function getAcceptedAnswersLocal(value) {
-    return getAcceptedAnswers(value);
 }
 
 // Consonant + vowel. Longer digraphs (sh, ch, ts) are listed explicitly so
@@ -722,10 +715,11 @@ function submitKanjiChoice(answer, selectedButton) {
     const expected = queue[currentKey].kanji;
     const isCorrect = answer === expected;
     if (isCorrect) {
-        queue[currentKey].reps--;
+        const { reps, finished } = repsTracker.recordCorrect(currentKey, queue[currentKey].reps);
+        queue[currentKey].reps = reps;
         setText("feedback", "Dobrze!");
 
-        if (queue[currentKey].reps <= 0) {
+        if (finished) {
             delete queue[currentKey];
         }
 
@@ -733,7 +727,7 @@ function submitKanjiChoice(answer, selectedButton) {
         return;
     }
 
-    queue[currentKey].reps += WRONG_ANSWER_PENALTY;
+    queue[currentKey].reps = repsTracker.recordWrong(queue[currentKey].reps);
     recordMissedQuestion(currentKey);
     const selectedItem = kanjiByText.get(answer);
     const selectedDetails = selectedItem
@@ -760,6 +754,7 @@ function endStudySession() {
     queue = {};
     studySet = [];
     currentKey = null;
+    repsTracker.reset();
     awaitingContinue = false;
     storeSessionState(STUDY_STATE_KEY, null);
     clearAnswerInputs();
@@ -771,6 +766,7 @@ function endStudySession() {
 function startStudy(keys) {
     queue = {};
     currentKey = null;
+    repsTracker.reset();
     awaitingContinue = false;
     setText("feedback", "");
     hideContinueButton();
@@ -830,7 +826,7 @@ function submitAnswer() {
             : document.getElementById("meaning-answer").value;
 
     const acceptedAnswers = mode.answer === "polski"
-        ? getAcceptedAnswersLocal(expected)
+        ? getAcceptedAnswers(expected)
         : [expected];
 
     // A romaji answer is checked against every spelling of the expected value:
@@ -845,10 +841,11 @@ function submitAnswer() {
         : acceptedAnswers.some(option => normalizeStudyText(option) === enteredNormalized);
 
     if (isCorrect) {
-        queue[currentKey].reps--;
+        const { reps, finished } = repsTracker.recordCorrect(currentKey, queue[currentKey].reps);
+        queue[currentKey].reps = reps;
         setText("feedback", "Dobrze!");
 
-        if (queue[currentKey].reps <= 0) {
+        if (finished) {
             delete queue[currentKey];
         }
 
@@ -856,7 +853,7 @@ function submitAnswer() {
         pickChar();
     } else {
         recordMissedQuestion(currentKey);
-        queue[currentKey].reps += WRONG_ANSWER_PENALTY;
+        queue[currentKey].reps = repsTracker.recordWrong(queue[currentKey].reps);
         setText("feedback", `Źle! Poprawne: ${expected}`);
         awaitingContinue = true;
         showContinueButton();
@@ -1012,6 +1009,7 @@ if (restoredStudyState?.active) {
             })
             : Object.keys(restoredQueue);
         currentKey = restoredStudyState.currentKey;
+        repsTracker.restoreState(restoredStudyState);
         awaitingContinue = restoredStudyState.awaitingContinue === true;
         currentStudyMode = normalizeModeKey(restoredStudyState.studyMode);
         resetMissedQuestions();

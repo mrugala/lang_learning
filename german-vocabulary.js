@@ -1,8 +1,10 @@
 const {
     BASE_REPS,
-    WRONG_ANSWER_PENALTY,
+    createRepsTracker,
     readReloadState,
     storeSessionState,
+    renderDeckCheckboxList,
+    setAllDeckCheckboxes,
     pickRandomKey,
     setText,
     setupRepeatButton,
@@ -41,6 +43,7 @@ function saveUiState() {
 let queue = {};
 let studySet = {};
 let currentKey = null;
+const repsTracker = createRepsTracker();
 let awaitingContinue = false;
 const answerInput = document.getElementById("vocabulary-answer");
 
@@ -51,6 +54,7 @@ function saveStudyState() {
         queue,
         studySet,
         currentKey,
+        ...repsTracker.getState(),
         awaitingContinue,
         missedQuestionKeys: getMissedQuestionKeys(),
         answer: answerInput.value,
@@ -65,53 +69,11 @@ function cloneQueue(sourceQueue) {
 }
 
 function renderCategories() {
-    const host = document.getElementById("vocabulary-categories");
-    host.innerHTML = "";
-
-    categories.forEach(category => {
-        const label = document.createElement("label");
-        label.className = "deck-label";
-
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = category.key;
-        checkbox.checked = selectedCategories.has(category.key);
-        checkbox.addEventListener("change", () => {
-            if (checkbox.checked) {
-                selectedCategories.add(category.key);
-            } else {
-                selectedCategories.delete(category.key);
-            }
-            label.classList.toggle("deck-selected", checkbox.checked);
-            saveUiState();
-        });
-
-        const name = document.createElement("span");
-        name.className = "deck-name";
-        name.textContent = category.label;
-
-        const count = document.createElement("span");
-        count.className = "deck-count";
-        count.textContent = `(${category.items.length})`;
-
-        label.append(checkbox, name, count);
-        label.classList.toggle("deck-selected", checkbox.checked);
-        host.appendChild(label);
-    });
+    renderDeckCheckboxList("vocabulary-categories", categories, selectedCategories, saveUiState);
 }
 
 function setAllCategories(checked) {
-    if (checked) {
-        categories.forEach(category => selectedCategories.add(category.key));
-    } else {
-        categories.forEach(category => selectedCategories.delete(category.key));
-    }
-
-    document.querySelectorAll("#vocabulary-categories input").forEach(input => {
-        input.checked = checked;
-        input.closest(".deck-label").classList.toggle("deck-selected", checked);
-    });
-    saveUiState();
+    setAllDeckCheckboxes("vocabulary-categories", categories, selectedCategories, checked, saveUiState);
 }
 
 function startStudy() {
@@ -170,6 +132,7 @@ function startStudy() {
 function beginStudy(items) {
     queue = cloneQueue(items);
     currentKey = null;
+    repsTracker.reset();
     awaitingContinue = false;
     setText("feedback", "");
     document.getElementById("vocabulary-answer").value = "";
@@ -276,15 +239,16 @@ function submitAnswer() {
     const isCorrect = accepted.some(answer => normalize(answer) === normalize(entered));
 
     if (isCorrect) {
-        item.reps--;
+        const { reps, finished } = repsTracker.recordCorrect(currentKey, item.reps);
+        item.reps = reps;
         setText("feedback", "Dobrze!");
         hideContinueButton();
-        if (item.reps <= 0) delete queue[currentKey];
+        if (finished) delete queue[currentKey];
         pickWord();
         return;
     }
 
-    item.reps += WRONG_ANSWER_PENALTY;
+    item.reps = repsTracker.recordWrong(item.reps);
     recordMissedQuestion(currentKey);
     setText("feedback", `Niepoprawnie. Poprawna odpowiedź: ${accepted.join(" / ")}`);
     awaitingContinue = true;
@@ -295,6 +259,7 @@ function submitAnswer() {
 function endStudy() {
     queue = {};
     currentKey = null;
+    repsTracker.reset();
     awaitingContinue = false;
     storeSessionState(STUDY_STATE_KEY, null);
     document.getElementById("vocabulary-answer").value = "";
@@ -378,6 +343,7 @@ if (restoredStudyState?.active) {
         queue = cloneQueue(restoredQueue);
         studySet = cloneQueue(restoredSet);
         currentKey = restoredStudyState.currentKey;
+        repsTracker.restoreState(restoredStudyState);
         awaitingContinue = restoredStudyState.awaitingContinue === true;
         resetMissedQuestions();
         if (Array.isArray(restoredStudyState.missedQuestionKeys)) {

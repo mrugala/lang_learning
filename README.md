@@ -71,7 +71,6 @@ node tools/check-data-syntax.js
 node tools/check-decks.js
 node tools/check-vocab.js
 node tools/check-kurrent-field.js
-node tools/test-kurrent-rules.js
 node tools/check-hiragana.js
 node tools/check-kanji-words.js
 node tools/check-romaji-answer.js
@@ -82,9 +81,20 @@ test. `check-decks.js` korzysta z tej samej funkcji generującej zestawy co
 aplikacja Kanji. `check-data-syntax.js` sprawdza składnię skryptów JavaScript
 i ładowanie plików danych.
 
+Testy jednostkowe znajdują się w katalogu `test/` i korzystają z wbudowanego
+w Node.js runnera testów (bez instalowania zależności):
+
+```powershell
+node --test
+```
+
+`test/common-helpers.test.js` sprawdza czyste funkcje pomocnicze z `common.js`
+(kolejka powtórek z bonusem za serię, akceptowane odpowiedzi, normalizacja
+tekstu i rōmaji). `test/kurrent-rules.test.js` sprawdza reguły zapisu
+kurrentowego z `tools/gen-kurrent-field.js`.
+
 `list-cats.js` i `list-vocab-cats.js` wypisują bieżące kategorie kanji
-i słownictwa. `qa-kurrent.mjs` zawiera test przepływu przeglądarkowego
-Kurrent i wymaga zgodnego runnera automatyzacji przeglądarki.
+i słownictwa.
 `gen-kurrent-field.js` generuje pole `kurrent` w bazie słownictwa i zapisuje
 zmiany do `german-vocabulary-data.js`; uruchamiaj go tylko wtedy, gdy chcesz
 ponownie wygenerować te dane.

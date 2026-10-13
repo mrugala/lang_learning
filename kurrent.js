@@ -2,11 +2,12 @@
 // potem odczytywanie losowych słów. Korzysta z pomocników z common.js.
 const {
     BASE_REPS,
-    STREAK_BONUS_THRESHOLD,
-    WRONG_ANSWER_PENALTY,
+    createRepsTracker,
     readReloadState,
     storeSessionState,
     createToggleLabel,
+    renderDeckCheckboxList,
+    setAllDeckCheckboxes,
     isGroupFullySelected: areAllSelected,
     setGroupSelection,
     pickRandomKey,
@@ -227,53 +228,11 @@ function syncLetterCheckboxes() {
 }
 
 function renderDecks() {
-    const host = document.getElementById("kurrent-decks");
-    host.innerHTML = "";
-
-    decks.forEach(deck => {
-        const label = document.createElement("label");
-        label.className = "deck-label";
-
-        const input = document.createElement("input");
-        input.type = "checkbox";
-        input.value = deck.key;
-        input.checked = selectedDecks.has(deck.key);
-
-        const name = document.createElement("span");
-        name.className = "deck-name";
-        name.textContent = deck.label;
-
-        const count = document.createElement("span");
-        count.className = "deck-count";
-        count.textContent = `(${deck.items.length})`;
-
-        label.appendChild(input);
-        label.appendChild(name);
-        label.appendChild(count);
-        label.classList.toggle("deck-selected", input.checked);
-        host.appendChild(label);
-
-        input.addEventListener("change", () => {
-            if (input.checked) {
-                selectedDecks.add(deck.key);
-            } else {
-                selectedDecks.delete(deck.key);
-            }
-            label.classList.toggle("deck-selected", input.checked);
-            saveUiState();
-        });
-    });
+    renderDeckCheckboxList("kurrent-decks", decks, selectedDecks, saveUiState);
 }
 
 function setAllDecks(checked) {
-    selectedDecks.clear();
-    if (checked) decks.forEach(deck => selectedDecks.add(deck.key));
-
-    document.querySelectorAll("#kurrent-decks input").forEach(input => {
-        input.checked = checked;
-        input.closest(".deck-label").classList.toggle("deck-selected", checked);
-    });
-    saveUiState();
+    setAllDeckCheckboxes("kurrent-decks", decks, selectedDecks, checked, saveUiState);
 }
 
 function switchMode(mode) {
@@ -289,8 +248,7 @@ function switchMode(mode) {
 let queue = {};
 let studySet = [];
 let currentItem = null;
-let consecutiveCorrectKey = null;
-let consecutiveCorrectCount = 0;
+const repsTracker = createRepsTracker();
 let awaitingContinue = false;
 const answerInput = document.getElementById("kurrent-answer");
 
@@ -302,8 +260,7 @@ function saveStudyState() {
         queue,
         studySet,
         currentKey: currentItem ? itemKey(currentItem) : null,
-        consecutiveCorrectKey,
-        consecutiveCorrectCount,
+        ...repsTracker.getState(),
         awaitingContinue,
         missedQuestionKeys: getMissedQuestionKeys(),
         answer: answerInput.value,
@@ -414,8 +371,7 @@ function itemKey(item) {
 function startStudy(items = currentItems(), isNewSession = false) {
     queue = {};
     currentItem = null;
-    consecutiveCorrectKey = null;
-    consecutiveCorrectCount = 0;
+    repsTracker.reset();
     hideContinueButton();
     document.getElementById("kurrent-answer").value = "";
     setText("feedback", "");
@@ -524,19 +480,10 @@ function submitAnswer() {
     const key = itemKey(currentItem);
 
     if (isCorrect) {
-        if (key === consecutiveCorrectKey) {
-            consecutiveCorrectCount++;
-        } else {
-            consecutiveCorrectKey = key;
-            consecutiveCorrectCount = 1;
-        }
-
-        queue[key] = queue[key] - 1;
-
-        if (queue[key] <= 0 || consecutiveCorrectCount >= STREAK_BONUS_THRESHOLD) {
+        const { reps, finished } = repsTracker.recordCorrect(key, queue[key]);
+        queue[key] = reps;
+        if (finished) {
             delete queue[key];
-            consecutiveCorrectKey = null;
-            consecutiveCorrectCount = 0;
         }
 
         setText("feedback", "Dobrze!");
@@ -545,9 +492,7 @@ function submitAnswer() {
         pickItem();
     } else {
         recordMissedQuestion(key);
-        consecutiveCorrectKey = null;
-        consecutiveCorrectCount = 0;
-        queue[key] = queue[key] + WRONG_ANSWER_PENALTY;
+        queue[key] = repsTracker.recordWrong(queue[key]);
         setText("feedback", `Źle! Poprawna odpowiedź: ${currentItem.answers.join(" / ")}`);
         awaitingContinue = true;
         showContinueButton();
@@ -558,8 +503,7 @@ function submitAnswer() {
 function endStudy() {
     queue = {};
     currentItem = null;
-    consecutiveCorrectKey = null;
-    consecutiveCorrectCount = 0;
+    repsTracker.reset();
     awaitingContinue = false;
     storeSessionState(STUDY_STATE_KEY, null);
     setText("feedback", "");
@@ -663,10 +607,7 @@ if (restoredStudyState?.active && validModes.includes(restoredStudyState.mode)) 
         currentItem = currentKey === null
             ? null
             : studySet.find(item => itemKey(item) === currentKey) || null;
-        consecutiveCorrectKey = restoredStudyState.consecutiveCorrectKey || null;
-        consecutiveCorrectCount = Number.isFinite(restoredStudyState.consecutiveCorrectCount)
-            ? restoredStudyState.consecutiveCorrectCount
-            : 0;
+        repsTracker.restoreState(restoredStudyState);
         awaitingContinue = restoredStudyState.awaitingContinue === true;
         resetMissedQuestions();
         if (Array.isArray(restoredStudyState.missedQuestionKeys)) {

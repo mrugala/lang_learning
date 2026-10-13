@@ -3,13 +3,17 @@ const path = require("path");
 const vm = require("vm");
 
 const root = path.resolve(__dirname, "..");
+const testDir = path.join(root, "test");
 const jsFiles = [
     ...fs.readdirSync(root)
         .filter(file => file.endsWith(".js"))
         .map(file => path.join(root, file)),
     ...fs.readdirSync(__dirname)
         .filter(file => file.endsWith(".js"))
-        .map(file => path.join(__dirname, file))
+        .map(file => path.join(__dirname, file)),
+    ...fs.readdirSync(testDir)
+        .filter(file => file.endsWith(".js"))
+        .map(file => path.join(testDir, file))
 ];
 const errors = [];
 

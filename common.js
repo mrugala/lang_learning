@@ -63,6 +63,57 @@
         return normalized;
     }
 
+    // Checkbox list used for both kurrent word-decks and German vocabulary
+    // categories: a label, an item count and a "deck-selected" highlight.
+    function renderDeckCheckboxList(hostId, decks, selectedKeys, onChange) {
+        const host = document.getElementById(hostId);
+        if (!host) return;
+        host.innerHTML = "";
+
+        decks.forEach(deck => {
+            const label = document.createElement("label");
+            label.className = "deck-label";
+
+            const input = document.createElement("input");
+            input.type = "checkbox";
+            input.value = deck.key;
+            input.checked = selectedKeys.has(deck.key);
+
+            const name = document.createElement("span");
+            name.className = "deck-name";
+            name.textContent = deck.label;
+
+            const count = document.createElement("span");
+            count.className = "deck-count";
+            count.textContent = `(${deck.items.length})`;
+
+            label.append(input, name, count);
+            label.classList.toggle("deck-selected", input.checked);
+            host.appendChild(label);
+
+            input.addEventListener("change", () => {
+                if (input.checked) {
+                    selectedKeys.add(deck.key);
+                } else {
+                    selectedKeys.delete(deck.key);
+                }
+                label.classList.toggle("deck-selected", input.checked);
+                onChange();
+            });
+        });
+    }
+
+    function setAllDeckCheckboxes(hostId, decks, selectedKeys, checked, onChange) {
+        selectedKeys.clear();
+        if (checked) decks.forEach(deck => selectedKeys.add(deck.key));
+
+        document.querySelectorAll(`#${hostId} input`).forEach(input => {
+            input.checked = checked;
+            input.closest(".deck-label").classList.toggle("deck-selected", checked);
+        });
+        onChange();
+    }
+
     // Labeled checkbox used in every table header (rows and columns).
     function createToggleLabel(value, labelText, { checked = true, placeholder = false } = {}) {
         const label = document.createElement("label");
@@ -121,6 +172,45 @@
     let repeatAction = null;
     let repeatMistakesAction = null;
     const missedQuestionKeys = new Set();
+
+    // Spaced-repetition bookkeeping shared by every study mode: a correct
+    // answer lowers the remaining reps, a short streak finishes an item
+    // early, and a wrong answer adds a penalty and breaks the streak.
+    function createRepsTracker() {
+        let streakKey = null;
+        let streakCount = 0;
+
+        function reset() {
+            streakKey = null;
+            streakCount = 0;
+        }
+
+        function getState() {
+            return { streakKey, streakCount };
+        }
+
+        function restoreState(state) {
+            streakKey = state?.streakKey ?? null;
+            streakCount = Number.isFinite(state?.streakCount) ? state.streakCount : 0;
+        }
+
+        // Returns the updated reps count and whether the item is done.
+        function recordCorrect(key, reps) {
+            streakCount = key === streakKey ? streakCount + 1 : 1;
+            streakKey = key;
+            const finishedByStreak = streakCount >= STREAK_BONUS_THRESHOLD;
+            if (finishedByStreak) reset();
+            const updatedReps = reps - 1;
+            return { reps: updatedReps, finished: updatedReps <= 0 || finishedByStreak };
+        }
+
+        function recordWrong(reps) {
+            reset();
+            return reps + WRONG_ANSWER_PENALTY;
+        }
+
+        return { reset, getState, restoreState, recordCorrect, recordWrong };
+    }
 
     function setupRepeatButton(onRepeat) {
         const button = document.getElementById("repeat-study");
@@ -314,6 +404,7 @@
         BASE_REPS,
         STREAK_BONUS_THRESHOLD,
         WRONG_ANSWER_PENALTY,
+        createRepsTracker,
         applyFontStyle,
         readStoredFontStyle,
         storeFontStyle,
@@ -321,6 +412,8 @@
         readReloadState,
         storeSessionState,
         createToggleLabel,
+        renderDeckCheckboxList,
+        setAllDeckCheckboxes,
         isGroupFullySelected,
         checkedValues,
         setGroupSelection,

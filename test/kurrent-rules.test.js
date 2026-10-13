@@ -1,15 +1,17 @@
 // Testy jednostkowe reguł zapisu kurrentowego, bez dotykania bazy.
 // Wycinamy same reguły z generatora i wołamy kurrentWord bezpośrednio.
+// Używa wbudowanego w Node.js runnera testów - bez instalowania zależności.
+const test = require("node:test");
+const assert = require("node:assert/strict");
 const fs = require("fs");
 const path = require("path");
 
-const src = fs.readFileSync(path.join(__dirname, "gen-kurrent-field.js"), "utf8");
+const src = fs.readFileSync(path.join(__dirname, "..", "tools", "gen-kurrent-field.js"), "utf8");
 
 const start = src.indexOf("const SS_NOT_DOPPEL");
 const end = src.indexOf("// Wyrazy są wielowyrazowe");
 if (start < 0 || end < 0) {
-    console.error("nie znaleziono sekcji reguł w gen-kurrent-field.js");
-    process.exit(2);
+    throw new Error("nie znaleziono sekcji reguł w gen-kurrent-field.js");
 }
 
 const kurrentWord = new Function(src.slice(start, end) + "\nreturn kurrentWord;")();
@@ -46,15 +48,11 @@ const CASES = {
 
     // Fugen-s: OKRĄGŁE s wstawiane przed członem zaczynającym się spółgłoską
     // albo od s. Przykłady wprost ze strony: Donnerstag, Geburtstag,
-    // Haustür, deswegen, Aussicht, Bimsstein, Häuschen, Eispalast.
+    // Haustür, deswegen, Aussicht, Bimsstein, Häuschen, Eispalast (te
+    // ostatnie pięć zdefiniowane już wyżej, w "Das Rund-s").
     "Dienstag": "Dienstag",
     "Samstag": "Samstag",
     "Donnerstag": "Donnerstag",
-    "Geburtstag": "Geburtstag",
-    "deswegen": "deswegen",
-    "Haustür": "Haustür",
-    "Häuschen": "Häuschen",
-    "Eispalast": "Eispalast",
     "boshaft": "boshaft",
     "Schultasche": "Schultasche",
 
@@ -78,9 +76,8 @@ const CASES = {
     "müssen": "müſſen",
     "Zeugnisses": "Zeugniſſes",
     "Busses": "Buſſes",
-    // Fugen-s + długie s = "sſ" (Aus + sicht, Bims + stein)
-    "Aussicht": "Ausſicht",
-    "Bimsstein": "Bimsſtein",
+    // Fugen-s + długie s = "sſ" (Aus + sicht, Bims + stein; zdefiniowane
+    // już wyżej, oczekiwany wynik jest tu ten sam).
     "Assistent": "Aſſiſtent",
     "Essen": "Eſſen",
 
@@ -95,13 +92,8 @@ const CASES = {
     "fassen": "faſſen"
 };
 
-let failed = 0;
 Object.entries(CASES).forEach(([word, want]) => {
-    const got = kurrentWord(word);
-    if (got !== want) {
-        failed++;
-        console.log(`  FAIL ${word}: "${got}", oczekiwano "${want}"`);
-    }
+    test(`kurrentWord("${word}") === "${want}"`, () => {
+        assert.equal(kurrentWord(word), want);
+    });
 });
-console.log(`testy kurrentWord: ${Object.keys(CASES).length} przypadków, ${failed} błędów`);
-process.exit(failed ? 1 : 0);
