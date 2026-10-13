@@ -518,7 +518,8 @@ body.alphabet-glagolitic-angular h1 {
 #meaning-answer,
 #answer,
 #kurrent-answer,
-#vocabulary-answer {
+#vocabulary-answer,
+#flashcard-answer {
     width: min(250px, 70vw);
     padding: 10px 12px;
     border-radius: 8px;
@@ -558,6 +559,10 @@ body.alphabet-glagolitic-angular h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+#selection-panel[hidden] {
+    display: none;
 }
 
 .study-mode-panel select {
@@ -1252,6 +1257,7 @@ input {
     #answer,
     #kurrent-answer,
     #vocabulary-answer,
+    #flashcard-answer,
     #reading-answer {
         width: min(100%, 260px);
     }

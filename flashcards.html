@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fiszki</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232b2b2b'/%3E%3Ctext x='16' y='24' font-size='22' text-anchor='middle' fill='%23f8f9ea'%3EF%3C/text%3E%3C/svg%3E">
+</head>
+<body class="font-style-default">
+    <div class="page-shell">
+        <h1>Fiszki <span>(własny plik JSON)</span></h1>
+
+        <div id="flashcards-upload">
+            <p class="reading-disclaimer">
+                Wgraj własny plik <code>.json</code> z fiszkami. Plik musi być listą kategorii -
+                każda ma pole <code>name</code> (nazwa) i niepustą listę <code>flashcards</code>.
+                Każda fiszka to obiekt z dokładnie dwoma polami nazwanymi dwuliterowym kodem
+                języka (np. <code>pl</code>, <code>de</code>, <code>en</code>, <code>fr</code>),
+                a ich wartości to słowo w danym języku. Wszystkie fiszki w pliku muszą używać tej
+                samej pary języków. Przykład:
+                <a href="flashcards-sample.json" download>flashcards-sample.json</a>.
+            </p>
+            <button id="load-flashcards-file" type="button">Wgraj plik .json</button>
+            <input id="flashcards-file" type="file" accept="application/json,.json" hidden>
+            <p id="flashcards-file-status" class="font-note"></p>
+        </div>
+
+        <div id="selection-panel" hidden>
+            <div class="study-mode-panel">
+                <div class="study-mode-pair">
+                    <label for="translation-direction">Kierunek:</label>
+                    <select id="translation-direction"></select>
+                </div>
+            </div>
+
+            <div id="flashcards-categories" class="deck-grid" aria-label="Kategorie fiszek"></div>
+
+            <div class="table-actions">
+                <button id="select-all-categories" type="button">Zaznacz wszystkie kategorie</button>
+                <button id="clear-all-categories" type="button">Wyczyść wybór</button>
+            </div>
+
+            <button id="start" type="button">Rozpocznij naukę</button>
+        </div>
+
+        <hr>
+
+        <div id="app" style="display:none;">
+            <div id="char-box"></div>
+            <input id="flashcard-answer" placeholder="Podaj słowo" autocomplete="off" spellcheck="false">
+            <button id="submit" type="button">Sprawdź</button>
+            <button id="end-study" type="button">Zakończ naukę</button>
+            <button id="repeat-study" type="button" style="display:none;">Powtórz</button>
+            <button id="repeat-mistakes-study" type="button" style="display:none;">Powtórz tylko pomyłki</button>
+            <div id="feedback" role="status" aria-live="polite"></div>
+            <button id="continue" type="button" style="display:none;">Dalej</button>
+        </div>
+
+        <div class="font-picker">
+            <a href="index.html" class="nav-link">Hiragana i katakana</a>
+            <a href="other-alphabets.html" class="nav-link">Inne alfabety</a>
+            <a href="kanji.html" class="nav-link">Trening Kanji</a>
+            <a href="german.html" class="nav-link">Niemieckie słownictwo</a>
+            <a href="kurrent.html" class="nav-link">Trening Kurrent</a>
+        </div>
+    </div>
+
+    <script src="common.js"></script>
+    <script src="flashcards.js"></script>
+</body>
+</html>

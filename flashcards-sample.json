@@ -1,0 +1,30 @@
+[
+    {
+        "name": "Jedzenie i napoje",
+        "flashcards": [
+            { "pl": "jabłko", "de": "der Apfel" },
+            { "pl": "banan", "de": "die Banane" },
+            { "pl": "chleb", "de": "das Brot" },
+            { "pl": "masło", "de": "die Butter" },
+            { "pl": "jajko / jajo", "de": "das Ei" },
+            { "pl": "ryba", "de": "der Fisch" },
+            { "pl": "ser", "de": "der Käse" },
+            { "pl": "mleko", "de": "die Milch" },
+            { "pl": "woda", "de": "das Wasser" },
+            { "pl": "kawa", "de": "der Kaffee" },
+            { "pl": "herbata", "de": "der Tee" }
+        ]
+    },
+    {
+        "name": "Dni tygodnia",
+        "flashcards": [
+            { "pl": "poniedziałek", "de": "der Montag" },
+            { "pl": "wtorek", "de": "der Dienstag" },
+            { "pl": "środa", "de": "der Mittwoch" },
+            { "pl": "czwartek", "de": "der Donnerstag" },
+            { "pl": "piątek", "de": "der Freitag" },
+            { "pl": "sobota", "de": "der Samstag" },
+            { "pl": "niedziela", "de": "der Sonntag" }
+        ]
+    }
+]

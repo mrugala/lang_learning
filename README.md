@@ -9,8 +9,8 @@ procesu budowania ani instalowania zależności pakietowych.
 
 Nie są wymagane Node.js, instalacja ani serwer. Otwórz `index.html` bezpośrednio
 w przeglądarce. Pozostałe strony (`other-alphabets.html`, `kanji.html`,
-`german.html` i `kurrent.html`) można otworzyć z poziomu nawigacji aplikacji
-lub bezpośrednio z katalogu projektu.
+`german.html`, `kurrent.html` i `flashcards.html`) można otworzyć z poziomu
+nawigacji aplikacji lub bezpośrednio z katalogu projektu.
 
 Opcjonalnie, aby korzystać ze stron pod adresem `http://localhost:8731/`,
 można uruchomić lokalny serwer za pomocą `node tools/serve.js`.
@@ -24,6 +24,7 @@ można uruchomić lokalny serwer za pomocą `node tools/serve.js`.
 | [`kanji.html`](kanji.html) | Nauka kanji z kategorii podzielonych automatycznie na kolejne zestawy po maksymalnie 10 kategorii; słownictwo z opowiadań ma osobny zestaw (kolejne zestawy po maksymalnie 100 wpisów, w kategoriach po maksymalnie 10 słów), a zestaw „Kościół katolicki” pozostaje ostatni. Można ustawić, co jest wyświetlane i o co pyta quiz. Przy odpowiedzi kanji dostępny jest quiz wyboru z dystraktorami. Aktywna sesja jest przywracana po odświeżeniu strony. |
 | [`german.html`](german.html) | Niemieckie słownictwo w kategoriach tematycznych. Kierunki nauki: niemiecki → polski, polski → niemiecki lub oba wymieszane. Wpisy mogą ćwiczyć osobno liczbę pojedynczą i mnogą; dostępne są przyciski dla ä, ö, ü i ß. Aktywna sesja jest przywracana po odświeżeniu strony. |
 | [`kurrent.html`](kurrent.html) | Nauka małych i wielkich liter pisma Kurrent albo odczytywanie losowych niemieckich słów. Tryb słów korzysta ze wspólnej bazy słownictwa niemieckiego. Aktywna sesja jest przywracana po odświeżeniu strony. |
+| [`flashcards.html`](flashcards.html) | Własne fiszki wczytywane z pliku `.json` wybranego przez użytkownika. Plik to lista kategorii (`name` + `flashcards`), a każda fiszka to obiekt z dokładnie dwoma polami nazwanymi dwuliterowym kodem języka (np. `pl`, `de`, `en`) i słowem jako wartością; wszystkie fiszki w pliku muszą używać tej samej pary kodów. Kierunek nauki (A→B, B→A albo oba wymieszane) jest wykrywany automatycznie z wczytanych danych. Wartość pola może zawierać kilka zaakceptowanych zapisów rozdzielonych „ / ” (np. `"jajko / jajo"`). Wczytany plik, wybór kategorii i aktywna sesja są przywracane po odświeżeniu strony. Przykładowy plik: [`flashcards-sample.json`](flashcards-sample.json). |
 
 Wspólne elementy treningów to powtarzanie pytań, informacja zwrotna oraz wybór
 czcionki. Wybrany styl czcionki jest zapamiętywany. Ustawienia zaznaczenia
@@ -48,6 +49,8 @@ tylko znaki lub słowa, przy których podczas bieżącej sesji popełniono błą
 | [`kanji.js`](kanji.js) | Wybór kategorii i trening kanji. |
 | [`german-vocabulary.js`](german-vocabulary.js) | Trening niemieckiego słownictwa. |
 | [`kurrent.js`](kurrent.js) | Trening liter i słów Kurrent. |
+| [`flashcards.js`](flashcards.js) | Wczytywanie, walidacja i trening własnych fiszek z pliku `.json`. |
+| [`flashcards-sample.json`](flashcards-sample.json) | Przykładowy plik fiszek (pl/de) do wczytania na stronie „Fiszki”. |
 | [`common.js`](common.js) | Pomocniki współdzielone przez aplikacje, m.in. kolejka nauki i obsługa interfejsu. |
 | [`style.css`](style.css) | Wspólne style stron. |
 
