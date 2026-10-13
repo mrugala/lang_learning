@@ -565,6 +565,13 @@ body.alphabet-glagolitic-angular h1 {
     display: none;
 }
 
+/* .study-mode-panel sets display:flex, which (per the CSS cascade) beats the
+   browser's default [hidden] rule on the same element, so it needs its own
+   explicit override wherever a study-mode-panel can be hidden. */
+#flashcards-language-setup[hidden] {
+    display: none;
+}
+
 .study-mode-panel select {
     padding: 8px 10px;
     border-radius: 6px;
@@ -819,6 +826,40 @@ button:active {
     gap: 10px;
     margin: 0 auto 14px;
     max-width: 640px;
+}
+
+.flashcard-list-editor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 10px auto;
+}
+
+.flashcard-edit-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 480px;
+}
+
+.flashcard-edit-row input {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #c8d6ea;
+    font-size: 15px;
+    font-family: var(--input-font);
+}
+
+.flashcard-edit-row button {
+    flex: 0 0 auto;
+    min-width: 34px;
+    margin: 0;
+    padding: 6px 10px;
 }
 
 .deck-label {

@@ -18,7 +18,7 @@ można uruchomić lokalny serwer za pomocą `node tools/serve.js`.
 ## Aplikacje
 
 | Strona | Funkcje |
-|---|---|
+| --- | --- |
 | [`index.html`](index.html) | Nauka hiragany lub katakany. Opcja „Kana rozszerzone” dodaje ゐ (wi) i ゑ (we) albo ich katakanowe odpowiedniki ヰ i ヱ do głównej tabeli i quizu. Tabele kana zawierają też osobne, zwijane tabele dakuon/handakuon i yōon. Quiz dakuon akceptuje warianty `zi`, `di` i `du` tam, gdzie pasują do znaku. Znaki wybiera się komórkami, grupami albo całościowo. Po odświeżeniu strony aktywne ćwiczenie kana lub czytania jest przywracane. Po zakończeniu quizu pole odpowiedzi zostaje ukryte; ponowienie nauki przywraca je. Tryb czytania pozwala wybrać Momotarō, oryginalną opowieść dla początkujących „Mika uczy się japońskiego” albo czterorozdziałowe, autorskie streszczenie *Siostrzeńca królowej* (*The Queen's Nephew*) ks. Josepha Spillmanna. Przy historiach zawierających imiona obcego pochodzenia można wybrać ich zapis hiraganą lub katakaną. Każdy werset ma własne tłumaczenie; po każdym rozdziale można przejść do następnego, a po ostatnim wrócić do pierwszego. W wynikach można najechać na słowa kana, by zobaczyć ich zapis kanji i polskie znaczenie, a na partykuły — by wyświetlić ich funkcję; błędnie odczytane fragmenty są wyróżnione, a rozdział można powtórzyć. |
 | [`other-alphabets.html`](other-alphabets.html) | Nauka cyrylicy cerkiewnosłowiańskiej i głagolicy (małe i wielkie litery wyświetlane parami, wybierane do quizu osobno). Głagolica obła i kanciasta używają tych samych znaków, ale różnych wariantów fontu. Podczas quizu dostępne są przyciski znaków specjalnych transliteracji z przełącznikiem wielkości liter. |
 | [`kanji.html`](kanji.html) | Nauka kanji z kategorii podzielonych automatycznie na kolejne zestawy po maksymalnie 10 kategorii; słownictwo z opowiadań ma osobny zestaw (kolejne zestawy po maksymalnie 100 wpisów, w kategoriach po maksymalnie 10 słów), a zestaw „Kościół katolicki” pozostaje ostatni. Można ustawić, co jest wyświetlane i o co pyta quiz. Przy odpowiedzi kanji dostępny jest quiz wyboru z dystraktorami. Aktywna sesja jest przywracana po odświeżeniu strony. |
@@ -36,7 +36,7 @@ tylko znaki lub słowa, przy których podczas bieżącej sesji popełniono błą
 ## Dane i kod
 
 | Plik | Zawartość |
-|---|---|
+| --- | --- |
 | [`kanji-data.js`](kanji-data.js) | Kategorie i wpisy kanji, znaczenia, odczyty oraz dystraktory używane przez quiz wyboru. |
 | [`reading-vocabulary-data.js`](reading-vocabulary-data.js) | Słownictwo z opowiadań do czytania, używane w podpowiedziach po najechaniu i dodawane do zestawów kanji. |
 | [`kana-data.js`](kana-data.js) | Znaki i transliteracje hiragany oraz katakany, układy tabel, warianty zapisu, znaczenia partykuł, zapisy imion oraz rozdziały do ćwiczeń czytania. |

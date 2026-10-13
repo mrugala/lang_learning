@@ -201,10 +201,130 @@ function setAllCategories(checked) {
     setAllDeckCheckboxes("flashcards-categories", decks, selectedCategories, checked, saveUiState);
 }
 
+function saveData() {
+    storeSessionState(DATA_KEY, { decks, languages });
+}
+
+function refreshEditor() {
+    document.getElementById("flashcards-editor").hidden = false;
+
+    const categorySelect = document.getElementById("edit-category-select");
+    const previousValue = categorySelect.value;
+    categorySelect.innerHTML = decks
+        .map(deck => `<option value="${deck.key}">${deck.label}</option>`)
+        .join("");
+    if (decks.some(deck => deck.key === previousValue)) {
+        categorySelect.value = previousValue;
+    }
+
+    renderFlashcardList();
+}
+
+function getEditedDeck() {
+    const categorySelect = document.getElementById("edit-category-select");
+    return decks.find(deck => deck.key === categorySelect.value) || null;
+}
+
+// Renders every flashcard of the selected category as an editable row,
+// plus one empty row at the bottom for adding the next one.
+function renderFlashcardList() {
+    const host = document.getElementById("flashcard-list-editor");
+    host.className = "flashcard-list-editor";
+    host.innerHTML = "";
+
+    const deck = getEditedDeck();
+    if (!deck || !languages) return;
+
+    const [langA, langB] = languages;
+
+    deck.items.forEach((card, index) => {
+        const row = document.createElement("div");
+        row.className = "flashcard-edit-row";
+
+        const inputA = document.createElement("input");
+        inputA.value = card[langA];
+        inputA.placeholder = langA;
+        inputA.addEventListener("change", () => updateFlashcardField(deck, index, langA, inputA));
+
+        const inputB = document.createElement("input");
+        inputB.value = card[langB];
+        inputB.placeholder = langB;
+        inputB.addEventListener("change", () => updateFlashcardField(deck, index, langB, inputB));
+
+        const removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.textContent = "✕";
+        removeButton.setAttribute("aria-label", "Usuń fiszkę");
+        removeButton.addEventListener("click", () => removeFlashcard(deck, index));
+
+        row.append(inputA, inputB, removeButton);
+        host.appendChild(row);
+    });
+
+    const newRow = document.createElement("div");
+    newRow.className = "flashcard-edit-row";
+
+    const newInputA = document.createElement("input");
+    newInputA.placeholder = langA;
+    const newInputB = document.createElement("input");
+    newInputB.placeholder = langB;
+
+    const addButton = document.createElement("button");
+    addButton.type = "button";
+    addButton.textContent = "Dodaj";
+    addButton.addEventListener("click", () => addFlashcardToDeck(deck, newInputA, newInputB));
+    [newInputA, newInputB].forEach(input => {
+        input.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                addFlashcardToDeck(deck, newInputA, newInputB);
+            }
+        });
+    });
+
+    newRow.append(newInputA, newInputB, addButton);
+    host.appendChild(newRow);
+}
+
+function updateFlashcardField(deck, index, lang, input) {
+    const value = input.value.trim();
+    if (!value) {
+        // Empty fields aren't allowed; revert to the last saved value.
+        input.value = deck.items[index][lang];
+        return;
+    }
+    deck.items[index][lang] = value;
+    input.value = value;
+    saveData();
+}
+
+function removeFlashcard(deck, index) {
+    deck.items.splice(index, 1);
+    saveData();
+    renderCategories();
+    renderFlashcardList();
+}
+
+function addFlashcardToDeck(deck, inputA, inputB) {
+    const [langA, langB] = languages;
+    const wordA = inputA.value.trim();
+    const wordB = inputB.value.trim();
+    if (!wordA || !wordB) {
+        alert(`Podaj słowo dla obu języków (${langA} i ${langB}).`);
+        return;
+    }
+
+    deck.items.push({ [langA]: wordA, [langB]: wordB });
+    saveData();
+    renderCategories();
+    renderFlashcardList();
+}
+
 function showLoadedDeck() {
     document.getElementById("selection-panel").hidden = false;
     populateDirectionSelect();
     renderCategories();
+    refreshEditor();
     saveUiState();
 }
 
@@ -216,7 +336,7 @@ function applyLoadedData(validated, fileName) {
     selectedCategories.clear();
     deckKeys.forEach(key => selectedCategories.add(key));
 
-    storeSessionState(DATA_KEY, { decks, languages });
+    saveData();
     storeSessionState(STUDY_STATE_KEY, null);
     storeSessionState(UI_STATE_KEY, null);
 
@@ -226,6 +346,65 @@ function applyLoadedData(validated, fileName) {
 
     endStudy();
     showLoadedDeck();
+}
+
+function startNewDeck(langA, langB) {
+    decks = [];
+    languages = [langA, langB];
+    deckKeys.clear();
+    selectedCategories.clear();
+
+    saveData();
+    storeSessionState(STUDY_STATE_KEY, null);
+    storeSessionState(UI_STATE_KEY, null);
+
+    document.getElementById("flashcards-file-status").textContent =
+        `Nowy, pusty zestaw (${langA}/${langB}). Dodaj kategorie i fiszki poniżej.`;
+    document.getElementById("flashcards-language-setup").hidden = true;
+    document.getElementById("new-lang-a").value = "";
+    document.getElementById("new-lang-b").value = "";
+
+    endStudy();
+    showLoadedDeck();
+}
+
+function addCategory() {
+    const input = document.getElementById("new-category-name");
+    const name = input.value.trim();
+    if (!name) {
+        alert("Podaj nazwę kategorii.");
+        return;
+    }
+
+    const key = String(decks.length);
+    decks.push({ key, label: name, items: [] });
+    deckKeys.add(key);
+    selectedCategories.add(key);
+
+    saveData();
+    input.value = "";
+    renderCategories();
+    refreshEditor();
+    document.getElementById("edit-category-select").value = key;
+    renderFlashcardList();
+    saveUiState();
+}
+
+function downloadFlashcards() {
+    const nonEmptyDecks = decks.filter(deck => deck.items.length > 0);
+    if (nonEmptyDecks.length === 0) {
+        alert("Dodaj przynajmniej jedną kategorię z co najmniej jedną fiszką przed pobraniem.");
+        return;
+    }
+
+    const exported = nonEmptyDecks.map(deck => ({ name: deck.label, flashcards: deck.items }));
+    const blob = new Blob([JSON.stringify(exported, null, 4)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "fiszki.json";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 function startStudy() {
@@ -390,10 +569,41 @@ fileInput.addEventListener("change", () => {
     fileInput.value = "";
 });
 
-if (decks.length > 0 && languages) {
+document.getElementById("start-from-scratch").addEventListener("click", () => {
+    document.getElementById("flashcards-language-setup").hidden = false;
+    document.getElementById("new-lang-a").focus();
+});
+
+document.getElementById("confirm-new-languages").addEventListener("click", () => {
+    const langA = document.getElementById("new-lang-a").value.trim().toLowerCase();
+    const langB = document.getElementById("new-lang-b").value.trim().toLowerCase();
+    if (!LANGUAGE_CODE_RE.test(langA) || !LANGUAGE_CODE_RE.test(langB)) {
+        alert("Podaj dwa dwuliterowe kody języków, np. pl i de.");
+        return;
+    }
+    if (langA === langB) {
+        alert("Kody języków muszą się różnić.");
+        return;
+    }
+    startNewDeck(langA, langB);
+});
+
+document.getElementById("add-category").addEventListener("click", addCategory);
+document.getElementById("new-category-name").addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        addCategory();
+    }
+});
+
+document.getElementById("edit-category-select").addEventListener("change", renderFlashcardList);
+
+document.getElementById("download-flashcards").addEventListener("click", downloadFlashcards);
+
+if (languages) {
     const cardCount = decks.reduce((total, deck) => total + deck.items.length, 0);
     document.getElementById("flashcards-file-status").textContent =
-        `Wczytano wcześniejszy plik: ${decks.length} kategorii, ${cardCount} fiszek (${languages[0]}/${languages[1]}).`;
+        `Przywrócono poprzedni zestaw: ${decks.length} kategorii, ${cardCount} fiszek (${languages[0]}/${languages[1]}).`;
     showLoadedDeck();
 }
 

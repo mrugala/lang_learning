@@ -23,7 +23,44 @@
             </p>
             <button id="load-flashcards-file" type="button">Wgraj plik .json</button>
             <input id="flashcards-file" type="file" accept="application/json,.json" hidden>
+            <button id="start-from-scratch" type="button">Zacznij od zera</button>
+
+            <div id="flashcards-language-setup" class="study-mode-panel" hidden>
+                <div class="study-mode-pair">
+                    <label for="new-lang-a">Kod 1. języka:</label>
+                    <input id="new-lang-a" maxlength="2" placeholder="pl" autocomplete="off" style="width:48px;">
+                </div>
+                <div class="study-mode-pair">
+                    <label for="new-lang-b">Kod 2. języka:</label>
+                    <input id="new-lang-b" maxlength="2" placeholder="de" autocomplete="off" style="width:48px;">
+                </div>
+                <button id="confirm-new-languages" type="button">Utwórz pusty zestaw</button>
+            </div>
+
             <p id="flashcards-file-status" class="font-note"></p>
+        </div>
+
+        <div id="flashcards-editor" hidden>
+            <div class="study-mode-panel">
+                <div class="study-mode-pair">
+                    <label for="new-category-name">Nowa kategoria:</label>
+                    <input id="new-category-name" placeholder="Nazwa kategorii" autocomplete="off">
+                </div>
+                <button id="add-category" type="button">Dodaj kategorię</button>
+            </div>
+
+            <div class="study-mode-panel">
+                <div class="study-mode-pair">
+                    <label for="edit-category-select">Edytuj kategorię:</label>
+                    <select id="edit-category-select"></select>
+                </div>
+            </div>
+
+            <div id="flashcard-list-editor"></div>
+
+            <div class="table-actions">
+                <button id="download-flashcards" type="button">Pobierz jako .json</button>
+            </div>
         </div>
 
         <div id="selection-panel" hidden>
