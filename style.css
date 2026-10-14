@@ -899,6 +899,75 @@ button:active {
     font-size: 14px;
 }
 
+.pitch-accent {
+    display: inline-flex;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+.pitch-accent-diagram {
+    overflow: visible;
+}
+
+.pitch-accent-line {
+    fill: none;
+    stroke: #3a6ea5;
+    stroke-width: 1.5;
+}
+
+.pitch-accent-dot-h {
+    fill: #3a6ea5;
+    stroke: none;
+}
+
+.pitch-accent-dot-l {
+    fill: #e7eef6;
+    stroke: #3a6ea5;
+    stroke-width: 1;
+}
+
+.pitch-accent-mora {
+    font-size: 9px;
+    fill: #575757;
+    text-anchor: middle;
+    font-family: var(--translit-font);
+}
+
+.pitch-accent-badge {
+    align-self: flex-start;
+    font-size: 11px;
+    font-weight: bold;
+    color: #a66a00;
+    margin-left: 1px;
+}
+
+.pitch-accent-estimated .pitch-accent-diagram {
+    opacity: 0.85;
+}
+
+.pitch-accent-estimated .pitch-accent-line,
+.pitch-accent-estimated .pitch-accent-dot-h {
+    stroke: #c98a2b;
+    fill: #c98a2b;
+}
+
+.pitch-accent-guess .pitch-accent-diagram {
+    opacity: 0.6;
+}
+
+.pitch-accent-guess .pitch-accent-line {
+    stroke: #999999;
+    stroke-dasharray: 2 2;
+}
+
+.pitch-accent-guess .pitch-accent-dot-h {
+    fill: #999999;
+}
+
+.pitch-accent-guess .pitch-accent-badge {
+    color: #757575;
+}
+
 .character-buttons {
     display: flex;
     justify-content: center;

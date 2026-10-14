@@ -101,6 +101,26 @@ i słownictwa.
 `gen-kurrent-field.js` generuje pole `kurrent` w bazie słownictwa i zapisuje
 zmiany do `german-vocabulary-data.js`; uruchamiaj go tylko wtedy, gdy chcesz
 ponownie wygenerować te dane.
+`gen-ojad-csv.js` eksportuje słówka z `reading-vocabulary-data.js` do
+`ojad-lookup.csv` (10 słów w wierszu) do wklejenia w wyszukiwarkę OJAD.
+`fetch-ojad-pitch.js` i `fetch-ojad-phrasing-pitch.js` pobierają akcent
+wysokościowy bezpośrednio z OJAD (słownik oraz, dla słów spoza słownika,
+estymator ML „Suzuki-kun") i tylko raportują różnice względem pola `pitch`
+w `reading-vocabulary-data.js` — nie nadpisują danych automatycznie.
+`fetch-ojad-pitch-kanji.js` i `fetch-ojad-phrasing-pitch-kanji.js` robią to
+samo dla `kanji-data.js`. `check-against-kanjium.js` dodatkowo porównuje
+wpisy o niższej pewności (`pitchSource` `estimated`/`guess`) z otwartą bazą
+Kanjium (zob. licencja niżej) i tylko raportuje różnice.
+
+## Źródła danych o akcencie wysokościowym
+
+Pole `pitch` w `reading-vocabulary-data.js` i `kanji-data.js` pochodzi z:
+[OJAD](https://www.gavo.t.u-tokyo.ac.jp/ojad/) (University of Tokyo;
+`pitchSource: "ojad"` dla słownika, `"estimated"` dla estymatora ML
+Suzuki-kun) oraz z bazy [Kanjium](https://github.com/mifunetoshiro/kanjium)
+autorstwa Uros O. (`pitchSource: "kanjium"`), udostępnionej na licencji
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Wpisy bez
+żadnego z tych źródeł mają `pitchSource: "guess"` (nie zweryfikowane).
 
 ## Czcionka Kurrent
 

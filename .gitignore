@@ -1,0 +1,6 @@
+# Throwaway review artifacts produced by tools/fetch-ojad-*.js,
+# tools/check-against-kanjium.js and tools/gen-ojad-csv.js. Regenerate by
+# re-running the relevant script; nothing in the app reads these.
+ojad-*.tsv
+ojad-lookup.csv
+kanjium-crosscheck.tsv

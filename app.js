@@ -6,7 +6,8 @@ const {
     createToggleLabel,
     isGroupFullySelected: areAllSelected,
     checkedValues,
-    setGroupSelection
+    setGroupSelection,
+    createPitchAccentElement
 } = window.LangCommon;
 
 const {
@@ -192,6 +193,7 @@ function showReadingResults() {
         parts.forEach((part, partIndex) => {
             const content = document.createElement(part.particle ? "strong" : "span");
             content.textContent = getReadingPartText(part);
+            let pitchElement = null;
             if (part.particle) {
                 const particle = part.text.trim().replace(/[、。,.!?！？]/g, "");
                 const particleMeaning = readingParticleMeanings[particle];
@@ -213,6 +215,9 @@ function showReadingResults() {
                         content.title = `${vocabulary.kanji} — ${vocabulary.meaning}`;
                         content.setAttribute("aria-label", `${part.text.trim()}: ${vocabulary.kanji}, ${vocabulary.meaning}`);
                         content.classList.add("has-reading-meaning");
+                        if (Number.isInteger(vocabulary.pitch) && vocabulary.hiragana) {
+                            pitchElement = createPitchAccentElement(vocabulary.hiragana, vocabulary.pitch, vocabulary.pitchSource, vocabulary.pitchAlt);
+                        }
                     }
                 }
             }
@@ -221,6 +226,7 @@ function showReadingResults() {
                 content.title = `${content.title ? `${content.title}. ` : ""}Niepoprawny odczyt`;
             }
             hiraganaLine.appendChild(content);
+            if (pitchElement) hiraganaLine.appendChild(pitchElement);
         });
 
         const answerLine = document.createElement("p");

@@ -24,7 +24,8 @@ const {
     normalizeStudyText,
     romajiAnswerVariants,
     normalizeRomaji,
-    getAcceptedAnswers
+    getAcceptedAnswers,
+    createPitchAccentElement
 } = window.LangCommon;
 
 const categories = window.kanjiCategories || [];
@@ -631,6 +632,7 @@ function pickChar() {
     } else {
         charBox.innerHTML = `<div class="prompt-main">${promptValue}</div>`;
     }
+    appendPitchAccentIfVisible(item, mode, charBox);
     if (mode.answer === "kanji") renderKanjiChoiceButtons(item);
 
     // The feedback ("Dobrze!" / "Źle! ...") is deliberately kept, so the result of
@@ -638,6 +640,15 @@ function pickChar() {
     // cleared by endStudySession and by the continue button instead.
     clearAnswerInputs();
     saveStudyState();
+}
+
+// Only shown once the hiragana reading itself isn't the thing being quizzed,
+// so the diagram never gives away the answer the learner is meant to type.
+function appendPitchAccentIfVisible(item, mode, charBox) {
+    if (mode.answer === "hiragana" || !Number.isInteger(item.pitch)) return;
+    const hiragana = item.hiragana || toHiraganaFromRomaji(item.romaji);
+    const diagram = hiragana ? createPitchAccentElement(hiragana, item.pitch, item.pitchSource, item.pitchAlt) : null;
+    if (diagram) charBox.appendChild(diagram);
 }
 
 function getKanjiChoiceOptions(item) {
@@ -1033,6 +1044,7 @@ if (restoredStudyState?.active) {
             document.getElementById("char-box").innerHTML = showKanjiHint
                 ? `<div class="prompt-main">${promptValue}</div><div class="prompt-kanji">${item.kanji}</div>`
                 : `<div class="prompt-main">${promptValue}</div>`;
+            appendPitchAccentIfVisible(item, mode, document.getElementById("char-box"));
             if (mode.answer === "kanji") {
                 renderKanjiChoiceButtons(item, savedChoiceOptions);
             }

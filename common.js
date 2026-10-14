@@ -400,6 +400,123 @@
         return results.map(normalizeRomaji).filter(Boolean);
     }
 
+    // Small kana (ゃゅょぁぃぅぇぉ and their katakana forms) merge into the
+    // previous mora instead of counting as one of their own (きゃ is one mora).
+    const COMBINING_KANA = new Set([..."ゃゅょぁぃぅぇぉャュョァィゥェォ"]);
+
+    function splitIntoMorae(text) {
+        const morae = [];
+        for (const character of String(text || "")) {
+            if (COMBINING_KANA.has(character) && morae.length > 0) {
+                morae[morae.length - 1] += character;
+            } else {
+                morae.push(character);
+            }
+        }
+        return morae;
+    }
+
+    // pitchAccent is the standard "accent kernel" number: 0 = heiban (stays
+    // high, no drop), 1 = atamadaka (drops after the first mora), N = drops
+    // after the Nth mora (nakadaka if N < moraCount, odaka if N === moraCount).
+    function getPitchAccentLevels(moraCount, pitchAccent) {
+        if (!Number.isInteger(pitchAccent) || pitchAccent < 0 || moraCount <= 0) return null;
+
+        if (moraCount === 1) return [pitchAccent === 1 ? "H" : "L"];
+
+        const levels = new Array(moraCount).fill("L");
+        if (pitchAccent === 0) {
+            for (let index = 1; index < moraCount; index++) levels[index] = "H";
+        } else if (pitchAccent === 1) {
+            levels[0] = "H";
+        } else {
+            for (let index = 1; index < pitchAccent; index++) levels[index] = "H";
+        }
+        return levels;
+    }
+
+    function getPitchAccentTypeName(pitchAccent, moraCount) {
+        if (pitchAccent === 0) return "heiban";
+        if (pitchAccent === 1) return "atamadaka";
+        if (pitchAccent === moraCount) return "odaka";
+        return "nakadaka";
+    }
+
+    // Builds a small SVG pitch-accent contour (dots + connecting line) above the
+    // word's morae. Odaka words get an extra short drop after the last mora so
+    // they are visually distinguishable from heiban (both stay high throughout
+    // the word itself; they only differ once a following particle is spoken).
+    // "source" flags how trustworthy the value is: "ojad" (verified against the
+    // OJAD dictionary, the default), "estimated" (OJAD's ML prosody tool, not a
+    // dictionary entry) or "guess" (nobody has checked it against OJAD yet).
+    const PITCH_SOURCE_NOTES = {
+        estimated: " — oszacowane automatycznie (OJAD Suzuki-kun), nie ze słownika",
+        guess: " — niepewne, nie zweryfikowane w OJAD"
+    };
+
+    function createPitchAccentElement(hiragana, pitchAccent, source, altPitchAccent) {
+        const morae = splitIntoMorae(hiragana);
+        const levels = getPitchAccentLevels(morae.length, pitchAccent);
+        if (!levels) return null;
+
+        const stepX = 22;
+        const highY = 7;
+        const lowY = 20;
+        const isOdaka = morae.length > 1 && pitchAccent === morae.length;
+        const extraWidth = isOdaka ? stepX * 0.6 : 0;
+        const width = stepX * morae.length + extraWidth;
+
+        const svgNs = "http://www.w3.org/2000/svg";
+        const svg = document.createElementNS(svgNs, "svg");
+        svg.setAttribute("class", "pitch-accent-diagram");
+        svg.setAttribute("viewBox", `0 0 ${width} 34`);
+        svg.setAttribute("width", String(width));
+        svg.setAttribute("height", "34");
+
+        const points = morae.map((mora, index) => ({
+            x: stepX * index + stepX / 2,
+            y: levels[index] === "H" ? highY : lowY
+        }));
+        if (isOdaka) points.push({ x: width - extraWidth / 2, y: lowY });
+
+        const polyline = document.createElementNS(svgNs, "polyline");
+        polyline.setAttribute("class", "pitch-accent-line");
+        polyline.setAttribute("points", points.map(point => `${point.x},${point.y}`).join(" "));
+        svg.appendChild(polyline);
+
+        morae.forEach((mora, index) => {
+            const circle = document.createElementNS(svgNs, "circle");
+            circle.setAttribute("class", `pitch-accent-dot pitch-accent-dot-${levels[index].toLowerCase()}`);
+            circle.setAttribute("cx", String(points[index].x));
+            circle.setAttribute("cy", String(points[index].y));
+            circle.setAttribute("r", "3");
+            svg.appendChild(circle);
+
+            const label = document.createElementNS(svgNs, "text");
+            label.setAttribute("class", "pitch-accent-mora");
+            label.setAttribute("x", String(points[index].x));
+            label.setAttribute("y", "33");
+            label.textContent = mora;
+            svg.appendChild(label);
+        });
+
+        const wrapper = document.createElement("span");
+        wrapper.className = "pitch-accent";
+        if (source === "estimated" || source === "guess") {
+            wrapper.classList.add(`pitch-accent-${source}`);
+            const badge = document.createElement("span");
+            badge.className = "pitch-accent-badge";
+            badge.textContent = source === "guess" ? "?" : "~";
+            wrapper.appendChild(badge);
+        }
+        const altNote = Number.isInteger(altPitchAccent)
+            ? ` — OJAD dopuszcza też: ${getPitchAccentTypeName(altPitchAccent, morae.length)} (${altPitchAccent})`
+            : "";
+        wrapper.title = `Akcent wysokościowy: ${getPitchAccentTypeName(pitchAccent, morae.length)} (${pitchAccent})${PITCH_SOURCE_NOTES[source] || ""}${altNote}`;
+        wrapper.appendChild(svg);
+        return wrapper;
+    }
+
     global.LangCommon = {
         BASE_REPS,
         STREAK_BONUS_THRESHOLD,
@@ -433,6 +550,9 @@
         normalizeStudyText,
         getAcceptedAnswers,
         normalizeRomaji,
-        romajiAnswerVariants
+        romajiAnswerVariants,
+        splitIntoMorae,
+        getPitchAccentLevels,
+        createPitchAccentElement
     };
 })(window);
