@@ -248,6 +248,26 @@ h1 span {
     font-size: 10px;
 }
 
+/* The foreign-word table has fewer columns than dakuon/youon, so on desktop
+   its cells get a bigger --foreign-cell-size (set in app.js) to fill the same
+   shared width while staying square, with the kana scaled up to match. Scoped
+   to min-width so it doesn't outrank the mobile square-cell sizing below
+   (those rules target the same elements with lower specificity). */
+@media (min-width: 721px) {
+    .supplemental-table[data-table-type="foreign"] td.hiragana-cell,
+    .supplemental-table[data-table-type="foreign"] th.row-header {
+        height: var(--foreign-cell-size, 58px);
+    }
+
+    .supplemental-table[data-table-type="foreign"] .small-kana-symbol {
+        font-size: calc(var(--foreign-cell-size, 58px) * 0.448);
+    }
+
+    .supplemental-table[data-table-type="foreign"] .kana-translit {
+        font-size: calc(var(--foreign-cell-size, 58px) * 0.172);
+    }
+}
+
 .youon-row-label {
     display: flex !important;
     align-items: center;

@@ -774,7 +774,7 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
     const fallbackTableWidth = primaryTable ? primaryTable.getBoundingClientRect().width : 0;
     const widthTarget = primaryHeaderCells[Math.min(lastColumnIndex + 1, primaryHeaderCells.length - 1)];
     const tableWidth = widthTarget && primaryTable
-        ? widthTarget.getBoundingClientRect().right - primaryTable.getBoundingClientRect().left
+        ? widthTarget.getBoundingClientRect().right - primaryTable.getBoundingClientRect().left - 1
         : fallbackTableWidth;
     section.style.width = isMobileLayoutState ? "100%" : `${Math.ceil(tableWidth) + 6}px`;
 
@@ -999,12 +999,26 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
     const foreignGroupColumns = tableType === "foreign"
         ? rows.filter(row => row.chars.some(Boolean))
         : null;
-    const columnWidthSources = tableType === "foreign"
-        ? [primaryHeaderCells[0], ...foreignGroupColumns.map((_, index) => primaryHeaderCells[index + 1])]
-        : [...primaryHeaderCells].slice(0, lastColumnIndex + 2);
-    columnWidthSources.forEach(headerCell => {
+    const cornerWidth = primaryHeaderCells[0]
+        ? primaryHeaderCells[0].getBoundingClientRect().width
+        : 0;
+    // Foreign has fewer columns than the dakuon/youon tables it shares a width
+    // basis with, so each column gets a proportionally bigger share of that
+    // width instead of reusing the primary table's narrower single-letter
+    // column widths; --foreign-cell-size (used by CSS for row height and kana
+    // font size) keeps those bigger columns square instead of stretched.
+    const foreignCellSize = tableType === "foreign" && foreignGroupColumns.length
+        ? (tableWidth - cornerWidth + 0.6) / foreignGroupColumns.length
+        : 0;
+    if (tableType === "foreign") {
+        table.style.setProperty("--foreign-cell-size", `${foreignCellSize}px`);
+    }
+    const columnWidths = tableType === "foreign"
+        ? [cornerWidth, ...foreignGroupColumns.map(() => foreignCellSize)]
+        : [...primaryHeaderCells].slice(0, lastColumnIndex + 2).map(headerCell =>
+            headerCell ? headerCell.getBoundingClientRect().width : 0);
+    columnWidths.forEach(width => {
         const column = document.createElement("col");
-        const width = headerCell ? headerCell.getBoundingClientRect().width : 0;
         column.style.width = `${width}px`;
         tableColumns.appendChild(column);
     });
