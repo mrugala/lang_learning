@@ -82,6 +82,21 @@ const supplementalRows = {
     ]
 };
 
+/* Additional katakana combinations used mainly for foreign words.
+   Each row keeps five entries so the row stays aligned with the five-column
+   grid of the rendered table; a missing combination is left as an empty
+   string and the renderer shows a placeholder cell in its place. */
+const foreignKatakanaRows = [
+    { key: "she", label: "sh / ch / j", chars: ["シェ", "チェ", "ジェ", "", ""], translit: ["she", "che", "je", "", ""] },
+    { key: "tsa", label: "ts", chars: ["ツァ", "ツェ", "ツォ", "", ""], translit: ["tsa", "tse", "tso", "", ""] },
+    { key: "f", label: "f", chars: ["ファ", "フィ", "フェ", "フォ", ""], translit: ["fa", "fi", "fe", "fo", ""] },
+    { key: "t2", label: "t / d", chars: ["ティ", "ディ", "デュ", "", ""], translit: ["ti", "dhi", "dyu", "", ""] },
+    { key: "w2", label: "w / q", chars: ["ウィ", "ウェ", "ウォ", "", "クォ"], translit: ["wi", "we", "wo", "", "quo"] },
+    { key: "v", label: "v", chars: ["ヴァ", "ヴィ", "ヴェ", "ヴォ", ""], translit: ["va", "vi", "ve", "vo", ""] }
+];
+
+const foreignKatakanaColumns = ["1", "2", "3", "4", "5"];
+
 const dakuonAlternativeSpellings = {
     "じ": ["zi"],
     "ぢ": ["di"],
@@ -737,6 +752,8 @@ global.KanaData = {
     katakana,
     rowsDefMap,
     supplementalRows,
+    foreignKatakanaRows,
+    foreignKatakanaColumns,
     dakuonAlternativeSpellings,
     readingParticleMeanings,
     readingCharacterNames,

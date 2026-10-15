@@ -15,6 +15,8 @@ const {
     katakana,
     rowsDefMap,
     supplementalRows,
+    foreignKatakanaRows,
+    foreignKatakanaColumns,
     dakuonAlternativeSpellings,
     readingParticleMeanings,
     readingCharacterNames,
@@ -277,9 +279,28 @@ function getKanaDisplayTransliteration(kana, transliteration) {
     return alternatives ? `${transliteration}/${alternatives.join("/")}` : transliteration;
 }
 
+const foreignColumnKeys = foreignKatakanaColumns;
+
+function getForeignKatakanaRows(alphabetName = currentAlphabet) {
+    if (alphabetName !== "katakana") return [];
+    // These combinations are stored as katakana already, so they must not be run
+    // through kanaForAlphabet (which would shift each character by 0x60 again).
+    return foreignKatakanaRows.map(row => ({ ...row, chars: [...row.chars] }));
+}
+
 function getSupplementalDisplayRows(tableType) {
     if (tableType === "dakuon") {
         return colsDef.map((key, index) => ({ key, label: key, index }));
+    }
+
+    if (tableType === "foreign") {
+        // Mirror the image layout: five vowel columns headed a i u e o.
+        const vowelLabels = ["a", "i", "u", "e", "o"];
+        return foreignColumnKeys.map((key, index) => ({
+            key,
+            label: vowelLabels[index],
+            index
+        }));
     }
 
     return [
@@ -299,6 +320,9 @@ function kanaForAlphabet(kana, alphabetName = currentAlphabet) {
 }
 
 function getSupplementalRows(tableType, alphabetName = currentAlphabet) {
+    if (tableType === "foreign") {
+        return getForeignKatakanaRows(alphabetName);
+    }
     return supplementalRows[tableType].map(row => ({
         ...row,
         chars: row.chars.map(char => kanaForAlphabet(char, alphabetName))
@@ -314,9 +338,10 @@ const extendedKanaByAlphabet = {
     katakana: ["ヰ", "ヱ"]
 };
 Object.keys(alphabetMap).forEach(alphabetName => {
-    ["dakuon", "youon"].forEach(tableType => {
+    ["dakuon", "youon", "foreign"].forEach(tableType => {
         getSupplementalRows(tableType, alphabetName).forEach(row => {
             row.chars.forEach((char, index) => {
+                if (!char) return;
                 alphabetMap[alphabetName][char] = row.translit[index];
             });
         });
@@ -359,7 +384,8 @@ function getRowsForAlphabet(alphabetName) {
 let rowsDef = getRowsForAlphabet(currentAlphabet);
 const supplementalExpanded = {
     dakuon: restoredUiState?.expanded?.dakuon === true,
-    youon: restoredUiState?.expanded?.youon === true
+    youon: restoredUiState?.expanded?.youon === true,
+    foreign: restoredUiState?.expanded?.foreign === true
 };
 function getAvailableKana(alphabetName = currentAlphabet) {
     return Object.keys(alphabetMap[alphabetName]).filter(char =>
@@ -389,7 +415,7 @@ function saveUiState() {
 
 function getVisibleKana() {
     const visibleKana = new Set(getAvailableKana());
-    ["dakuon", "youon"].forEach(tableType => {
+    ["dakuon", "youon", "foreign"].forEach(tableType => {
         if (!supplementalExpanded[tableType]) {
             getSupplementalRows(tableType).forEach(row => {
                 row.chars.forEach(char => visibleKana.delete(char));
@@ -669,6 +695,38 @@ function getGroupCells(groupType, groupKey) {
 function getSupplementalGroupCells(tableType, groupType, groupKey) {
     const rows = getSupplementalRows(tableType);
 
+    if (tableType === "foreign") {
+        // Desktop transposes the table: columns are the consonant groups and rows are
+        // the five vowels. Mobile keeps the original orientation (vowels as columns).
+        const displayRows = getSupplementalDisplayRows("foreign");
+        if (isMobileLayout()) {
+            // Mobile keeps the original orientation: vowels head the columns and the
+            // consonant groups sit in the first cell of each row.
+            if (groupType === "row") {
+                const displayRow = displayRows.find(item => item.key === groupKey);
+                if (!displayRow) return [];
+                return rows.map(row => row.chars[displayRow.index]).filter(Boolean);
+            }
+            if (groupType === "col") {
+                const row = rows.find(item => item.key === groupKey);
+                return row ? row.chars.filter(Boolean) : [];
+            }
+            return [];
+        }
+        // Desktop transposes the table: columns are the consonant groups and rows are
+        // the five vowels, so the two group types swap meaning.
+        if (groupType === "row") {
+            const displayRow = displayRows.find(item => item.key === groupKey);
+            if (!displayRow) return [];
+            return rows.map(row => row.chars[displayRow.index]).filter(Boolean);
+        }
+        if (groupType === "col") {
+            const row = rows.find(item => item.key === groupKey);
+            return row ? row.chars.filter(Boolean) : [];
+        }
+        return [];
+    }
+
     if (groupType === "row") {
         const displayRow = getSupplementalDisplayRows(tableType).find(row => row.key === groupKey);
         if (!displayRow) return [];
@@ -706,7 +764,12 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
     const primaryHeaderCells = primaryTable?.querySelector("thead tr")?.children || [];
     const rows = getSupplementalRows(tableType);
     const primaryColumnKeys = rowsDef.map(row => row.key);
-    const lastColumnIndex = Math.max(...rows.map(row => primaryColumnKeys.indexOf(row.baseKey)));
+    // The foreign katakana table spans the row-header plus the five vowel columns,
+    // so it shares the same width basis as the other supplemental tables (the five
+    // vowel columns of the base table's first row group).
+    const lastColumnIndex = tableType === "foreign"
+        ? Math.max(...supplementalRows.dakuon.map(row => primaryColumnKeys.indexOf(row.baseKey)))
+        : Math.max(...rows.map(row => primaryColumnKeys.indexOf(row.baseKey)));
     const isMobileLayoutState = isMobileLayout();
     const fallbackTableWidth = primaryTable ? primaryTable.getBoundingClientRect().width : 0;
     const widthTarget = primaryHeaderCells[Math.min(lastColumnIndex + 1, primaryHeaderCells.length - 1)];
@@ -742,17 +805,19 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
     if (isMobile) {
         const tbody = document.createElement("tbody");
         const displayRows = getSupplementalDisplayRows(tableType);
-        const visibleColumnKeys = primaryColumnKeys.filter(columnKey =>
-            (tableType === "dakuon" && columnKey === "m") ||
-            displayRows.some(({ index, voicing }) =>
-                rows.some(row =>
-                    row.baseKey === columnKey &&
-                    row.chars[index] &&
-                    (tableType === "dakuon" ||
-                        (voicing === "plain" ? !row.voicing : Boolean(row.voicing)))
+        const visibleColumnKeys = tableType === "foreign"
+            ? rows.filter(row => row.chars.some(Boolean)).map(row => row.key)
+            : primaryColumnKeys.filter(columnKey =>
+                (tableType === "dakuon" && columnKey === "m") ||
+                displayRows.some(({ index, voicing }) =>
+                    rows.some(row =>
+                        row.baseKey === columnKey &&
+                        row.chars[index] &&
+                        (tableType === "dakuon" ||
+                            (voicing === "plain" ? !row.voicing : Boolean(row.voicing)))
+                    )
                 )
-            )
-        );
+            );
         const thead = document.createElement("thead");
         const headRow = document.createElement("tr");
         const cornerCell = document.createElement("th");
@@ -764,7 +829,11 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
             th.className = "column-header";
             th.dataset.col = key;
             th.dataset.groupType = "row";
-            const { label: headerLabel } = createToggleLabel(key, label);
+            // The foreign table's vowel columns are identified by the vowel value in
+            // each cell, so their headers keep only the centered checkbox.
+            const { label: headerLabel } = tableType === "foreign"
+                ? createToggleLabel(key, key, { hideLabel: true })
+                : createToggleLabel(key, label);
             if (tableType === "youon") {
                 const headerLabelText = headerLabel.querySelector("span");
                 headerLabelText.replaceChildren();
@@ -794,6 +863,47 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
 
         visibleColumnKeys.forEach(columnKey => {
             const rowEl = document.createElement("tr");
+            if (tableType === "foreign") {
+                const row = rows.find(item => item.key === columnKey);
+                rowEl.dataset.rowKey = row.key;
+                rowEl.dataset.groupType = "col";
+
+                const rowHeader = document.createElement("th");
+                rowHeader.className = "row-header";
+                rowHeader.dataset.row = row.key;
+                rowHeader.dataset.groupType = "col";
+                const { label: headerLabel } = createToggleLabel(row.key, row.label);
+                rowHeader.appendChild(headerLabel);
+                rowEl.appendChild(rowHeader);
+
+                row.chars.forEach((kana, index) => {
+                    const cell = document.createElement("td");
+                    cell.className = "hiragana-cell supplemental-cell";
+                    cell.dataset.col = foreignColumnKeys[index];
+                    if (!kana) {
+                        cell.classList.add("supplemental-empty");
+                        rowEl.appendChild(cell);
+                        return;
+                    }
+                    const stack = document.createElement("div");
+                    stack.className = "kana-stack supplemental-kana";
+                    stack.dataset.kana = kana;
+                    stack.setAttribute("role", "button");
+                    stack.tabIndex = 0;
+                    const kanaEl = document.createElement("div");
+                    kanaEl.className = kana.length > 1 ? "small-kana-symbol" : "kana-symbol";
+                    kanaEl.textContent = kana;
+                    const translitEl = document.createElement("div");
+                    translitEl.className = "kana-translit";
+                    translitEl.textContent = row.translit[index];
+                    stack.append(kanaEl, translitEl);
+                    cell.appendChild(stack);
+                    rowEl.appendChild(cell);
+                });
+
+                tbody.appendChild(rowEl);
+                return;
+            }
             if (tableType === "dakuon" && columnKey === "m") {
                 rowEl.className = "supplemental-group-heading";
                 const groupLabel = document.createElement("td");
@@ -884,9 +994,18 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
 
     const tableColumns = document.createElement("colgroup");
     table.style.width = `${tableWidth}px`;
-    [...primaryHeaderCells].slice(0, lastColumnIndex + 2).forEach(headerCell => {
+    // The foreign table is transposed on desktop: its columns are the consonant
+    // groups and its rows are the five vowels, so build one column per group.
+    const foreignGroupColumns = tableType === "foreign"
+        ? rows.filter(row => row.chars.some(Boolean))
+        : null;
+    const columnWidthSources = tableType === "foreign"
+        ? [primaryHeaderCells[0], ...foreignGroupColumns.map((_, index) => primaryHeaderCells[index + 1])]
+        : [...primaryHeaderCells].slice(0, lastColumnIndex + 2);
+    columnWidthSources.forEach(headerCell => {
         const column = document.createElement("col");
-        column.style.width = `${headerCell.getBoundingClientRect().width}px`;
+        const width = headerCell ? headerCell.getBoundingClientRect().width : 0;
+        column.style.width = `${width}px`;
         tableColumns.appendChild(column);
     });
     table.appendChild(tableColumns);
@@ -896,6 +1015,71 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
     const cornerCell = document.createElement("th");
     cornerCell.className = "corner-cell";
     headRow.appendChild(cornerCell);
+
+    if (tableType === "foreign") {
+        // Column headers: the consonant groups from the source rows.
+        foreignGroupColumns.forEach(row => {
+            const th = document.createElement("th");
+            th.className = "column-header";
+            th.dataset.col = row.key;
+            th.dataset.groupType = "col";
+            const { label } = createToggleLabel(row.key, row.label);
+            th.appendChild(label);
+            headRow.appendChild(th);
+        });
+        thead.appendChild(headRow);
+        table.appendChild(thead);
+
+        // Row headers: the five vowels, one table row each.
+        const foreignBody = document.createElement("tbody");
+        getSupplementalDisplayRows("foreign").forEach(({ key: vowelKey, index: vowelIndex }) => {
+            const rowEl = document.createElement("tr");
+            rowEl.dataset.rowKey = vowelKey;
+            rowEl.dataset.groupType = "row";
+
+            // The vowel labels (a, i, u, e, o) are intentionally omitted: the header
+            // carries only the checkbox so it stays centered in the cell.
+            const rowHeader = document.createElement("th");
+            rowHeader.className = "row-header";
+            rowHeader.dataset.row = vowelKey;
+            rowHeader.dataset.groupType = "row";
+            const { label } = createToggleLabel(vowelKey, vowelKey, { hideLabel: true });
+            rowHeader.appendChild(label);
+            rowEl.appendChild(rowHeader);
+
+            foreignGroupColumns.forEach(row => {
+                const kana = row.chars[vowelIndex];
+                const cell = document.createElement("td");
+                cell.className = "hiragana-cell supplemental-cell";
+                cell.dataset.col = row.key;
+                if (kana) {
+                    const stack = document.createElement("div");
+                    stack.className = "kana-stack supplemental-kana";
+                    stack.dataset.kana = kana;
+                    stack.dataset.col = row.key;
+                    stack.dataset.group = vowelKey;
+                    stack.setAttribute("role", "button");
+                    stack.tabIndex = 0;
+                    const kanaEl = document.createElement("div");
+                    kanaEl.className = kana.length > 1 ? "small-kana-symbol" : "kana-symbol";
+                    kanaEl.textContent = kana;
+                    const translitEl = document.createElement("div");
+                    translitEl.className = "kana-translit";
+                    translitEl.textContent = row.translit[vowelIndex];
+                    stack.append(kanaEl, translitEl);
+                    cell.appendChild(stack);
+                } else {
+                    cell.classList.add("supplemental-empty");
+                }
+                rowEl.appendChild(cell);
+            });
+
+            foreignBody.appendChild(rowEl);
+        });
+        table.appendChild(foreignBody);
+        section.appendChild(table);
+        return section;
+    }
 
     const visibleColumnKeys = primaryColumnKeys.slice(0, lastColumnIndex + 1);
     for (let index = 0; index < visibleColumnKeys.length; index++) {
@@ -1061,10 +1245,15 @@ function renderSupplementalTable(tableType, title, titleJapanese) {
 function renderSupplementalTables() {
     const host = document.getElementById("supplemental-tables");
     host.style.display = "";
-    host.replaceChildren(
+    const sections = [
         renderSupplementalTable("dakuon", "Dakuon・Handakuon", "濁音・半濁音"),
         renderSupplementalTable("youon", "Yō-on", "拗音")
-    );
+    ];
+    // The additional katakana combinations are only meaningful for katakana.
+    if (currentAlphabet === "katakana") {
+        sections.push(renderSupplementalTable("foreign", "Katakana dla słów obcego pochodzenia", "外来語のカタカナ"));
+    }
+    host.replaceChildren(...sections);
     host.querySelectorAll(".supplemental-table").forEach(table => {
         setMobileTableCellSize(table, table.parentElement.clientWidth);
     });
@@ -1105,11 +1294,17 @@ function syncSelectionHighlights() {
                     columnGroupType,
                     cell.dataset.col
                 );
-                const isCellSelected = selectedCells.has(cell.dataset.kana || "");
+                // The kana value lives on the stacked .supplemental-kana elements,
+                // not on the cell itself, so the cell counts as selected when every
+                // stack inside it is selected.
+                const kanaStacks = cell.querySelectorAll(".supplemental-kana");
+                const isCellSelected = kanaStacks.length > 0
+                    ? [...kanaStacks].every(kana => selectedCells.has(kana.dataset.kana))
+                    : selectedCells.has(cell.dataset.kana || "");
                 cell.classList.toggle("row-selected", isRowChecked);
                 cell.classList.toggle("col-selected", isColumnChecked);
                 cell.classList.toggle("cell-selected", isCellSelected);
-                cell.querySelectorAll(".supplemental-kana").forEach(kana => {
+                kanaStacks.forEach(kana => {
                     kana.classList.toggle("cell-selected", selectedCells.has(kana.dataset.kana));
                 });
             });

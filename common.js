@@ -115,28 +115,34 @@
     }
 
     // Labeled checkbox used in every table header (rows and columns).
-    function createToggleLabel(value, labelText, { checked = true, placeholder = false } = {}) {
+    // `hideLabel` renders the checkbox on its own so it stays vertically centered
+    // in the cell (a hidden placeholder span would still occupy a line of space).
+    function createToggleLabel(value, labelText, { checked = true, placeholder = false, hideLabel = false } = {}) {
         const label = document.createElement("label");
         label.className = "toggle";
+        if (hideLabel) label.classList.add("toggle-no-label");
 
         const input = document.createElement("input");
         input.type = "checkbox";
         input.checked = checked;
         input.value = value;
-
-        const span = document.createElement("span");
-        if (placeholder) {
-            span.textContent = " ";
-            span.setAttribute("aria-hidden", "true");
-            span.classList.add("placeholder-label");
-        } else {
-            span.textContent = labelText;
-            span.removeAttribute("aria-hidden");
-            span.classList.remove("placeholder-label");
-        }
+        input.setAttribute("aria-label", labelText || value);
 
         label.appendChild(input);
-        label.appendChild(span);
+
+        if (!hideLabel) {
+            const span = document.createElement("span");
+            if (placeholder) {
+                span.textContent = " ";
+                span.setAttribute("aria-hidden", "true");
+                span.classList.add("placeholder-label");
+            } else {
+                span.textContent = labelText;
+                span.removeAttribute("aria-hidden");
+                span.classList.remove("placeholder-label");
+            }
+            label.appendChild(span);
+        }
 
         return { label, input };
     }

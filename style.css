@@ -458,6 +458,11 @@ body.alphabet-glagolitic-angular h1 {
     display: block;
 }
 
+/* Headers that show only the checkbox (no text) keep it centered in the cell. */
+.toggle.toggle-no-label {
+    gap: 0;
+}
+
 .column-header .toggle,
 .row-header .toggle {
     width: 100%;
@@ -1289,6 +1294,10 @@ input {
 
     .supplemental-table[data-table-type="youon"] .small-kana-symbol {
         font-size: calc(var(--mobile-kana-size) * 0.55);
+    }
+
+    .supplemental-table[data-table-type="foreign"] .small-kana-symbol {
+        font-size: calc(var(--mobile-kana-size) * 0.65);
     }
 
     .supplemental-table[data-table-type="youon"] .kana-translit {
