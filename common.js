@@ -268,8 +268,25 @@
         if (el) el.innerText = text;
     }
 
+    // "Ile pozycji zostało jeszcze w kolejce" - liczba kluczy w kolejce, bo
+    // element znika z niej dopiero wtedy, gdy całkowicie wypadnie (reps <= 0
+    // albo seria poprawnych odpowiedzi). Dzięki temu licznik widoczny dla
+    // użytkownika maleje dokładnie w tym momencie.
+    function getQueueSize(queue) {
+        return queue ? Object.keys(queue).length : 0;
+    }
+
+    function setQueueCounter(count) {
+        setText("queue-counter", `Pozostało: ${count}`);
+    }
+
+    function updateQueueCounter(queue) {
+        setQueueCounter(getQueueSize(queue));
+    }
+
     function showQueueFinished() {
         setText("char-box", "Koniec! 🎉");
+        setQueueCounter(0);
         const answerInput = document.getElementById("answer");
         if (answerInput) answerInput.hidden = true;
         const repeatButton = document.getElementById("repeat-study");
@@ -536,6 +553,9 @@
         setGroupSelection,
         pickRandomKey,
         setText,
+        getQueueSize,
+        setQueueCounter,
+        updateQueueCounter,
         setupRepeatButton,
         setupRepeatMistakesButton,
         recordMissedQuestion,

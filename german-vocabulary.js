@@ -12,6 +12,7 @@ const {
     recordMissedQuestion,
     getMissedQuestionKeys,
     resetMissedQuestions,
+    updateQueueCounter,
     showQueueFinished,
     hideContinueButton,
     showContinueButton,
@@ -142,6 +143,7 @@ function beginStudy(items) {
 }
 
 function pickWord(key = pickRandomKey(queue)) {
+    updateQueueCounter(queue);
     currentKey = key;
     if (currentKey === null) {
         saveStudyState();
@@ -264,6 +266,7 @@ function endStudy() {
     storeSessionState(STUDY_STATE_KEY, null);
     document.getElementById("vocabulary-answer").value = "";
     setText("feedback", "");
+    setText("queue-counter", "");
     hideContinueButton();
     showSelectionPanel();
 }

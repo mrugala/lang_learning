@@ -1093,6 +1093,19 @@ button:active {
     font-size: 20px;
 }
 
+/* Licznik pozycji pozostałych w kolejce, widoczny w każdym trybie nauki. */
+#queue-counter {
+    margin: -10px 20px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #5a6472;
+    letter-spacing: 0.02em;
+}
+
+#queue-counter:empty {
+    display: none;
+}
+
 input {
     font-size: 20px;
     padding: 10px;

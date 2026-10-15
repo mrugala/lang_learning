@@ -13,6 +13,7 @@
         recordMissedQuestion,
         getMissedQuestionKeys,
         resetMissedQuestions,
+        updateQueueCounter,
         showQueueFinished,
         hideContinueButton,
         showContinueButton,
@@ -54,6 +55,7 @@
         }
 
         function pickCharacter() {
+            updateQueueCounter(queue);
             const key = pickRandomKey(queue);
             if (key === null) {
                 currentCharacter = null;
@@ -134,6 +136,7 @@
             currentCharacter = null;
             awaitingContinue = false;
             setText("feedback", "");
+            setText("queue-counter", "");
             answerInput.value = "";
             hideContinueButton();
             showSelectionPanel();

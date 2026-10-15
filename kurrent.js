@@ -17,6 +17,7 @@ const {
     recordMissedQuestion,
     getMissedQuestionKeys,
     resetMissedQuestions,
+    updateQueueCounter,
     showQueueFinished,
     hideContinueButton,
     showContinueButton,
@@ -392,6 +393,7 @@ function startStudy(items = currentItems(), isNewSession = false) {
 }
 
 function pickItem() {
+    updateQueueCounter(queue);
     const key = pickRandomKey(queue);
     if (key === null) {
         currentItem = null;
@@ -507,6 +509,7 @@ function endStudy() {
     awaitingContinue = false;
     storeSessionState(STUDY_STATE_KEY, null);
     setText("feedback", "");
+    setText("queue-counter", "");
     document.getElementById("kurrent-answer").value = "";
     hideContinueButton();
     showSelectionPanel();

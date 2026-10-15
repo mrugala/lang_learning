@@ -15,6 +15,7 @@ const {
     recordMissedQuestion,
     getMissedQuestionKeys,
     resetMissedQuestions,
+    updateQueueCounter,
     showQueueFinished,
     hideContinueButton,
     showContinueButton,
@@ -612,6 +613,7 @@ document.getElementById("select-all").addEventListener("click", () => setAllChec
 document.getElementById("clear-all").addEventListener("click", () => setAllCheckboxes(false));
 
 function pickChar() {
+    updateQueueCounter(queue);
     const key = pickRandomKey(queue);
     if (key === null) {
         currentKey = null;
@@ -770,6 +772,7 @@ function endStudySession() {
     storeSessionState(STUDY_STATE_KEY, null);
     clearAnswerInputs();
     setText("feedback", "");
+    setText("queue-counter", "");
     hideContinueButton();
     showSelectionPanel();
 }
