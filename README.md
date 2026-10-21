@@ -122,6 +122,16 @@ autorstwa Uros O. (`pitchSource: "kanjium"`), udostępnionej na licencji
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Wpisy bez
 żadnego z tych źródeł mają `pitchSource: "guess"` (nie zweryfikowane).
 
+## Źródła tekstów do czytania
+
+Japoński tekst modlitw różańcowych (historia "Modlitwy różańcowe" w
+ćwiczeniu czytania hiragany) pochodzi ze strony
+[seibo-archive.com — "Prayers of the Rosary in Japanese"](https://seibo-archive.com/english-pages-by-a-japanese-catholic/prayers-of-the-rosary-in-japanese/).
+Dodane tam słówka zostały zweryfikowane narzędziami opisanymi wyżej
+(`fetch-ojad-pitch.js`, `fetch-ojad-phrasing-pitch.js`,
+`check-against-kanjium.js`); kilkanaście archaicznych/rzadkich wyrazów,
+których nie znaleziono w żadnym źródle, zostało z `pitchSource: "guess"`.
+
 ## Czcionka Kurrent
 
 `fonts/WiegelKurrent.ttf` — Wiegel Kurrent autorstwa Petera Wiegela, na

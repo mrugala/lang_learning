@@ -117,7 +117,12 @@ const readingParticleMeanings = {
     "へ": "w kierunku; do — wskazuje kierunek ruchu, czytane jako „e”",
     "も": "też; również",
     "を": "oznacza dopełnienie czynności; czytane jako „o”",
-    "という": "zwrot wprowadzający nazwę lub określenie: „zwany”, „o nazwie”"
+    "という": "zwrot wprowadzający nazwę lub określenie: „zwany”, „o nazwie”",
+    "より": "od; z — wskazuje źródło lub punkt wyjścia (styl klasyczny)",
+    "にて": "w; za pomocą — klasyczna forma odpowiadająca dzisiejszemu „で”",
+    "よ": "partykuła wołacza — użyta przy zwracaniu się do kogoś, odpowiada polskiemu wołaczowi („o...!”)",
+    "て": "łącznik — spaja czasownik lub inną partykułę z dalszą częścią zdania (odpowiednik „i”, „a potem”)",
+    "まで": "aż do; do — wskazuje granicę lub punkt końcowy (czasu, miejsca, zakresu)"
 };
 
 const readingCharacterNames = {
@@ -132,7 +137,11 @@ const readingCharacterNames = {
     "sutefan": "Stefan",
     "tobiasu": "Tobiasz",
     "furanshisu": "Franciszek",
-    "shimon": "Szymon"
+    "shimon": "Szymon",
+    "iezusu": "Jezus",
+    "iezusukirisuto": "Jezus Chrystus",
+    "maria": "Maryja",
+    "ponshiopirato": "Poncjusz Piłat"
 };
 
 const readingStories = [
@@ -740,6 +749,379 @@ const readingStories = [
                         { text: " せんれい", reading: " senrei" },
                         { text: "を", reading: "o", particle: true },
                         { text: " うけました。", reading: " ukemashita" }
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        key: "rosary",
+        title: "Modlitwy różańcowe",
+        source: "Tradycyjny katolicki tekst japoński (kanji i hiragana): seibo-archive.com, \"Prayers of the Rosary in Japanese\"",
+        chapters: [
+            {
+                chapterNumber: 1,
+                title: "Znak Krzyża: 十字架（じゅうじか）のしるし",
+                verseTranslations: [
+                    "W imię Ojca i Syna, i Ducha Świętego. Amen."
+                ],
+                verses: [
+                    [
+                        { text: "ちち", reading: "chichi" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: " こ", reading: " ko" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: " せいれい", reading: " seirei" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " みな", reading: " mina" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: "より", reading: "yori", particle: true },
+                        { text: "て。", reading: "te", particle: true },
+                        { text: " あーめん。", reading: " amen" }
+                    ]
+                ]
+            },
+            {
+                chapterNumber: 2,
+                title: "Skład Apostolski: 使徒信経（しとしんきょう）",
+                verseTranslations: [
+                    "Wierzę w Boga, Ojca wszechmogącego, Stworzyciela nieba i ziemi, i w Jezusa Chrystusa, Syna Jego jedynego, Pana naszego, który się począł z Ducha Świętego, narodził się z Maryi Panny,",
+                    "umęczon pod Ponckim Piłatem, ukrzyżowan, umarł i pogrzebion, zstąpił do piekieł, trzeciego dnia zmartwychwstał,",
+                    "wstąpił na niebiosa, siedzi po prawicy Boga, Ojca wszechmogącego, stamtąd przyjdzie sądzić żywych i umarłych.",
+                    "Wierzę w Ducha Świętego, święty Kościół powszechny, świętych obcowanie, grzechów odpuszczenie, ciała zmartwychwstanie, żywot wieczny. Amen."
+                ],
+                verses: [
+                    [
+                        { text: "われ", reading: "ware" },
+                        { text: "は、", reading: "wa", particle: true },
+                        { text: " てんち", reading: " tenchi" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " そうぞうしゅ、", reading: " souzoushu" },
+                        { text: " ぜんのう", reading: " zennou" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " ちちなる", reading: " chichinaru" },
+                        { text: " てんしゅ", reading: " tenshu" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " しんじ、", reading: " shinji" },
+                        { text: " また", reading: " mata" },
+                        { text: " その", reading: " sono" },
+                        { text: " おんひとりご、", reading: " onhitorigo" },
+                        { text: "われら", reading: "warera" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " しゅ", reading: " shu" },
+                        { text: " いえずす・きりすと、", reading: " iezusukirisuto", foreignName: true },
+                        { text: "すなわち、", reading: "sunawachi" },
+                        { text: " せいれい", reading: " seirei" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: "より", reading: "yori", particle: true },
+                        { text: "て", reading: "te", particle: true },
+                        { text: " やどり、", reading: " yadori" },
+                        { text: " どうてい", reading: " doutei" },
+                        { text: " まりあ", reading: " maria", foreignName: true },
+                        { text: "より", reading: "yori", particle: true },
+                        { text: " うまれ、", reading: " umare" }
+                    ],
+                    [
+                        { text: "ぽんしお・ぴらと", reading: "ponshiopirato", foreignName: true },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " かんか", reading: " kanka" },
+                        { text: "にて", reading: "nite", particle: true },
+                        { text: " くるしみ", reading: " kurushimi" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " うけ、", reading: " uke" },
+                        { text: "じゅうじか", reading: "juujika" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " つけられ、", reading: " tsukerare" },
+                        { text: " しして", reading: " shite" },
+                        { text: " ほうむられ、", reading: " houmurare" },
+                        { text: " こせいしょ", reading: " koseisho" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " くだりて", reading: " kudarite" },
+                        { text: " みっかめ", reading: " mikkame" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " ししゃ", reading: " shisha" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " うち", reading: " uchi" },
+                        { text: "より", reading: "yori", particle: true },
+                        { text: " よみがえり、", reading: " yomigaeri" }
+                    ],
+                    [
+                        { text: "てん", reading: "ten" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " のぼりて", reading: " noborite" },
+                        { text: " ぜんのう", reading: " zennou" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " ちちなる", reading: " chichinaru" },
+                        { text: " てんしゅ", reading: " tenshu" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " みぎ", reading: " migi" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " ざし、", reading: " zashi" },
+                        { text: " かしこ", reading: " kashiko" },
+                        { text: "より", reading: "yori", particle: true },
+                        { text: " いける", reading: " ikeru" },
+                        { text: " ひと", reading: " hito" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: " しせる", reading: " shiseru" },
+                        { text: " ひと", reading: " hito" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " さばかん", reading: " sabakan" },
+                        { text: " ため", reading: " tame" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " きたりたもう", reading: " kitaritamou" },
+                        { text: " しゅ", reading: " shu" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " しんじたてまつる。", reading: " shinjitatematsuru" }
+                    ],
+                    [
+                        { text: "われ", reading: "ware" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " せいれい、", reading: " seirei" },
+                        { text: " せいなる", reading: " seinaru" },
+                        { text: " こうきょうかい、", reading: " koukyoukai" },
+                        { text: " しょせいじん", reading: " shoseijin" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " つうこう、", reading: " tsuukou" },
+                        { text: " つみ", reading: " tsumi" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " ゆるし、", reading: " yurushi" },
+                        { text: " にくしん", reading: " nikushin" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " よみがえり、", reading: " yomigaeri" },
+                        { text: " おわりなき", reading: " owarinaki" },
+                        { text: " いのち", reading: " inochi" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " しんじたてまつる。", reading: " shinjitatematsuru" },
+                        { text: " あーめん。", reading: " amen" }
+                    ]
+                ]
+            },
+            {
+                chapterNumber: 3,
+                title: "Ojcze nasz: 主祷文（しゅとうぶん）",
+                verseTranslations: [
+                    "Ojcze nasz, któryś jest w niebie, święć się imię Twoje, przyjdź królestwo Twoje, bądź wola Twoja jako w niebie tak i na ziemi.",
+                    "Chleba naszego powszedniego daj nam dzisiaj,",
+                    "i odpuść nam nasze winy, jako i my odpuszczamy naszym winowajcom.",
+                    "I nie wódź nas na pokuszenie, ale nas zbaw ode złego. Amen."
+                ],
+                verses: [
+                    [
+                        { text: "てん", reading: "ten" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " まします", reading: " mashimasu" },
+                        { text: " われら", reading: " warera" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " ちち", reading: " chichi" },
+                        { text: "よ、", reading: "yo", particle: true },
+                        { text: " ねがわく", reading: " negawaku" },
+                        { text: "は、", reading: "wa", particle: true },
+                        { text: " みな", reading: " mina" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " とうとまれん", reading: " toutomaren" },
+                        { text: " こと", reading: " koto" },
+                        { text: "を、", reading: "o", particle: true },
+                        { text: " みくに", reading: " mikuni" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " きたらん", reading: " kitaran" },
+                        { text: " こと", reading: " koto" },
+                        { text: "を、", reading: "o", particle: true },
+                        { text: " みむね", reading: " mimune" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " てん", reading: " ten" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " おこなわるる", reading: " okonawaururu" },
+                        { text: " ごとく、", reading: " gotoku" },
+                        { text: "ち", reading: "chi" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: "も", reading: "mo", particle: true },
+                        { text: " おこなわれん", reading: " okonawaren" },
+                        { text: " こと", reading: " koto" },
+                        { text: "を。", reading: "o", particle: true }
+                    ],
+                    [
+                        { text: "われら", reading: "warera" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " にちよう", reading: " nichiyou" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " かて", reading: " kate" },
+                        { text: "を、", reading: "o", particle: true },
+                        { text: " こんにち", reading: " konnichi" },
+                        { text: " われら", reading: " warera" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " あたえたまえ。", reading: " ataetamae" }
+                    ],
+                    [
+                        { text: "われら", reading: "warera" },
+                        { text: "が", reading: "ga", particle: true },
+                        { text: " ひと", reading: " hito" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " ゆるす", reading: " yurusu" },
+                        { text: " ごとく、", reading: " gotoku" },
+                        { text: "われら", reading: "warera" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " つみ", reading: " tsumi" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " ゆるしたまえ。", reading: " yurushitamae" }
+                    ],
+                    [
+                        { text: "われら", reading: "warera" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " こころみ", reading: " kokoromi" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " ひきたまわざれ、", reading: " hikitamawazare" },
+                        { text: "われら", reading: "warera" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " あく", reading: " aku" },
+                        { text: "より", reading: "yori", particle: true },
+                        { text: " すくいたまえ。", reading: " sukuitamae" },
+                        { text: " あーめん。", reading: " amen" }
+                    ]
+                ]
+            },
+            {
+                chapterNumber: 4,
+                title: "Zdrowaś Maryjo: 天使祝詞（てんししゅくし）",
+                verseTranslations: [
+                    "Zdrowaś Maryjo, łaski pełna, Pan z Tobą.",
+                    "Błogosławionaś Ty między niewiastami, i błogosławiony owoc żywota Twojego, Jezus.",
+                    "Święta Maryjo, Matko Boża, módl się za nami grzesznymi, teraz i w godzinę śmierci naszej. Amen."
+                ],
+                verses: [
+                    [
+                        { text: "めでたし、", reading: "medetashi" },
+                        { text: " せいちょうみちみてる", reading: " seichoumichimiteru" },
+                        { text: " まりあ、", reading: " maria", foreignName: true },
+                        { text: " しゅ", reading: " shu" },
+                        { text: " おんみ", reading: " onmi" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: " ともに", reading: " tomoni" },
+                        { text: " まします。", reading: " mashimasu" }
+                    ],
+                    [
+                        { text: "おんみ", reading: "onmi" },
+                        { text: "は", reading: "wa", particle: true },
+                        { text: " おんな", reading: " onna" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " うち", reading: " uchi" },
+                        { text: "にて", reading: "nite", particle: true },
+                        { text: " しゅくせられ、", reading: " shukuserare" },
+                        { text: " ごたいない", reading: " gotainai" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " おんこ", reading: " onko" },
+                        { text: " いえずす", reading: " iezusu", foreignName: true },
+                        { text: "も", reading: "mo", particle: true },
+                        { text: " しゅくせられたもう。", reading: " shukuseraretamou" }
+                    ],
+                    [
+                        { text: "てんしゅ", reading: "tenshu" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " おんはは", reading: " onhaha" },
+                        { text: " せい", reading: " sei" },
+                        { text: " まりあ、", reading: " maria", foreignName: true },
+                        { text: " つみびとなる", reading: " tsumibitonaru" },
+                        { text: " われら", reading: " warera" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " ため", reading: " tame" },
+                        { text: "に、", reading: "ni", particle: true },
+                        { text: " いま", reading: " ima" },
+                        { text: "も", reading: "mo", particle: true },
+                        { text: " りんじゅう", reading: " rinjuu" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " とき", reading: " toki" },
+                        { text: "も", reading: "mo", particle: true },
+                        { text: " いのりたまえ。", reading: " inoritamae" },
+                        { text: " あーめん。", reading: " amen" }
+                    ]
+                ]
+            },
+            {
+                chapterNumber: 5,
+                title: "Chwała Ojcu: 栄唱（えいしょう）",
+                verseTranslations: [
+                    "Chwała Ojcu i Synowi, i Duchowi Świętemu,",
+                    "jak była na początku, teraz i zawsze, i na wieki wieków. Amen."
+                ],
+                verses: [
+                    [
+                        { text: "ねがわく", reading: "negawaku" },
+                        { text: "は、", reading: "wa", particle: true },
+                        { text: " ちち", reading: " chichi" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: " こ", reading: " ko" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: " せいれい", reading: " seirei" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " さかえあらん", reading: " sakaearan" },
+                        { text: " こと", reading: " koto" },
+                        { text: "を。", reading: "o", particle: true }
+                    ],
+                    [
+                        { text: "はじめ", reading: "hajime" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " ありし", reading: " arishi" },
+                        { text: " ごとく、", reading: " gotoku" },
+                        { text: " いま", reading: " ima" },
+                        { text: "も", reading: "mo", particle: true },
+                        { text: " いつも", reading: " itsumo" },
+                        { text: " よよ", reading: " yoyo" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " いたる", reading: " itaru" },
+                        { text: "まで。", reading: "made", particle: true },
+                        { text: " あーめん。", reading: " amen" }
+                    ]
+                ]
+            },
+            {
+                chapterNumber: 6,
+                title: "Modlitwa Fatimska: ファティマの祈り（ふぁてぃまのいのり）",
+                verseTranslations: [
+                    "O mój Jezu, przebacz nam nasze grzechy.",
+                    "Zachowaj nas od ognia piekielnego.",
+                    "Zaprowadź do nieba wszystkie dusze, szczególnie te, które najbardziej potrzebują Twojego miłosierdzia."
+                ],
+                verses: [
+                    [
+                        { text: "ああ、", reading: "aa" },
+                        { text: " いえずす", reading: " iezusu", foreignName: true },
+                        { text: "よ、", reading: "yo", particle: true },
+                        { text: " われら", reading: " warera" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " つみ", reading: " tsumi" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " ゆるしたまえ。", reading: " yurushitamae" }
+                    ],
+                    [
+                        { text: "われら", reading: "warera" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " じごく", reading: " jigoku" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " ひ", reading: " hi" },
+                        { text: "より", reading: "yori", particle: true },
+                        { text: " まもりたまえ。", reading: " mamoritamae" }
+                    ],
+                    [
+                        { text: "また", reading: "mata" },
+                        { text: " すべて", reading: " subete" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " れいこん、", reading: " reikon" },
+                        { text: " ことに", reading: " kotoni" },
+                        { text: " しゅ", reading: " shu" },
+                        { text: "の", reading: "no", particle: true },
+                        { text: " おんあわれみ", reading: " onawaremi" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " もっとも", reading: " mottomo" },
+                        { text: " ひつよう", reading: " hitsuyou" },
+                        { text: "と", reading: "to", particle: true },
+                        { text: " する", reading: " suru" },
+                        { text: " れいこん", reading: " reikon" },
+                        { text: "を", reading: "o", particle: true },
+                        { text: " てんごく", reading: " tengoku" },
+                        { text: "に", reading: "ni", particle: true },
+                        { text: " みちびきたまえ。", reading: " michibikitamae" }
                     ]
                 ]
             }

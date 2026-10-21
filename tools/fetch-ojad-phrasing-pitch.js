@@ -99,7 +99,13 @@ async function main() {
     }
     const dictionaryStatus = new Map();
     fs.readFileSync(dictionaryReportPath, "utf8").split("\n").slice(1).forEach(line => {
-        const [kanji, hiragana, , , status] = line.split("\t");
+        // Columns: kanji, hiragana, nasz_pitch, ojad_pitch, ojad_pitch_alt, status
+        // (status is always the LAST column — don't hardcode its index, the
+        // dictionary report gained the ojad_pitch_alt column after this parser
+        // was written, which silently broke it until this fix).
+        const columns = line.split("\t");
+        const [kanji, hiragana] = columns;
+        const status = columns[columns.length - 1];
         if (kanji) dictionaryStatus.set(`${kanji}\u0000${hiragana}`, status);
     });
 
