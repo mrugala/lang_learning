@@ -794,6 +794,17 @@ button:active {
     cursor: help;
 }
 
+.reading-word-pitch {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    vertical-align: bottom;
+}
+
+.reading-word-pitch .pitch-accent {
+    margin-left: 0;
+}
+
 .reading-verse-number {
     display: inline-block;
     margin-right: 8px;

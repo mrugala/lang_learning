@@ -439,6 +439,19 @@
         return morae;
     }
 
+    // Measures text's actual rendered width in the given CSS font shorthand
+    // (e.g. "24px serif"), so a pitch-accent diagram can line its dots up with
+    // real text instead of assuming every mora is the same width.
+    function measureTextWidth(text, font) {
+        const context = document.createElement("canvas").getContext("2d");
+        context.font = font;
+        return context.measureText(text).width;
+    }
+
+    function measureMoraWidths(morae, font) {
+        return morae.map(mora => measureTextWidth(mora, font));
+    }
+
     // pitchAccent is the standard "accent kernel" number: 0 = heiban (stays
     // high, no drop), 1 = atamadaka (drops after the first mora), N = drops
     // after the Nth mora (nakadaka if N < moraCount, odaka if N === moraCount).
@@ -477,7 +490,12 @@
         guess: " — niepewne, nie zweryfikowane w OJAD"
     };
 
-    function createPitchAccentElement(hiragana, pitchAccent, source, altPitchAccent) {
+    // showMoraLabels can be set to false when the word's hiragana is already
+    // displayed right next to the diagram, so the morae aren't spelled out twice.
+    // matchFont (a CSS font shorthand, e.g. "24px sans-serif") makes each dot's
+    // spacing match that font's actual per-mora rendered width instead of a
+    // fixed step, so the dot sits above its own mora when stacked over real text.
+    function createPitchAccentElement(hiragana, pitchAccent, source, altPitchAccent, showMoraLabels = true, matchFont = null) {
         const morae = splitIntoMorae(hiragana);
         const levels = getPitchAccentLevels(morae.length, pitchAccent);
         if (!levels) return null;
@@ -485,21 +503,25 @@
         const stepX = 22;
         const highY = 7;
         const lowY = 20;
+        const moraWidths = matchFont ? measureMoraWidths(morae, matchFont) : morae.map(() => stepX);
         const isOdaka = morae.length > 1 && pitchAccent === morae.length;
-        const extraWidth = isOdaka ? stepX * 0.6 : 0;
-        const width = stepX * morae.length + extraWidth;
+        const extraWidth = isOdaka ? moraWidths[moraWidths.length - 1] * 0.6 : 0;
+        const width = moraWidths.reduce((sum, moraWidth) => sum + moraWidth, 0) + extraWidth;
+        const height = showMoraLabels ? 34 : 24;
 
         const svgNs = "http://www.w3.org/2000/svg";
         const svg = document.createElementNS(svgNs, "svg");
         svg.setAttribute("class", "pitch-accent-diagram");
-        svg.setAttribute("viewBox", `0 0 ${width} 34`);
+        svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
         svg.setAttribute("width", String(width));
-        svg.setAttribute("height", "34");
+        svg.setAttribute("height", String(height));
 
-        const points = morae.map((mora, index) => ({
-            x: stepX * index + stepX / 2,
-            y: levels[index] === "H" ? highY : lowY
-        }));
+        let cursorX = 0;
+        const points = morae.map((mora, index) => {
+            const point = { x: cursorX + moraWidths[index] / 2, y: levels[index] === "H" ? highY : lowY };
+            cursorX += moraWidths[index];
+            return point;
+        });
         if (isOdaka) points.push({ x: width - extraWidth / 2, y: lowY });
 
         const polyline = document.createElementNS(svgNs, "polyline");
@@ -515,6 +537,7 @@
             circle.setAttribute("r", "3");
             svg.appendChild(circle);
 
+            if (!showMoraLabels) return;
             const label = document.createElementNS(svgNs, "text");
             label.setAttribute("class", "pitch-accent-mora");
             label.setAttribute("x", String(points[index].x));
@@ -579,6 +602,7 @@
         romajiAnswerVariants,
         splitIntoMorae,
         getPitchAccentLevels,
-        createPitchAccentElement
+        createPitchAccentElement,
+        measureTextWidth
     };
 })(window);

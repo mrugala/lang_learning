@@ -7,7 +7,8 @@ const {
     isGroupFullySelected: areAllSelected,
     checkedValues,
     setGroupSelection,
-    createPitchAccentElement
+    createPitchAccentElement,
+    measureTextWidth
 } = window.LangCommon;
 
 const {
@@ -173,6 +174,10 @@ function showReadingResults() {
         `Rozdział ${activeReadingChapter.chapterNumber}: ${activeReadingChapter.title}`;
     linesHost.replaceChildren();
 
+    // Matches .reading-result-hiragana's font so pitch-accent dots line up with
+    // each mora's actual rendered width instead of assuming equal-width morae.
+    const hiraganaResultFont = `24px ${getComputedStyle(document.body).getPropertyValue("--hiragana-font")}`;
+
     activeReadingChapter.verses.forEach((parts, index) => {
         const resultLine = document.createElement("section");
         resultLine.className = `reading-result-line${readingAnswers[index].correct ? "" : " has-error"}`;
@@ -218,7 +223,24 @@ function showReadingResults() {
                         content.setAttribute("aria-label", `${part.text.trim()}: ${vocabulary.kanji}, ${vocabulary.meaning}`);
                         content.classList.add("has-reading-meaning");
                         if (Number.isInteger(vocabulary.pitch) && vocabulary.hiragana) {
-                            pitchElement = createPitchAccentElement(vocabulary.hiragana, vocabulary.pitch, vocabulary.pitchSource, vocabulary.pitchAlt);
+                            // kana-data.js verse text pads words with a leading separator space
+                            // and/or trails sentence punctuation (、。) — neither is a real mora,
+                            // so they're stripped before splitting into morae (else they'd each
+                            // get their own bogus dot). The stripped leading part still takes up
+                            // rendered width though, so the diagram gets pushed right by that much
+                            // to stay lined up with where the real word actually starts.
+                            const leadingNonMora = (content.textContent.match(/^[\s、。,.!?！？]+/) || [""])[0];
+                            const pitchHiragana = content.textContent
+                                .slice(leadingNonMora.length)
+                                .replace(/[\s、。,.!?！？]+$/, "");
+                            // content.textContent is the word as inflected in the sentence, possibly
+                            // longer than vocabulary.hiragana — extra morae continue at whatever level
+                            // the pitch pattern already reached (getPitchAccentLevels holds that level
+                            // once past the accent kernel, or keeps rising for heiban).
+                            pitchElement = createPitchAccentElement(pitchHiragana, vocabulary.pitch, vocabulary.pitchSource, vocabulary.pitchAlt, false, hiraganaResultFont);
+                            if (pitchElement && leadingNonMora) {
+                                pitchElement.style.marginLeft = `${measureTextWidth(leadingNonMora, hiraganaResultFont)}px`;
+                            }
                         }
                     }
                 }
@@ -227,8 +249,14 @@ function showReadingResults() {
                 content.classList.add("is-incorrect");
                 content.title = `${content.title ? `${content.title}. ` : ""}Niepoprawny odczyt`;
             }
-            hiraganaLine.appendChild(content);
-            if (pitchElement) hiraganaLine.appendChild(pitchElement);
+            if (pitchElement) {
+                const withPitch = document.createElement("span");
+                withPitch.className = "reading-word-pitch";
+                withPitch.append(pitchElement, content);
+                hiraganaLine.appendChild(withPitch);
+            } else {
+                hiraganaLine.appendChild(content);
+            }
         });
 
         const answerLine = document.createElement("p");
