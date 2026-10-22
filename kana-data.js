@@ -993,12 +993,13 @@ const readingStories = [
                 verses: [
                     [
                         { text: "めでたし、", reading: "medetashi" },
-                        { text: " せいちょうみちみてる", reading: " seichoumichimiteru" }, //seichou michimiteru
+                        { text: " せいちょう", reading: " seichou" },
+                        { text: "みちみてる", reading: "michimiteru" },
                         { text: " まりあ、", reading: " maria", foreignName: true },
                         { text: " しゅ", reading: " shu" },
                         { text: " おんみ", reading: " onmi" },
                         { text: "と", reading: "to", particle: true },
-                        { text: " ともに", reading: " tomo" },
+                        { text: " とも", reading: " tomo" },
                         { text: "に", reading: "ni", particle: true },
                         { text: " まします。", reading: " mashimasu" }
                     ],
@@ -1115,7 +1116,7 @@ const readingStories = [
                         { text: "の", reading: "no", particle: true },
                         { text: " おんあわれみ", reading: " onawaremi" },
                         { text: "を", reading: "o", particle: true },
-                        { text: " もっとも", reading: " mottomo" }, //motto mo?
+                        { text: " もっとも", reading: " mottomo" },
                         { text: " ひつよう", reading: " hitsuyou" },
                         { text: "と", reading: "to", particle: true },
                         { text: " する", reading: " suru" },

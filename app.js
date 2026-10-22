@@ -219,8 +219,30 @@ function showReadingResults() {
                 } else {
                     const vocabulary = findReadingVocabulary(part.reading);
                     if (vocabulary) {
-                        content.title = `${vocabulary.kanji} — ${vocabulary.meaning}`;
-                        content.setAttribute("aria-label", `${part.text.trim()}: ${vocabulary.kanji}, ${vocabulary.meaning}`);
+                        // honoryfikatywny przedrostek 御 (on-/mi-/go-) zostaje doklejony do słowa,
+                        // ale jest wzmiankowany osobno w opisie zamiast rozbijać je na dwie cząstki
+                        const honorificPrefixNote = vocabulary.honorificPrefix
+                            ? ` (${vocabulary.honorificPrefix}- — grzecznościowy przedrostek 御)`
+                            : "";
+                        // to samo dla doklejonego sufiksu 給う/給え/奉る (tamau/tamae/tatematsuru) —
+                        // rozpoznawany po odczycie konkretnego wystąpienia, nie po samym wpisie słownika.
+                        // 給う-rodzina (sonkeigo) wywyższa wykonawcę czynności, 奉る (kenjougo) pokornie
+                        // wywyższa adresata czynności — stąd różne opisy zamiast jednej wspólnej etykiety.
+                        const honorificSuffixMeanings = {
+                            tamae: "給う/給え — grzecznościowy sufiks (sonkeigo): „raczyć coś uczynić”, wywyższa wykonawcę czynności",
+                            tamau: "給う/給え — grzecznościowy sufiks (sonkeigo): „raczyć coś uczynić”, wywyższa wykonawcę czynności",
+                            tamou: "給う/給え — grzecznościowy sufiks (sonkeigo): „raczyć coś uczynić”, wywyższa wykonawcę czynności",
+                            tamawazare: "給わざれ — przeczenie sufiksu 給う (sonkeigo): „niech raczy nie czynić”",
+                            tatematsuru: "奉る — pokorny sufiks (kenjougo): „czynić coś z pokorą dla [czczonej osoby]”, wywyższa adresata czynności"
+                        };
+                        const honorificSuffixMatch = normalizeReadingAnswer(part.reading)
+                            .match(/(tatematsuru|tamawazare|tamae|tamau|tamou)$/);
+                        const honorificSuffixNote = honorificSuffixMatch
+                            ? ` (${honorificSuffixMeanings[honorificSuffixMatch[1]]})`
+                            : "";
+                        const honorificNote = `${honorificPrefixNote}${honorificSuffixNote}`;
+                        content.title = `${vocabulary.kanji} — ${vocabulary.meaning}${honorificNote}`;
+                        content.setAttribute("aria-label", `${part.text.trim()}: ${vocabulary.kanji}, ${vocabulary.meaning}${honorificNote}`);
                         content.classList.add("has-reading-meaning");
                         if (Number.isInteger(vocabulary.pitch) && vocabulary.hiragana) {
                             // kana-data.js verse text pads words with a leading separator space
