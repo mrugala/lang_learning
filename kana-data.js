@@ -778,7 +778,7 @@ const readingStories = [
                         { text: "に", reading: "ni", particle: true },
                         { text: "より", reading: "yori", particle: true },
                         { text: "て。", reading: "te", particle: true },
-                        { text: " あーめん。", reading: " amen" }
+                        { text: " あーめん。", reading: " aamen" }
                     ]
                 ]
             },
@@ -833,7 +833,8 @@ const readingStories = [
                         { text: "じゅうじか", reading: "juujika" },
                         { text: "に", reading: "ni", particle: true },
                         { text: " つけられ、", reading: " tsukerare" },
-                        { text: " しして", reading: " shite" },
+                        { text: " しし", reading: " shishi" },
+                        { text: "て", reading: "te", particle: true },
                         { text: " ほうむられ、", reading: " houmurare" },
                         { text: " こせいしょ", reading: " koseisho" },
                         { text: "に", reading: "ni", particle: true },
@@ -894,7 +895,7 @@ const readingStories = [
                         { text: " いのち", reading: " inochi" },
                         { text: "を", reading: "o", particle: true },
                         { text: " しんじたてまつる。", reading: " shinjitatematsuru" },
-                        { text: " あーめん。", reading: " amen" }
+                        { text: " あーめん。", reading: " aamen" }
                     ]
                 ]
             },
@@ -932,7 +933,7 @@ const readingStories = [
                         { text: "の", reading: "no", particle: true },
                         { text: " てん", reading: " ten" },
                         { text: "に", reading: "ni", particle: true },
-                        { text: " おこなわるる", reading: " okonawaururu" },
+                        { text: " おこなわるる", reading: " okonawaruru" },
                         { text: " ごとく、", reading: " gotoku" },
                         { text: "ち", reading: "chi" },
                         { text: "に", reading: "ni", particle: true },
@@ -977,7 +978,7 @@ const readingStories = [
                         { text: " あく", reading: " aku" },
                         { text: "より", reading: "yori", particle: true },
                         { text: " すくいたまえ。", reading: " sukuitamae" },
-                        { text: " あーめん。", reading: " amen" }
+                        { text: " あーめん。", reading: " aamen" }
                     ]
                 ]
             },
@@ -992,12 +993,13 @@ const readingStories = [
                 verses: [
                     [
                         { text: "めでたし、", reading: "medetashi" },
-                        { text: " せいちょうみちみてる", reading: " seichoumichimiteru" },
+                        { text: " せいちょうみちみてる", reading: " seichoumichimiteru" }, //seichou michimiteru
                         { text: " まりあ、", reading: " maria", foreignName: true },
                         { text: " しゅ", reading: " shu" },
                         { text: " おんみ", reading: " onmi" },
                         { text: "と", reading: "to", particle: true },
-                        { text: " ともに", reading: " tomoni" },
+                        { text: " ともに", reading: " tomo" },
+                        { text: "に", reading: "ni", particle: true },
                         { text: " まします。", reading: " mashimasu" }
                     ],
                     [
@@ -1013,7 +1015,7 @@ const readingStories = [
                         { text: " おんこ", reading: " onko" },
                         { text: " いえずす", reading: " iezusu", foreignName: true },
                         { text: "も", reading: "mo", particle: true },
-                        { text: " しゅくせられたもう。", reading: " shukuseraretamou" }
+                        { text: " しゅくせられたもう。", reading: " shukuseraretamou" } //shukuserare tamou
                     ],
                     [
                         { text: "てんしゅ", reading: "tenshu" },
@@ -1021,7 +1023,7 @@ const readingStories = [
                         { text: " おんはは", reading: " onhaha" },
                         { text: " せい", reading: " sei" },
                         { text: " まりあ、", reading: " maria", foreignName: true },
-                        { text: " つみびとなる", reading: " tsumibitonaru" },
+                        { text: " つみびとなる", reading: " tsumibitonaru" }, //tsumibito naru
                         { text: " われら", reading: " warera" },
                         { text: "の", reading: "no", particle: true },
                         { text: " ため", reading: " tame" },
@@ -1032,8 +1034,8 @@ const readingStories = [
                         { text: "の", reading: "no", particle: true },
                         { text: " とき", reading: " toki" },
                         { text: "も", reading: "mo", particle: true },
-                        { text: " いのりたまえ。", reading: " inoritamae" },
-                        { text: " あーめん。", reading: " amen" }
+                        { text: " いのりたまえ。", reading: " inoritamae" }, //inori tamae
+                        { text: " あーめん。", reading: " aamen" }
                     ]
                 ]
             },
@@ -1071,7 +1073,7 @@ const readingStories = [
                         { text: "に", reading: "ni", particle: true },
                         { text: " いたる", reading: " itaru" },
                         { text: "まで。", reading: "made", particle: true },
-                        { text: " あーめん。", reading: " amen" }
+                        { text: " あーめん。", reading: " aamen" }
                     ]
                 ]
             },
@@ -1092,7 +1094,7 @@ const readingStories = [
                         { text: "の", reading: "no", particle: true },
                         { text: " つみ", reading: " tsumi" },
                         { text: "を", reading: "o", particle: true },
-                        { text: " ゆるしたまえ。", reading: " yurushitamae" }
+                        { text: " ゆるしたまえ。", reading: " yurushitamae" } //yurushi tamae
                     ],
                     [
                         { text: "われら", reading: "warera" },
@@ -1101,7 +1103,7 @@ const readingStories = [
                         { text: "の", reading: "no", particle: true },
                         { text: " ひ", reading: " hi" },
                         { text: "より", reading: "yori", particle: true },
-                        { text: " まもりたまえ。", reading: " mamoritamae" }
+                        { text: " まもりたまえ。", reading: " mamoritamae" } //mamori tamae
                     ],
                     [
                         { text: "また", reading: "mata" },
@@ -1113,7 +1115,7 @@ const readingStories = [
                         { text: "の", reading: "no", particle: true },
                         { text: " おんあわれみ", reading: " onawaremi" },
                         { text: "を", reading: "o", particle: true },
-                        { text: " もっとも", reading: " mottomo" },
+                        { text: " もっとも", reading: " mottomo" }, //motto mo?
                         { text: " ひつよう", reading: " hitsuyou" },
                         { text: "と", reading: "to", particle: true },
                         { text: " する", reading: " suru" },
@@ -1121,7 +1123,7 @@ const readingStories = [
                         { text: "を", reading: "o", particle: true },
                         { text: " てんごく", reading: " tengoku" },
                         { text: "に", reading: "ni", particle: true },
-                        { text: " みちびきたまえ。", reading: " michibikitamae" }
+                        { text: " みちびきたまえ。", reading: " michibikitamae" } //michibiki tamae
                     ]
                 ]
             }
