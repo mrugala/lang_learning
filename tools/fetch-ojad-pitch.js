@@ -18,8 +18,11 @@
 const fs = require("fs");
 const path = require("path");
 
+// (The tool still loads reading-vocabulary-data.js when run directly; doing it
+// at import time would also overwrite window when this file is required by
+// another script such as tools/audit-estimated-pitch.js.)
 global.window = {};
-require(path.join(__dirname, "..", "reading-vocabulary-data.js"));
+if (require.main === module) require(path.join(__dirname, "..", "reading-vocabulary-data.js"));
 
 const BATCH_SIZE = 10;
 const REQUEST_DELAY_MS = 500;
@@ -168,8 +171,14 @@ async function main() {
     console.log(`${mismatches} mismatch(es), ${notFound} not found, out of ${entries.length} entries.`);
 }
 
-main().catch(error => {
-    console.error(error);
-    process.exitCode = 1;
-});
+// Reused by tools/fetch-ojad-pitch-names.js for the names in the reading
+// stories, which aren't part of reading-vocabulary-data.js.
+module.exports = { fetchOjadHtml, parseRows, chunk, BATCH_SIZE, REQUEST_DELAY_MS };
+
+if (require.main === module) {
+    main().catch(error => {
+        console.error(error);
+        process.exitCode = 1;
+    });
+}
 

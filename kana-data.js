@@ -125,23 +125,31 @@ const readingParticleMeanings = {
     "まで": "aż do; do — wskazuje granicę lub punkt końcowy (czasu, miejsca, zakresu)"
 };
 
+/* Proper names used in the reading stories: the display name plus, when it is
+   known, the word's pitch accent (same format as reading-vocabulary-data.js) so
+   the reading results can draw a pitch diagram above the name too. Values were
+   looked up with tools/fetch-ojad-pitch-names.js; "estimated" means OJAD's ML
+   estimator (Suzuki-kun) rather than a dictionary entry. A plain string is still
+   accepted for a name without pitch. */
+// NOTE: names are not in reading-vocabulary-data.js on purpose — that list
+// feeds the kanji decks; their meaning lives here.
 const readingCharacterNames = {
-    "momotarou": "Momotarō",
-    "momotaroutachi": "Momotarō i jego towarzysze",
-    "mika": "Mika",
-    "yuki": "Yuki",
-    "shiwan": "Siwan",
-    "shikatora": "Sikatora",
-    "shikatondono": "Sikatondono",
-    "sebasutian": "Sebastian",
-    "sutefan": "Stefan",
-    "tobiasu": "Tobiasz",
-    "furanshisu": "Franciszek",
-    "shimon": "Szymon",
-    "iezusu": "Jezus",
-    "iezusukirisuto": "Jezus Chrystus",
-    "maria": "Maryja",
-    "ponshiopirato": "Poncjusz Piłat"
+    "momotarou": { name: "Momotarō", pitch: 4, pitchSource: "estimated" },
+    "momotaroutachi": { name: "Momotarō i jego towarzysze", pitch: 6, pitchSource: "estimated" },
+    "mika": { name: "Mika", pitch: 1, pitchSource: "estimated" },
+    "yuki": { name: "Yuki", pitch: 2, pitchSource: "ojad" },
+    "shiwan": { name: "Siwan", pitch: 2, pitchSource: "estimated" },
+    "shikatora": { name: "Sikatora", pitch: 3, pitchSource: "estimated" },
+    "shikatondono": { name: "Sikatondono", pitch: 5, pitchSource: "estimated" },
+    "sebasutian": { name: "Sebastian", pitch: 5, pitchSource: "estimated" },
+    "sutefan": { name: "Stefan", pitch: 3, pitchSource: "estimated" },
+    "tobiasu": { name: "Tobiasz", pitch: 0, pitchSource: "estimated" },
+    "furanshisu": { name: "Franciszek", pitch: 0, pitchSource: "estimated" },
+    "shimon": { name: "Szymon", pitch: 0, pitchSource: "estimated" },
+    "iezusu": { name: "Jezus", pitch: 0, pitchSource: "estimated" },
+    "iezusukirisuto": { name: "Jezus Chrystus", pitch: 5, pitchSource: "estimated" },
+    "maria": { name: "Maryja", pitch: 1, pitchSource: "estimated" },
+    "ponshiopirato": { name: "Poncjusz Piłat", pitch: 6, pitchSource: "estimated" }
 };
 
 const readingStories = [

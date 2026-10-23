@@ -19,7 +19,7 @@ można uruchomić lokalny serwer za pomocą `node tools/serve.js`.
 
 | Strona | Funkcje |
 | --- | --- |
-| [`index.html`](index.html) | Nauka hiragany lub katakany. Opcja „Kana rozszerzone” dodaje ゐ (wi) i ゑ (we) albo ich katakanowe odpowiedniki ヰ i ヱ do głównej tabeli i quizu. Tabele kana zawierają też osobne, zwijane tabele dakuon/handakuon i yōon. Quiz dakuon akceptuje warianty `zi`, `di` i `du` tam, gdzie pasują do znaku. Znaki wybiera się komórkami, grupami albo całościowo. Po odświeżeniu strony aktywne ćwiczenie kana lub czytania jest przywracane. Po zakończeniu quizu pole odpowiedzi zostaje ukryte; ponowienie nauki przywraca je. Tryb czytania pozwala wybrać Momotarō, oryginalną opowieść dla początkujących „Mika uczy się japońskiego” albo czterorozdziałowe, autorskie streszczenie *Siostrzeńca królowej* (*The Queen's Nephew*) ks. Josepha Spillmanna. Przy historiach zawierających imiona obcego pochodzenia można wybrać ich zapis hiraganą lub katakaną. Każdy werset ma własne tłumaczenie; po każdym rozdziale można przejść do następnego, a po ostatnim wrócić do pierwszego. W wynikach można najechać na słowa kana, by zobaczyć ich zapis kanji i polskie znaczenie, a na partykuły — by wyświetlić ich funkcję; błędnie odczytane fragmenty są wyróżnione, a rozdział można powtórzyć. |
+| [`index.html`](index.html) | Nauka hiragany lub katakany. Opcja „Kana rozszerzone” dodaje ゐ (wi) i ゑ (we) albo ich katakanowe odpowiedniki ヰ i ヱ do głównej tabeli i quizu. Tabele kana zawierają też osobne, zwijane tabele dakuon/handakuon i yōon. Quiz dakuon akceptuje warianty `zi`, `di` i `du` tam, gdzie pasują do znaku. Znaki wybiera się komórkami, grupami albo całościowo. Po odświeżeniu strony aktywne ćwiczenie kana lub czytania jest przywracane. Po zakończeniu quizu pole odpowiedzi zostaje ukryte; ponowienie nauki przywraca je. Tryb czytania pozwala wybrać Momotarō, oryginalną opowieść dla początkujących „Mika uczy się japońskiego” albo czterorozdziałowe, autorskie streszczenie *Siostrzeńca królowej* (*The Queen's Nephew*) ks. Josepha Spillmanna. Przy historiach zawierających imiona obcego pochodzenia można wybrać ich zapis hiraganą lub katakaną. Nad słowami i imionami w wynikach rysowany jest diagram akcentu wysokościowego (dla imion z `readingCharacterNames` — o ile mają zapisany `pitch`). Każdy werset ma własne tłumaczenie; po każdym rozdziale można przejść do następnego, a po ostatnim wrócić do pierwszego. W wynikach można najechać na słowa kana, by zobaczyć ich zapis kanji i polskie znaczenie (imiona z opowiadań mają zamiast tego swoją polską pisownię), a na partykuły — by wyświetlić ich funkcję; nad słowami i imionami ze znanym akcentem rysowany jest schemat akcentu wysokościowego, błędnie odczytane fragmenty są wyróżnione, a rozdział można powtórzyć. |
 | [`other-alphabets.html`](other-alphabets.html) | Nauka cyrylicy cerkiewnosłowiańskiej i głagolicy (małe i wielkie litery wyświetlane parami, wybierane do quizu osobno). Głagolica obła i kanciasta używają tych samych znaków, ale różnych wariantów fontu. Podczas quizu dostępne są przyciski znaków specjalnych transliteracji z przełącznikiem wielkości liter. |
 | [`kanji.html`](kanji.html) | Nauka kanji z kategorii podzielonych automatycznie na kolejne zestawy po maksymalnie 10 kategorii; słownictwo z opowiadań ma osobny zestaw (kolejne zestawy po maksymalnie 100 wpisów, w kategoriach po maksymalnie 10 słów), a zestaw „Kościół katolicki” pozostaje ostatni. Można ustawić, co jest wyświetlane i o co pyta quiz. Przy odpowiedzi kanji dostępny jest quiz wyboru z dystraktorami. Aktywna sesja jest przywracana po odświeżeniu strony. |
 | [`german.html`](german.html) | Niemieckie słownictwo w kategoriach tematycznych. Kierunki nauki: niemiecki → polski, polski → niemiecki lub oba wymieszane. Wpisy mogą ćwiczyć osobno liczbę pojedynczą i mnogą; dostępne są przyciski dla ä, ö, ü i ß. Aktywna sesja jest przywracana po odświeżeniu strony. |
@@ -108,13 +108,18 @@ wysokościowy bezpośrednio z OJAD (słownik oraz, dla słów spoza słownika,
 estymator ML „Suzuki-kun") i tylko raportują różnice względem pola `pitch`
 w `reading-vocabulary-data.js` — nie nadpisują danych automatycznie.
 `fetch-ojad-pitch-kanji.js` i `fetch-ojad-phrasing-pitch-kanji.js` robią to
-samo dla `kanji-data.js`. `check-against-kanjium.js` dodatkowo porównuje
+samo dla `kanji-data.js`. `fetch-ojad-pitch-names.js` pobiera akcent imion
+występujących w opowiadaniach (`readingCharacterNames` w `kana-data.js`),
+których celowo nie ma w `reading-vocabulary-data.js` — ten plik zasila zestawy
+kanji — i porównuje wynik z wartością zapisaną przy imieniu.
+`check-against-kanjium.js` dodatkowo porównuje
 wpisy o niższej pewności (`pitchSource` `estimated`/`guess`) z otwartą bazą
 Kanjium (zob. licencja niżej) i tylko raportuje różnice.
 
 ## Źródła danych o akcencie wysokościowym
 
-Pole `pitch` w `reading-vocabulary-data.js` i `kanji-data.js` pochodzi z:
+Pole `pitch` w `reading-vocabulary-data.js` i `kanji-data.js` oraz przy imionach
+w `readingCharacterNames` (`kana-data.js`) pochodzi z:
 [OJAD](https://www.gavo.t.u-tokyo.ac.jp/ojad/) (University of Tokyo;
 `pitchSource: "ojad"` dla słownika, `"estimated"` dla estymatora ML
 Suzuki-kun) oraz z bazy [Kanjium](https://github.com/mifunetoshiro/kanjium)

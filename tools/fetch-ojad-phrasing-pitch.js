@@ -13,8 +13,9 @@
 const fs = require("fs");
 const path = require("path");
 
+// (Loaded only when run directly — see the same note in fetch-ojad-pitch.js.)
 global.window = {};
-require(path.join(__dirname, "..", "reading-vocabulary-data.js"));
+if (require.main === module) require(path.join(__dirname, "..", "reading-vocabulary-data.js"));
 
 const BATCH_SIZE = 20;
 const REQUEST_DELAY_MS = 800;
@@ -51,6 +52,49 @@ async function fetchPhrasingHtml(words) {
 // sourceWord comes from "phrasing_subscript" (the original input word, before
 // reading/accent estimation), so it reliably maps back to our data even when
 // the estimated reading is wrong.
+//
+// Mora classes: underlined spans (e.g. "accent_top unvoiced", "accent_plain")
+// are high-pitched, and there is at least one accent_top per accent phrase, so
+// a word with two accent_top spans has two kernels (しかとんどの → 2 + 4). For
+// the pitch number we take the LAST kernel, i.e. the pitch of the whole word
+// as one unit; getPitchKernels() exposes all of them for callers that want to
+// decide themselves.
+function parsePhraseMorae(textHtml) {
+    const moraRe = /<span class="([^"]*mola_\d+)"><span class="inner">((?:<span class="char">[^<]*<\/span>)+)<\/span><\/span>/g;
+    const hiraganaParts = [];
+    const kernels = [];
+    let moraMatch;
+    let moraIndex = 0;
+    while ((moraMatch = moraRe.exec(textHtml)) !== null) {
+        const classes = moraMatch[1].split(/\s+/);
+        const charText = [...moraMatch[2].matchAll(/class="char">([^<]*)</g)].map(c => c[1]).join("");
+        hiraganaParts.push(charText);
+        if (classes.includes("accent_top")) kernels.push(moraIndex + 1);
+        moraIndex++;
+    }
+    return { hiragana: hiraganaParts.join(""), kernels };
+}
+
+function getPitchKernels(kernels) {
+    return kernels.length === 0 ? [0] : kernels;
+}
+
+// Suzuki-kun renders loanwords in mixed katakana (せばすてぃあん → せバスティアン);
+// the reading is returned as hiragana so it can be compared with ours.
+function foldToHiragana(value) {
+    return Array.from(value, character => {
+        const codePoint = character.codePointAt(0);
+        return codePoint >= 0x30a1 && codePoint <= 0x30f6
+            ? String.fromCodePoint(codePoint - 0x60)
+            : character;
+    }).join("");
+}
+
+function pitchFromKernels(kernels) {
+    const all = getPitchKernels(kernels);
+    return all[all.length - 1];
+}
+
 function parsePhrases(html) {
     const phrases = [];
     const blockRe = /<div class="phrasing_phrase_wrapper">([\s\S]*?)<\/div>\s*<\/div>/g;
@@ -61,25 +105,15 @@ function parsePhrases(html) {
         const subscriptMatch = /<div class="phrasing_subscript">\s*<span>([^<]+)</.exec(block);
         if (!textMatch || !subscriptMatch) continue;
 
-        const moraRe = /<span class="\s?(accent_top|accent_plain)?\s?mola_\d+"><span class="inner">((?:<span class="char">[^<]*<\/span>)+)<\/span>/g;
-        const hiraganaParts = [];
-        let topIndex = -1;
-        let moraMatch;
-        let moraIndex = 0;
-        while ((moraMatch = moraRe.exec(textMatch[1])) !== null) {
-            const charText = [...moraMatch[2].matchAll(/class="char">([^<]*)</g)].map(c => c[1]).join("");
-            hiraganaParts.push(charText);
-            if (moraMatch[1] === "accent_top") topIndex = moraIndex;
-            moraIndex++;
-        }
-        if (hiraganaParts.length === 0) continue;
+        const { hiragana, kernels } = parsePhraseMorae(textMatch[1]);
+        if (!hiragana) continue;
 
-        const moraCount = hiraganaParts.length;
-        const pitch = moraCount === 1
-            ? (topIndex === -1 ? 0 : 1)
-            : (topIndex === -1 ? 0 : topIndex + 1);
-
-        phrases.push({ sourceWord: subscriptMatch[1], hiragana: hiraganaParts.join(""), pitch });
+        phrases.push({
+            sourceWord: subscriptMatch[1],
+            hiragana: foldToHiragana(hiragana),
+            pitch: pitchFromKernels(kernels),
+            pitchKernels: getPitchKernels(kernels)
+        });
     }
     return phrases;
 }
@@ -125,6 +159,22 @@ async function main() {
         await sleep(REQUEST_DELAY_MS);
     }
 
+    // Suzuki-kun silently drops input with no morae (e.g. a loanword that is
+    // all katakana, or a kanji word it can't read), which would also shift the
+    // ü、-joined batch and misalign the remaining words. Retry each missing word
+    // on its own, still only trusting the answer when its reading matches.
+    for (const entry of targets) {
+        if (resultsByWord.has(entry.kanji)) continue;
+        for (const query of new Set([entry.kanji, entry.hiragana])) {
+            if (resultsByWord.has(entry.kanji)) break;
+            if (!query) continue;
+            const html = await fetchPhrasingHtml([query]);
+            const answer = parsePhrases(html).find(phrase => phrase.hiragana === entry.hiragana);
+            if (answer) resultsByWord.set(entry.kanji, [answer]);
+            await sleep(REQUEST_DELAY_MS);
+        }
+    }
+
     const lines = ["kanji\thiragana\tnasz_pitch\testymowany_pitch\tstatus"];
     let usable = 0;
     for (const entry of targets) {
@@ -149,7 +199,13 @@ async function main() {
     console.log("These are ML estimates, not dictionary data — review before trusting.");
 }
 
-main().catch(error => {
-    console.error(error);
-    process.exitCode = 1;
-});
+// Reused by tools/fetch-ojad-pitch-names.js for the names in the reading
+// stories, which aren't part of reading-vocabulary-data.js.
+module.exports = { fetchPhrasingHtml, parsePhrases, chunk, BATCH_SIZE, REQUEST_DELAY_MS };
+
+if (require.main === module) {
+    main().catch(error => {
+        console.error(error);
+        process.exitCode = 1;
+    });
+}
