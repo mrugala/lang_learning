@@ -786,7 +786,7 @@ const readingStories = [
                         { text: "に", reading: "ni", particle: true },
                         { text: "より", reading: "yori", particle: true },
                         { text: "て。", reading: "te", particle: true },
-                        { text: " あーめん。", reading: " aamen" }
+                        { text: " あーめん。", reading: " aamen", foreignWord: true }
                     ]
                 ]
             },
@@ -903,7 +903,7 @@ const readingStories = [
                         { text: " いのち", reading: " inochi" },
                         { text: "を", reading: "o", particle: true },
                         { text: " しんじたてまつる。", reading: " shinjitatematsuru" },
-                        { text: " あーめん。", reading: " aamen" }
+                        { text: " あーめん。", reading: " aamen", foreignWord: true }
                     ]
                 ]
             },
@@ -986,7 +986,7 @@ const readingStories = [
                         { text: " あく", reading: " aku" },
                         { text: "より", reading: "yori", particle: true },
                         { text: " すくいたまえ。", reading: " sukuitamae" },
-                        { text: " あーめん。", reading: " aamen" }
+                        { text: " あーめん。", reading: " aamen", foreignWord: true }
                     ]
                 ]
             },
@@ -1044,7 +1044,7 @@ const readingStories = [
                         { text: " とき", reading: " toki" },
                         { text: "も", reading: "mo", particle: true },
                         { text: " いのりたまえ。", reading: " inoritamae" }, //inori tamae
-                        { text: " あーめん。", reading: " aamen" }
+                        { text: " あーめん。", reading: " aamen", foreignWord: true }
                     ]
                 ]
             },
@@ -1082,7 +1082,7 @@ const readingStories = [
                         { text: "に", reading: "ni", particle: true },
                         { text: " いたる", reading: " itaru" },
                         { text: "まで。", reading: "made", particle: true },
-                        { text: " あーめん。", reading: " aamen" }
+                        { text: " あーめん。", reading: " aamen", foreignWord: true }
                     ]
                 ]
             },

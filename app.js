@@ -326,6 +326,23 @@ function findReadingVocabulary(reading) {
     return readingVocabularyByAlias.get(normalizeReadingAnswer(reading)) || null;
 }
 
+// Rebuilds the kana tables after the selection panel becomes visible again.
+// Tables rendered while the panel was hidden measured a width of 0, which left
+// the mobile layout with zero-sized cells.
+function refreshSelectionTables() {
+    renderTable();
+    renderSupplementalTables();
+    syncSelectionHighlights();
+}
+
+// Runs the table layout pass, measuring widths only while the selection panel is
+// actually displayed (a hidden panel reports every width as 0).
+function refreshVisibleTables() {
+    const panel = document.getElementById("selection-panel");
+    if (panel.hidden) return;
+    refreshSelectionTables();
+}
+
 function closeReadingPractice() {
     activeReadingStory = null;
     activeReadingChapter = null;
@@ -335,6 +352,7 @@ function closeReadingPractice() {
     document.getElementById("selection-panel").hidden = false;
     document.getElementById("reading-active").hidden = false;
     document.getElementById("reading-results").hidden = true;
+    refreshSelectionTables();
 }
 
 function getKanaDisplayTransliteration(kana, transliteration) {
@@ -674,9 +692,7 @@ function renderTable() {
 }
 
 window.addEventListener("resize", () => {
-    renderTable();
-    renderSupplementalTables();
-    syncSelectionHighlights();
+    refreshVisibleTables();
 });
 
 renderTable();
@@ -699,8 +715,7 @@ if (fontStyleSelect) {
 }
 
 document.fonts?.addEventListener("loadingdone", () => {
-    renderSupplementalTables();
-    syncSelectionHighlights();
+    refreshVisibleTables();
 });
 
 const alphabetTypeSelect = document.getElementById("alphabet-type");
@@ -1334,7 +1349,7 @@ function renderSupplementalTables() {
     host.querySelectorAll(".supplemental-table").forEach(table => {
         setMobileTableCellSize(table, table.parentElement.clientWidth);
     });
-    const leftOffset = document.getElementById("table").getBoundingClientRect().left -
+        const leftOffset = document.getElementById("table").getBoundingClientRect().left -
         host.getBoundingClientRect().left;
     host.querySelectorAll(".supplemental-section").forEach(section => {
         section.style.marginLeft = `${leftOffset}px`;
@@ -1636,6 +1651,9 @@ document.getElementById("reading-answer").addEventListener("keydown", event => {
 
 readingPracticeButton.hidden = currentAlphabet !== "hiragana";
 document.getElementById("reading-story-picker").hidden = currentAlphabet !== "hiragana";
+// The tables were rendered while the selection panel was still visible, so the
+// supplemental sections may carry a stale horizontal offset from that pass.
+if (!document.getElementById("selection-panel").hidden) refreshSelectionTables();
 
 const restoredReadingState = window.LangCommon.readReloadState(READING_STATE_KEY);
 if (restoredReadingState?.active) {
